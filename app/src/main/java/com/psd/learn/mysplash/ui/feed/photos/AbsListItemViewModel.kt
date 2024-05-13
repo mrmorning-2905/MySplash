@@ -15,13 +15,9 @@ abstract class AbsListItemViewModel<T> : ViewModel() {
     internal val uiStateLiveData: LiveData<UiState<T>>
         get() = _uiState
 
-    init {
-        loadFirstPage()
-    }
-
     abstract suspend fun getListItems(currentPage: Int, itemPerPage: Int): List<T>
 
-    private fun loadFirstPage() {
+    fun loadFirstPage() {
         viewModelScope.launch {
             _uiState.value = UiState.FirstPageLoading
             try {
