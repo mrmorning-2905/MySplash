@@ -1,7 +1,5 @@
 package com.psd.learn.mysplash.ui.core
 
-import com.psd.learn.mysplash.ui.feed.photos.PhotoItem
-
 sealed interface UiState<out T> {
     data object FirstPageLoading : UiState<Nothing>
     data object FirstPageError : UiState<Nothing>

@@ -9,7 +9,7 @@ import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.databinding.FeedFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.feed.collections.CollectionsFragment
-import com.psd.learn.mysplash.ui.feed.photos.PhotosFragment
+import com.psd.learn.mysplash.ui.feed.photos.FeedPhotosFragment
 
 class FeedFragment : BaseFragment<FeedFragmentLayoutBinding>(inflate = FeedFragmentLayoutBinding::inflate) {
 
@@ -33,7 +33,7 @@ class FeedFragment : BaseFragment<FeedFragmentLayoutBinding>(inflate = FeedFragm
 
         override fun createFragment(position: Int): Fragment {
            return when(position) {
-               0 -> PhotosFragment.newInstance()
+               0 -> FeedPhotosFragment.newInstance()
                1 -> CollectionsFragment.newInstance()
                else -> error("Invalid position: $position")
            }

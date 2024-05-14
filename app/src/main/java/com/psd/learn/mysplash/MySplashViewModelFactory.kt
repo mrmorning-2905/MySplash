@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.psd.learn.mysplash.ui.feed.photos.FeedPhotosViewModel
+import com.psd.learn.mysplash.ui.viewmodels.FeedPhotosViewModel
 
 @Suppress("UNCHECKED_CAST")
 val ViewModelFactory = object : ViewModelProvider.Factory {

@@ -1,4 +1,4 @@
-package com.psd.learn.mysplash.ui.feed.photos
+package com.psd.learn.mysplash.ui.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.LiveData

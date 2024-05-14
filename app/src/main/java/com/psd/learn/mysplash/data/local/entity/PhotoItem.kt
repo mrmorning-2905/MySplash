@@ -1,4 +1,4 @@
-package com.psd.learn.mysplash.ui.feed.photos
+package com.psd.learn.mysplash.data.local.entity
 
 data class PhotoItem(
     val photoId: String,

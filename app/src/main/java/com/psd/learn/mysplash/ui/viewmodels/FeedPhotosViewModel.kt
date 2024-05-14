@@ -1,7 +1,8 @@
-package com.psd.learn.mysplash.ui.feed.photos
+package com.psd.learn.mysplash.ui.viewmodels
 
 import com.psd.learn.mysplash.data.remote.entity.PhotoResponseItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
+import com.psd.learn.mysplash.data.local.entity.PhotoItem
 
 class FeedPhotosViewModel(
     private val unSplashApiService: UnSplashApiService
