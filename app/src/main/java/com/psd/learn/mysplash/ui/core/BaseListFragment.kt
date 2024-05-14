@@ -4,39 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.CallSuper
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.psd.learn.mysplash.ui.viewmodels.AbsListItemViewModel
 
 abstract class BaseListFragment<T, VB: ViewBinding>(
-    private val inflate: (LayoutInflater, ViewGroup?, Boolean) -> VB
-) : Fragment() {
-
-    private var _binding: VB? = null
-
-    protected val binding get() = _binding!!
-
-    @CallSuper
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View = inflate(inflater, container, false).also { _binding = it }.root
-
+    inflate: (LayoutInflater, ViewGroup?, Boolean) -> VB
+) : BaseFragment<VB>(inflate) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         setupViewModel()
-    }
-
-    @CallSuper
-    override fun onDestroyView() {
-        _binding = null
-        super.onDestroyView()
     }
 
     protected fun renderUiState(uiState: UiState<T>, progressBar: View) {
