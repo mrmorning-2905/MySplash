@@ -6,12 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.ViewModelFactory
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
-import com.psd.learn.mysplash.databinding.PhotosFragmentLayoutBinding
+import com.psd.learn.mysplash.databinding.FeedPhotosFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseListFragment
 import com.psd.learn.mysplash.ui.viewmodels.FeedPhotosViewModel
 
 class PhotosListFragment :
-    BaseListFragment<PhotoItem, PhotosFragmentLayoutBinding>(inflate = PhotosFragmentLayoutBinding::inflate) {
+    BaseListFragment<PhotoItem, FeedPhotosFragmentLayoutBinding>(inflate = FeedPhotosFragmentLayoutBinding::inflate) {
 
     private val viewModel by viewModels<FeedPhotosViewModel> { ViewModelFactory }
 
