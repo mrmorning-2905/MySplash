@@ -1,66 +1,51 @@
 package com.psd.learn.mysplash.ui.feed.photos
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.CoverPhotoItemBinding
+import com.psd.learn.mysplash.ui.core.BaseDiffItemCallback
+import com.psd.learn.mysplash.ui.core.BaseListViewHolder
 
-class FeedPhotosAdapter(
+class PhotosListAdapter(
     private val requestManager: RequestManager,
     private val onItemClickListener: (String) -> Unit,
     private val onProfileClickListener: (String) -> Unit
-) : ListAdapter<PhotoItem, FeedPhotosAdapter.FeedPhotoViewHolder>(FeedPhotosUiStateItemCallback) {
+) : ListAdapter<PhotoItem, PhotosListAdapter.PhotoListViewHolder>(BaseDiffItemCallback<PhotoItem>()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedPhotoViewHolder {
-        return FeedPhotoViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoListViewHolder {
+        return PhotoListViewHolder(
             binding = CoverPhotoItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
             ),
-            itemClicked = { position -> onItemClickListener(getItem(position).photoId) },
+            itemClicked = { position -> onItemClickListener(getItem(position).id) },
             profileClicked = { position -> onProfileClickListener(getItem(position).userId) },
         )
     }
 
-    override fun onBindViewHolder(holder: FeedPhotoViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PhotoListViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    inner class FeedPhotoViewHolder(
+    inner class PhotoListViewHolder(
         private val binding: CoverPhotoItemBinding,
         itemClicked: (Int) -> Unit,
         profileClicked: (Int) -> Unit
-    ) : RecyclerView.ViewHolder(binding.root) {
-
-        init {
-            binding.userOwnerContainer.setOnClickListener { profileClicked(adapterPosition) }
-            binding.coverPhotoContainer.setOnClickListener { itemClicked(adapterPosition) }
-        }
-
-        fun bind(item: PhotoItem) {
+    ) : BaseListViewHolder<PhotoItem>(
+        binding,
+        requestManager,
+        itemClicked,
+        profileClicked
+    ) {
+        @SuppressLint("SetTextI18n")
+        override fun bind(item: PhotoItem) {
+            super.bind(item)
             binding.run {
-                requestManager
-                    .load(item.userProfileUrl)
-                    .fitCenter()
-                    .circleCrop()
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(userProfile)
-
-                userName.text = item.userOwnerName
-
-                requestManager
-                    .load(item.coverPhotoUrl)
-                    .fitCenter()
-                    .centerCrop()
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(coverPhoto)
-
                 coverTitle.text = item.photoDescription
                 coverDetail.text = "${item.numberLikes} Likes"
             }
@@ -68,12 +53,3 @@ class FeedPhotosAdapter(
     }
 }
 
-object FeedPhotosUiStateItemCallback : DiffUtil.ItemCallback<PhotoItem>() {
-    override fun areItemsTheSame(oldItem: PhotoItem, newItem: PhotoItem): Boolean {
-        return oldItem.photoId == newItem.photoId
-    }
-
-    override fun areContentsTheSame(oldItem: PhotoItem, newItem: PhotoItem): Boolean {
-        return oldItem == newItem
-    }
-}

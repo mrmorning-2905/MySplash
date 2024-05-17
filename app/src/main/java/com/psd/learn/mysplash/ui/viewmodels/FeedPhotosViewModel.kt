@@ -19,8 +19,8 @@ class FeedPhotosViewModel(
 
 private fun PhotoResponseItem.toPhotoItem(): PhotoItem {
     return PhotoItem(
-        photoId = id,
-        userOwnerName = user.name,
+        id = id,
+        userName = user.name,
         userProfileUrl = user.profileImage.medium,
         coverPhotoUrl = urls.regular,
         photoDescription = altDescription ?: "",

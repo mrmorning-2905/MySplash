@@ -1,11 +1,11 @@
 package com.psd.learn.mysplash.data.local.entity
 
 data class PhotoItem (
-    val photoId: String,
-    val userOwnerName: String,
-    val userProfileUrl: String,
-    val coverPhotoUrl: String,
+    override val id: String,
+    override val userName: String,
+    override val userProfileUrl: String,
+    override val coverPhotoUrl: String,
     val photoDescription: String,
     val numberLikes: Int,
-    val userId: String
-)
+    override val userId: String
+) : BaseEntity

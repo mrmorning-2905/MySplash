@@ -17,7 +17,7 @@ class CollectionsListFragment : BaseListFragment<CollectionItem, CollectionsFrag
     private val collectionListAdapter by lazy(LazyThreadSafetyMode.NONE) {
         CollectionsListAdapter(
             requestManager = Glide.with(this@CollectionsListFragment),
-            onItemClickListener = { photoId -> showMessageToast("clicked on photo have id: $photoId") },
+            onItemClickListener = { photoId -> showMessageToast("clicked on collection have id: $photoId") },
             onProfileClickListener = { userId -> showMessageToast("clicked on user profile have id: $userId") }
         )
     }

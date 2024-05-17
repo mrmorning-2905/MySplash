@@ -20,7 +20,7 @@ class FeedCollectionsViewModel(
 
 private fun CollectionResponseItem.toCollectionItem(): CollectionItem {
     return CollectionItem(
-        collectionId = id,
+        id = id,
         userName = user.name,
         userProfileUrl = user.profileImage.medium,
         coverPhotoUrl = coverPhoto.urls.regular,
