@@ -22,6 +22,9 @@ private fun PhotoResponseItem.toPhotoItem(): PhotoItem {
         photoId = id,
         userOwnerName = user.name,
         userProfileUrl = user.profileImage.medium,
-        coverPhotoUrl = urls.regular
+        coverPhotoUrl = urls.regular,
+        photoDescription = altDescription ?: "",
+        numberLikes = likes,
+        userId = user.id
     )
 }

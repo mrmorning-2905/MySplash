@@ -37,7 +37,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/add_floating_icon"
-        app:layout_anchor="@id/bottom_appbar"/>
+        app:layout_anchor="@id/bottom_appbar"
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"/>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

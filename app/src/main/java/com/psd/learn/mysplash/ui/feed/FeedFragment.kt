@@ -8,14 +8,24 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.databinding.FeedFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
-import com.psd.learn.mysplash.ui.feed.collections.CollectionsFragment
-import com.psd.learn.mysplash.ui.feed.photos.FeedPhotosFragment
+import com.psd.learn.mysplash.ui.feed.collections.CollectionsListFragment
+import com.psd.learn.mysplash.ui.feed.photos.PhotosListFragment
 
 class FeedFragment : BaseFragment<FeedFragmentLayoutBinding>(inflate = FeedFragmentLayoutBinding::inflate) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViewPager()
+//        binding.addFabBtn.setOnClickListener {
+//            parentFragmentManager.commit {
+//                setReorderingAllowed(true)
+//                addToBackStack(null)
+//                replace<PhotoDetailsFragment>(
+//                    containerViewId = R.id.fragment_container_view,
+//                    tag = PhotoDetailsFragment::class.java.simpleName
+//                )
+//            }
+//        }
     }
 
     private fun setupViewPager() {
@@ -33,8 +43,8 @@ class FeedFragment : BaseFragment<FeedFragmentLayoutBinding>(inflate = FeedFragm
 
         override fun createFragment(position: Int): Fragment {
            return when(position) {
-               0 -> FeedPhotosFragment.newInstance()
-               1 -> CollectionsFragment.newInstance()
+               0 -> PhotosListFragment.newInstance()
+               1 -> CollectionsListFragment.newInstance()
                else -> error("Invalid position: $position")
            }
         }

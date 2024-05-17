@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
+import com.psd.learn.mysplash.ui.viewmodels.FeedCollectionsViewModel
 import com.psd.learn.mysplash.ui.viewmodels.FeedPhotosViewModel
 
 @Suppress("UNCHECKED_CAST")
@@ -14,6 +15,7 @@ val ViewModelFactory = object : ViewModelProvider.Factory {
             Log.d("sangpd", "ViewModelFactory_create_unSplashApiService: $unSplashApiService")
             when {
                 isAssignableFrom(FeedPhotosViewModel::class.java) -> FeedPhotosViewModel(unSplashApiService)
+                isAssignableFrom(FeedCollectionsViewModel::class.java) -> FeedCollectionsViewModel(unSplashApiService)
                 else -> IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }
         } as T

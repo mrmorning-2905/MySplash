@@ -1,5 +1,6 @@
 package com.psd.learn.mysplash.data.remote.repository
 
+import com.psd.learn.mysplash.data.remote.entity.CollectionResponseItem
 import com.psd.learn.mysplash.data.remote.entity.PhotoResponseItem
 import retrofit2.Retrofit
 import retrofit2.create
@@ -13,6 +14,12 @@ interface UnSplashApiService {
         @Query("page") page: Int,
         @Query("per_page") perPage: Int
     ): List<PhotoResponseItem>
+
+    @GET("collections")
+    suspend fun getCollectionListOnFeed(
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int
+    ): List<CollectionResponseItem>
 
     companion object {
         operator fun invoke(retrofit: Retrofit): UnSplashApiService = retrofit.create()

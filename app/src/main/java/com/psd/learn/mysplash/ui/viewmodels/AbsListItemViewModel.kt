@@ -62,6 +62,7 @@ abstract class AbsListItemViewModel<T> : ViewModel() {
                     } catch (e: CancellationException) {
                         throw e
                     } catch (e: Throwable) {
+                        Log.d("sangpd", "loadNextPage_error: $e")
                         _uiState.value = state.copy(nextPageState = UiState.NextPageState.Error)
                     }
                 }

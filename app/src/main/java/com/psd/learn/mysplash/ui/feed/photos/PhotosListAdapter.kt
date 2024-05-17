@@ -8,27 +8,41 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
-import com.psd.learn.mysplash.databinding.FeedPhotoItemBinding
+import com.psd.learn.mysplash.databinding.CoverPhotoItemBinding
 
 class FeedPhotosAdapter(
-    private val requestManager: RequestManager
-) : ListAdapter<PhotoItem, FeedPhotosAdapter.VH>(FeedPhotosUiStateItemCallback) {
+    private val requestManager: RequestManager,
+    private val onItemClickListener: (String) -> Unit,
+    private val onProfileClickListener: (String) -> Unit
+) : ListAdapter<PhotoItem, FeedPhotosAdapter.FeedPhotoViewHolder>(FeedPhotosUiStateItemCallback) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        return VH(FeedPhotoItemBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        ))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FeedPhotoViewHolder {
+        return FeedPhotoViewHolder(
+            binding = CoverPhotoItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            ),
+            itemClicked = { position -> onItemClickListener(getItem(position).photoId) },
+            profileClicked = { position -> onProfileClickListener(getItem(position).userId) },
+        )
     }
 
-    override fun onBindViewHolder(holder: VH, position: Int) {
+    override fun onBindViewHolder(holder: FeedPhotoViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    inner class VH (
-        private val binding: FeedPhotoItemBinding
+    inner class FeedPhotoViewHolder(
+        private val binding: CoverPhotoItemBinding,
+        itemClicked: (Int) -> Unit,
+        profileClicked: (Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.userOwnerContainer.setOnClickListener { profileClicked(adapterPosition) }
+            binding.coverPhotoContainer.setOnClickListener { itemClicked(adapterPosition) }
+        }
+
         fun bind(item: PhotoItem) {
             binding.run {
                 requestManager
@@ -46,6 +60,9 @@ class FeedPhotosAdapter(
                     .centerCrop()
                     .transition(DrawableTransitionOptions.withCrossFade())
                     .into(coverPhoto)
+
+                coverTitle.text = item.photoDescription
+                coverDetail.text = "${item.numberLikes} Likes"
             }
         }
     }
@@ -59,5 +76,4 @@ object FeedPhotosUiStateItemCallback : DiffUtil.ItemCallback<PhotoItem>() {
     override fun areContentsTheSame(oldItem: PhotoItem, newItem: PhotoItem): Boolean {
         return oldItem == newItem
     }
-
 }
