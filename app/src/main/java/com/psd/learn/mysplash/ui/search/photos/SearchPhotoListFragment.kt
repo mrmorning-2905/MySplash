@@ -65,7 +65,6 @@ class SearchPhotoListFragment : BaseListFragment<PhotoItem, SearchPhotoFragmentL
 
         searchPhotoViewModel.result.observe(viewLifecycleOwner) { totalResult ->
             binding.searchResult.text = "Result: $totalResult images"
-
         }
     }
 

@@ -1,0 +1,40 @@
+package com.psd.learn.mysplash.ui.viewmodels
+
+import android.util.Log
+import androidx.lifecycle.MutableLiveData
+import com.psd.learn.mysplash.data.local.entity.UserItem
+import com.psd.learn.mysplash.data.remote.entity.SearchUserResponseItem
+import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
+
+class SearchUserListViewModel(
+    private val unSplashApiService: UnSplashApiService
+) : AbsListItemViewModel<UserItem>(){
+
+    private val _results = MutableLiveData(0)
+    val result get() = _results
+    override suspend fun getListItems(
+        searchText: String,
+        currentPage: Int,
+        itemPerPage: Int
+    ): List<UserItem> {
+        Log.d("sangpd", "SearchUserListViewModel_getListItems_searchText: $searchText")
+        val searchResult = unSplashApiService.getSearchUserResult(
+            query = searchText,
+            page = currentPage,
+            perPage = itemPerPage
+        )
+
+        _results.value = searchResult.total
+
+        return searchResult.results.map { it.toUserItem() }
+    }
+}
+
+private fun SearchUserResponseItem.Result.toUserItem(): UserItem {
+    return UserItem(
+        userId = id,
+        profileUrl = profileImage.medium,
+        userName = name,
+        userInfo = twitterUsername ?: ""
+    )
+}
