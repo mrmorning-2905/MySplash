@@ -2,7 +2,6 @@ package com.psd.learn.mysplash.ui.search.collections
 
 import android.annotation.SuppressLint
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -13,16 +12,15 @@ import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.ViewModelFactory
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.databinding.SearchCollectionFragmentLayoutBinding
-import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.core.BaseListFragment
 import com.psd.learn.mysplash.ui.feed.collections.CollectionsListAdapter
-import com.psd.learn.mysplash.ui.feed.collections.CollectionsListFragment
 import com.psd.learn.mysplash.ui.utils.debounce
 import com.psd.learn.mysplash.ui.viewmodels.SearchCollectionViewModel
+import com.psd.learn.mysplash.ui.viewmodels.SearchViewModel
 
 class SearchCollectionListFragment : BaseListFragment<CollectionItem, SearchCollectionFragmentLayoutBinding>(inflate = SearchCollectionFragmentLayoutBinding::inflate) {
-
-    private val viewModel by activityViewModels<SearchCollectionViewModel> { ViewModelFactory }
+    private val mainSearchViewModel by activityViewModels<SearchViewModel> { ViewModelFactory }
+    private val searchCollectionViewModel by viewModels<SearchCollectionViewModel> { ViewModelFactory }
 
     private val searchCollectionListAdapter by lazy(LazyThreadSafetyMode.NONE) {
         CollectionsListAdapter(
@@ -54,20 +52,20 @@ class SearchCollectionListFragment : BaseListFragment<CollectionItem, SearchColl
 
     @SuppressLint("SetTextI18n")
     override fun setupViewModel() {
-        viewModel.queryLiveData
-            .debounce(650L, viewModel.viewModelScope)
+        mainSearchViewModel.queryLiveData
+            .debounce(650L, searchCollectionViewModel.viewModelScope)
             .distinctUntilChanged()
             .observe(viewLifecycleOwner) {queryText ->
-                viewModel.loadFirstPage(queryText)
-                handleLoadMorePage(queryText, binding.recyclerView, viewModel)
+                searchCollectionViewModel.loadFirstPage(queryText)
+                handleLoadMorePage(queryText, binding.recyclerView, searchCollectionViewModel)
             }
 
-        viewModel.uiStateLiveData.observe(viewLifecycleOwner) { uiState ->
+        searchCollectionViewModel.uiStateLiveData.observe(viewLifecycleOwner) { uiState ->
             renderUiState(uiState, binding.progressBar)
         }
 
-        viewModel.result.observe(viewLifecycleOwner) {totalResult ->
-            binding.searchResult.text = "Result: $totalResult images"
+        searchCollectionViewModel.result.observe(viewLifecycleOwner) { totalResult ->
+            binding.searchResult.text = "Result: $totalResult collections"
 
         }
     }

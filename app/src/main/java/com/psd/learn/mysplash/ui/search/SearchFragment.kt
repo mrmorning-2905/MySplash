@@ -23,9 +23,10 @@ import com.psd.learn.mysplash.ui.search.collections.SearchCollectionListFragment
 import com.psd.learn.mysplash.ui.search.photos.SearchPhotoListFragment
 import com.psd.learn.mysplash.ui.search.users.SearchUserListFragment
 import com.psd.learn.mysplash.ui.viewmodels.SearchPhotoViewModel
+import com.psd.learn.mysplash.ui.viewmodels.SearchViewModel
 
 class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentLayoutBinding::inflate) {
-    private val viewModel by activityViewModels<SearchPhotoViewModel> { ViewModelFactory }
+    private val viewModel by activityViewModels<SearchViewModel> { ViewModelFactory }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViewPager()

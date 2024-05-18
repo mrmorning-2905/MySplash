@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,14 +12,15 @@ import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.ViewModelFactory
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.SearchPhotoFragmentLayoutBinding
-import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.core.BaseListFragment
 import com.psd.learn.mysplash.ui.feed.photos.PhotosListAdapter
 import com.psd.learn.mysplash.ui.utils.debounce
 import com.psd.learn.mysplash.ui.viewmodels.SearchPhotoViewModel
+import com.psd.learn.mysplash.ui.viewmodels.SearchViewModel
 
 class SearchPhotoListFragment : BaseListFragment<PhotoItem, SearchPhotoFragmentLayoutBinding>(inflate = SearchPhotoFragmentLayoutBinding::inflate) {
-    private val viewModel by activityViewModels<SearchPhotoViewModel> { ViewModelFactory }
+    private val mainSearchViewModel by activityViewModels<SearchViewModel> { ViewModelFactory }
+    private val searchPhotoViewModel by viewModels<SearchPhotoViewModel> { ViewModelFactory }
     private val searchPhotoAdapter by lazy(LazyThreadSafetyMode.NONE) {
         PhotosListAdapter(
             requestManager = Glide.with(this@SearchPhotoListFragment),
@@ -49,19 +51,19 @@ class SearchPhotoListFragment : BaseListFragment<PhotoItem, SearchPhotoFragmentL
 
     @SuppressLint("SetTextI18n")
     override fun setupViewModel() {
-        viewModel.queryLiveData
-            .debounce(650L, viewModel.viewModelScope)
+        mainSearchViewModel.queryLiveData
+            .debounce(650L, searchPhotoViewModel.viewModelScope)
             .distinctUntilChanged()
             .observe(viewLifecycleOwner) {queryText ->
-                viewModel.loadFirstPage(queryText)
-                handleLoadMorePage(queryText, binding.recyclerView, viewModel)
+                searchPhotoViewModel.loadFirstPage(queryText)
+                handleLoadMorePage(queryText, binding.recyclerView, searchPhotoViewModel)
             }
 
-        viewModel.uiStateLiveData.observe(viewLifecycleOwner) { uiState ->
+        searchPhotoViewModel.uiStateLiveData.observe(viewLifecycleOwner) { uiState ->
             renderUiState(uiState, binding.progressBar)
         }
 
-        viewModel.result.observe(viewLifecycleOwner) {totalResult ->
+        searchPhotoViewModel.result.observe(viewLifecycleOwner) { totalResult ->
             binding.searchResult.text = "Result: $totalResult images"
 
         }

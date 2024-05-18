@@ -12,16 +12,10 @@ import kotlinx.coroutines.launch
 abstract class AbsListItemViewModel<T> : ViewModel() {
     private val _uiState = MutableLiveData<UiState<T>>(UiState.FirstPageLoading)
 
-    private val _queryLiveData = MutableLiveData("")
-    val queryLiveData get() = _queryLiveData
     internal val uiStateLiveData: LiveData<UiState<T>>
         get() = _uiState
 
     abstract suspend fun getListItems(searchText: String, currentPage: Int, itemPerPage: Int): List<T>
-
-    fun textSearchChange(text: String) {
-        _queryLiveData.value = text
-    }
 
     fun loadFirstPage(searchText: String) {
         viewModelScope.launch {

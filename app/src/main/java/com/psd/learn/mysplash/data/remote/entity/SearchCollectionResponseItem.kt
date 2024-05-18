@@ -49,7 +49,7 @@ data class SearchCollectionResponseItem(
         @Keep
         data class CoverPhoto(
             @Json(name = "alt_description")
-            val altDescription: String, // a desk with a computer on top of it
+            val altDescription: String? = null, // a desk with a computer on top of it
             @Json(name = "alternative_slugs")
             val alternativeSlugs: AlternativeSlugs,
             @Json(name = "asset_type")
@@ -229,7 +229,7 @@ data class SearchCollectionResponseItem(
                 @Keep
                 data class Social(
                     @Json(name = "instagram_username")
-                    val instagramUsername: String, // maybejensen
+                    val instagramUsername: String? = null, // maybejensen
                     @Json(name = "paypal_email")
                     val paypalEmail: Any?, // null
                     @Json(name = "portfolio_url")
@@ -349,7 +349,7 @@ data class SearchCollectionResponseItem(
                 @Keep
                 data class CoverPhoto(
                     @Json(name = "alt_description")
-                    val altDescription: String, // man in white crew neck t-shirt and black sunglasses standing on brown brick floor during
+                    val altDescription: String? = null, // man in white crew neck t-shirt and black sunglasses standing on brown brick floor during
                     @Json(name = "alternative_slugs")
                     val alternativeSlugs: AlternativeSlugs,
                     @Json(name = "asset_type")
@@ -386,8 +386,6 @@ data class SearchCollectionResponseItem(
                     val slug: String, // man-in-white-crew-neck-t-shirt-and-black-sunglasses-standing-on-brown-brick-floor-during--zr2ZUMvChY
                     @Json(name = "sponsorship")
                     val sponsorship: Any?, // null
-                    @Json(name = "topic_submissions")
-                    val topicSubmissions: TopicSubmissions?,
                     @Json(name = "updated_at")
                     val updatedAt: String, // 2024-03-31T01:05:22Z
                     @Json(name = "urls")
@@ -442,70 +440,6 @@ data class SearchCollectionResponseItem(
                     )
 
                     @Keep
-                    data class TopicSubmissions(
-                        @Json(name = "architecture-interior")
-                        val architectureInterior: ArchitectureInterior?,
-                        @Json(name = "color-of-water")
-                        val colorOfWater: ColorOfWater?,
-                        @Json(name = "current-events")
-                        val currentEvents: CurrentEvents?,
-                        @Json(name = "experimental")
-                        val experimental: Experimental?,
-                        @Json(name = "textures-patterns")
-                        val texturesPatterns: TexturesPatterns?,
-                        @Json(name = "wallpapers")
-                        val wallpapers: Wallpapers?
-                    ) {
-                        @Keep
-                        data class ArchitectureInterior(
-                            @Json(name = "approved_on")
-                            val approvedOn: String, // 2020-04-06T14:20:14Z
-                            @Json(name = "status")
-                            val status: String // approved
-                        )
-
-                        @Keep
-                        data class ColorOfWater(
-                            @Json(name = "approved_on")
-                            val approvedOn: String, // 2022-04-21T15:04:21Z
-                            @Json(name = "status")
-                            val status: String // approved
-                        )
-
-                        @Keep
-                        data class CurrentEvents(
-                            @Json(name = "approved_on")
-                            val approvedOn: String, // 2021-03-01T12:52:57Z
-                            @Json(name = "status")
-                            val status: String // approved
-                        )
-
-                        @Keep
-                        data class Experimental(
-                            @Json(name = "approved_on")
-                            val approvedOn: String, // 2023-12-07T14:27:42Z
-                            @Json(name = "status")
-                            val status: String // approved
-                        )
-
-                        @Keep
-                        data class TexturesPatterns(
-                            @Json(name = "approved_on")
-                            val approvedOn: String, // 2020-04-06T14:20:11Z
-                            @Json(name = "status")
-                            val status: String // approved
-                        )
-
-                        @Keep
-                        data class Wallpapers(
-                            @Json(name = "approved_on")
-                            val approvedOn: String, // 2020-04-06T14:20:09Z
-                            @Json(name = "status")
-                            val status: String // approved
-                        )
-                    }
-
-                    @Keep
                     data class Urls(
                         @Json(name = "full")
                         val full: String, // https://images.unsplash.com/photo-1584677626646-7c8f83690304?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb
@@ -526,7 +460,7 @@ data class SearchCollectionResponseItem(
                         @Json(name = "accepted_tos")
                         val acceptedTos: Boolean, // true
                         @Json(name = "bio")
-                        val bio: String, // Hiperativo, Publicitario e amante da fotometria Instagram:@marcussantosr
+                        val bio: String? = null, // Hiperativo, Publicitario e amante da fotometria Instagram:@marcussantosr
                         @Json(name = "first_name")
                         val firstName: String, // Marcus
                         @Json(name = "for_hire")
@@ -536,7 +470,7 @@ data class SearchCollectionResponseItem(
                         @Json(name = "instagram_username")
                         val instagramUsername: String? = null, // marcussantosr
                         @Json(name = "last_name")
-                        val lastName: String, // Santos
+                        val lastName: String? = null, // Santos
                         @Json(name = "links")
                         val links: Links,
                         @Json(name = "location")
@@ -627,7 +561,7 @@ data class SearchCollectionResponseItem(
             @Json(name = "instagram_username")
             val instagramUsername: String?, // hiyodesign
             @Json(name = "last_name")
-            val lastName: String, // Ramos
+            val lastName: String? = null, // Ramos
             @Json(name = "links")
             val links: Links,
             @Json(name = "location")

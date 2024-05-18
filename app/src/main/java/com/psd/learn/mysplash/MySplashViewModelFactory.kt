@@ -8,6 +8,7 @@ import com.psd.learn.mysplash.ui.viewmodels.FeedCollectionsViewModel
 import com.psd.learn.mysplash.ui.viewmodels.FeedPhotosViewModel
 import com.psd.learn.mysplash.ui.viewmodels.SearchCollectionViewModel
 import com.psd.learn.mysplash.ui.viewmodels.SearchPhotoViewModel
+import com.psd.learn.mysplash.ui.viewmodels.SearchViewModel
 
 @Suppress("UNCHECKED_CAST")
 val ViewModelFactory = object : ViewModelProvider.Factory {
@@ -20,6 +21,7 @@ val ViewModelFactory = object : ViewModelProvider.Factory {
                 isAssignableFrom(FeedCollectionsViewModel::class.java) -> FeedCollectionsViewModel(unSplashApiService)
                 isAssignableFrom(SearchPhotoViewModel::class.java) -> SearchPhotoViewModel(unSplashApiService)
                 isAssignableFrom(SearchCollectionViewModel::class.java) -> SearchCollectionViewModel(unSplashApiService)
+                isAssignableFrom(SearchViewModel::class.java) -> SearchViewModel()
                 else -> IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
             }
         } as T
