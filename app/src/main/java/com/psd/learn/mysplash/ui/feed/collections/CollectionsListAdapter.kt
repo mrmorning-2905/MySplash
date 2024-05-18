@@ -14,7 +14,9 @@ class CollectionsListAdapter(
     private val requestManager: RequestManager,
     private val onItemClickListener: (String) -> Unit,
     private val onProfileClickListener: (String) -> Unit
-) : ListAdapter<CollectionItem, CollectionsListAdapter.CollectionItemViewHolder>(BaseDiffItemCallback<CollectionItem>()) {
+) : ListAdapter<CollectionItem, CollectionsListAdapter.CollectionItemViewHolder>(
+    BaseDiffItemCallback<CollectionItem>()
+) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CollectionItemViewHolder {
         return CollectionItemViewHolder(
@@ -23,8 +25,8 @@ class CollectionsListAdapter(
                 parent,
                 false
             ),
-            itemClicked = {position -> onItemClickListener(getItem(position).id)},
-            profileClicked = {position -> onProfileClickListener(getItem(position).userId)}
+            itemClicked = { position -> onItemClickListener(getItem(position).id) },
+            profileClicked = { position -> onProfileClickListener(getItem(position).userId) }
         )
     }
 
@@ -45,12 +47,10 @@ class CollectionsListAdapter(
 
         @SuppressLint("SetTextI18n")
         override fun bind(item: CollectionItem) {
+            super.bind(item)
             binding.run {
-                super.bind(item)
-                binding.run {
-                    coverTitle.text = item.coverDescription
-                    coverDetail.text = "${item.numberImages} images"
-                }
+                coverTitle.text = item.coverDescription
+                coverDetail.text = "${item.numberImages} images"
             }
         }
     }
