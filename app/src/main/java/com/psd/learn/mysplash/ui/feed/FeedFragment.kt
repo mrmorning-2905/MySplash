@@ -25,19 +25,10 @@ import com.psd.learn.mysplash.ui.search.SearchFragment
 class FeedFragment :
     BaseFragment<FeedFragmentLayoutBinding>(inflate = FeedFragmentLayoutBinding::inflate) {
 
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        setupMenuProvider()
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViewPager()
+        setupMenuBottomBar()
     }
 
     private fun setupViewPager() {
@@ -50,38 +41,28 @@ class FeedFragment :
         }
     }
 
-    private fun setupMenuProvider() {
-        val menuHost: MenuHost = requireActivity()
-        menuHost.addMenuProvider(
-            object : MenuProvider {
-                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                    menuInflater.inflate(R.menu.feed_menu, menu)
-                }
-
-                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                    return when (menuItem.itemId) {
-                        R.id.search_menu -> {
-                            parentFragmentManager.commit {
-                                setReorderingAllowed(true)
-                                addToBackStack(null)
-                                replace<SearchFragment>(
-                                    containerViewId = R.id.fragment_container_view,
-                                    tag = SearchFragment::class.java.simpleName
-                                )
-                            }
-                            true
-                        }
-
-                        R.id.sort_by_menu -> {
-                            false
-                        }
-
-                        else -> false
+    private fun setupMenuBottomBar() {
+        binding.bottomAppbar.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.search_menu -> {
+                    parentFragmentManager.commit {
+                        setReorderingAllowed(true)
+                        addToBackStack(null)
+                        replace<SearchFragment>(
+                            containerViewId = R.id.fragment_container_view,
+                            tag = SearchFragment::class.java.simpleName
+                        )
                     }
+                    true
                 }
-            },
-            viewLifecycleOwner, Lifecycle.State.RESUMED
-        )
+
+                R.id.sort_by_menu -> {
+                    false
+                }
+
+                else -> false
+            }
+        }
     }
 
     private class FeedViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {

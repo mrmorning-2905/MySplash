@@ -9,10 +9,10 @@ class FeedCollectionsViewModel(
 ) : AbsListItemViewModel<CollectionItem>() {
 
     init {
-        loadFirstPage()
+        loadFirstPage("")
     }
 
-    override suspend fun getListItems(currentPage: Int, itemPerPage: Int): List<CollectionItem> {
+    override suspend fun getListItems(searchText: String, currentPage: Int, itemPerPage: Int): List<CollectionItem> {
         return unSplashApiService.getCollectionListOnFeed(currentPage, itemPerPage)
             .map { it.toCollectionItem() }
     }

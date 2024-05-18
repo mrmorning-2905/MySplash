@@ -8,10 +8,10 @@ class FeedPhotosViewModel(
     private val unSplashApiService: UnSplashApiService
 ) : AbsListItemViewModel<PhotoItem>() {
     init {
-        loadFirstPage()
+        loadFirstPage("")
     }
 
-    override suspend fun getListItems(currentPage: Int, itemPerPage: Int): List<PhotoItem> {
+    override suspend fun getListItems(searchText: String, currentPage: Int, itemPerPage: Int): List<PhotoItem> {
         return unSplashApiService.getPhotoListOnFeed(currentPage, itemPerPage)
             .map { it.toPhotoItem() }
     }

@@ -42,7 +42,7 @@ class CollectionsListFragment : BaseListFragment<CollectionItem, FeedCollections
         viewModel.uiStateLiveData.observe(viewLifecycleOwner) {
             renderUiState(it, binding.progressBar)
         }
-        handleLoadMorePage(binding.recyclerView, viewModel)
+        handleLoadMorePage("", binding.recyclerView, viewModel)
     }
 
     companion object {

@@ -12,16 +12,22 @@ import kotlinx.coroutines.launch
 abstract class AbsListItemViewModel<T> : ViewModel() {
     private val _uiState = MutableLiveData<UiState<T>>(UiState.FirstPageLoading)
 
+    private val _queryLiveData = MutableLiveData("")
+    val queryLiveData get() = _queryLiveData
     internal val uiStateLiveData: LiveData<UiState<T>>
         get() = _uiState
 
-    abstract suspend fun getListItems(currentPage: Int, itemPerPage: Int): List<T>
+    abstract suspend fun getListItems(searchText: String, currentPage: Int, itemPerPage: Int): List<T>
 
-    fun loadFirstPage() {
+    fun textSearchChange(text: String) {
+        _queryLiveData.value = text
+    }
+
+    fun loadFirstPage(searchText: String) {
         viewModelScope.launch {
             _uiState.value = UiState.FirstPageLoading
             try {
-                val items = getListItems(currentPage = 1, itemPerPage = PER_PAGE )
+                val items = getListItems(searchText, currentPage = 1, itemPerPage = PER_PAGE )
                 _uiState.value = UiState.Content(
                     items = items,
                     currentPage = 1,
@@ -36,7 +42,7 @@ abstract class AbsListItemViewModel<T> : ViewModel() {
         }
     }
 
-    fun loadNextPage() {
+    fun loadNextPage(searchText: String) {
         val state = _uiState.value!!
         if (state !is UiState.Content) return
 
@@ -49,7 +55,7 @@ abstract class AbsListItemViewModel<T> : ViewModel() {
                 viewModelScope.launch {
                     val nextPage = state.currentPage + 1
                     try {
-                        val newItems = getListItems(currentPage = nextPage, itemPerPage = PER_PAGE)
+                        val newItems = getListItems(searchText, currentPage = nextPage, itemPerPage = PER_PAGE)
                         _uiState.value = state.copy(
                             items = (state.items + newItems),
                             currentPage = nextPage,
