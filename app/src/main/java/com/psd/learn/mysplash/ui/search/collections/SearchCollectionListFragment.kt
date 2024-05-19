@@ -18,7 +18,8 @@ import com.psd.learn.mysplash.ui.utils.debounce
 import com.psd.learn.mysplash.ui.viewmodels.SearchCollectionViewModel
 import com.psd.learn.mysplash.ui.viewmodels.SearchViewModel
 
-class SearchCollectionListFragment : BaseListFragment<CollectionItem, SearchCollectionFragmentLayoutBinding>(inflate = SearchCollectionFragmentLayoutBinding::inflate) {
+class SearchCollectionListFragment :
+    BaseListFragment<CollectionItem, SearchCollectionFragmentLayoutBinding>(inflate = SearchCollectionFragmentLayoutBinding::inflate) {
     private val mainSearchViewModel by activityViewModels<SearchViewModel> { ViewModelFactory }
     private val searchCollectionViewModel by viewModels<SearchCollectionViewModel> { ViewModelFactory }
 
@@ -34,7 +35,7 @@ class SearchCollectionListFragment : BaseListFragment<CollectionItem, SearchColl
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-    companion object{
+    companion object {
         fun newInstance() = SearchCollectionListFragment()
     }
 
@@ -55,9 +56,11 @@ class SearchCollectionListFragment : BaseListFragment<CollectionItem, SearchColl
         mainSearchViewModel.queryLiveData
             .debounce(650L, searchCollectionViewModel.viewModelScope)
             .distinctUntilChanged()
-            .observe(viewLifecycleOwner) {queryText ->
-                searchCollectionViewModel.loadFirstPage(queryText)
-                handleLoadMorePage(queryText, binding.recyclerView, searchCollectionViewModel)
+            .observe(viewLifecycleOwner) { queryText ->
+                if (queryText.isNotEmpty()) {
+                    searchCollectionViewModel.loadFirstPage(queryText)
+                    handleLoadMorePage(queryText, binding.recyclerView, searchCollectionViewModel)
+                }
             }
 
         searchCollectionViewModel.uiStateLiveData.observe(viewLifecycleOwner) { uiState ->

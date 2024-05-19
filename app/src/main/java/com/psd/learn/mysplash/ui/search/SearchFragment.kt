@@ -8,6 +8,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.psd.learn.mysplash.ViewModelFactory
 import com.psd.learn.mysplash.databinding.SearchFragmentLayoutBinding
@@ -15,7 +16,8 @@ import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.search.collections.SearchCollectionListFragment
 import com.psd.learn.mysplash.ui.search.photos.SearchPhotoListFragment
 import com.psd.learn.mysplash.ui.search.users.SearchUserListFragment
-import com.psd.learn.mysplash.ui.utils.TAB_ICON_DRAWABLES
+import com.psd.learn.mysplash.ui.utils.TAB_ICON_SELECTED_DRAWABLES
+import com.psd.learn.mysplash.ui.utils.TAB_ICON_UNSELECTED_DRAWABLES
 import com.psd.learn.mysplash.ui.utils.TAB_TITLES
 import com.psd.learn.mysplash.ui.viewmodels.SearchViewModel
 import com.psd.learn.mysplash.ui.widget.CustomTabViewHolder
@@ -32,11 +34,32 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
     private fun setupViewPager() {
         binding.viewPager.run {
             adapter = SearchViewPagerAdapter(this@SearchFragment)
-            TabLayoutMediator(binding.tabLayout, this) {tab, position ->
+            with(binding.tabLayout) {
+                addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                    override fun onTabSelected(tab: TabLayout.Tab?) {
+                        (tab?.customView as? CustomTabViewHolder)
+                            ?.bind { tabItemStatus = tabItemStatus.copy(isSelected = true) }
+                    }
+
+                    override fun onTabUnselected(tab: TabLayout.Tab?) {
+                        (tab?.customView as? CustomTabViewHolder)
+                            ?.bind { tabItemStatus = tabItemStatus.copy(isSelected = false) }
+                    }
+
+                    override fun onTabReselected(tab: TabLayout.Tab?) {
+                    }
+
+                })
+            }
+
+            TabLayoutMediator(binding.tabLayout, this) { tab, position ->
                 tab.apply {
-                    customView = CustomTabViewHolder(context).also {
-                        val tabItem = TabItem(TAB_TITLES[position], TAB_ICON_DRAWABLES[position])
-                        it.bind(tabItem)
+                    customView = CustomTabViewHolder(context).apply {
+                        tabItemStatus = TabItem(
+                            text = TAB_TITLES[position],
+                            iconResUnselected = TAB_ICON_UNSELECTED_DRAWABLES[position],
+                            iconResSelected = TAB_ICON_SELECTED_DRAWABLES[position],
+                            isSelected = position == 0)
                     }
                 }
             }.attach()

@@ -2,5 +2,7 @@ package com.psd.learn.mysplash.ui.widget
 
 data class TabItem(
     val text: String,
-    val iconRes: Int,
+    val iconResUnselected: Int,
+    val iconResSelected: Int,
+    val isSelected: Boolean
 )

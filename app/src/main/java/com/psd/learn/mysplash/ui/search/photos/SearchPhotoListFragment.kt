@@ -18,7 +18,8 @@ import com.psd.learn.mysplash.ui.utils.debounce
 import com.psd.learn.mysplash.ui.viewmodels.SearchPhotoViewModel
 import com.psd.learn.mysplash.ui.viewmodels.SearchViewModel
 
-class SearchPhotoListFragment : BaseListFragment<PhotoItem, SearchPhotoFragmentLayoutBinding>(inflate = SearchPhotoFragmentLayoutBinding::inflate) {
+class SearchPhotoListFragment :
+    BaseListFragment<PhotoItem, SearchPhotoFragmentLayoutBinding>(inflate = SearchPhotoFragmentLayoutBinding::inflate) {
     private val mainSearchViewModel by activityViewModels<SearchViewModel> { ViewModelFactory }
     private val searchPhotoViewModel by viewModels<SearchPhotoViewModel> { ViewModelFactory }
     private val searchPhotoAdapter by lazy(LazyThreadSafetyMode.NONE) {
@@ -33,7 +34,7 @@ class SearchPhotoListFragment : BaseListFragment<PhotoItem, SearchPhotoFragmentL
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-    companion object{
+    companion object {
         fun newInstance() = SearchPhotoListFragment()
     }
 
@@ -54,9 +55,11 @@ class SearchPhotoListFragment : BaseListFragment<PhotoItem, SearchPhotoFragmentL
         mainSearchViewModel.queryLiveData
             .debounce(650L, searchPhotoViewModel.viewModelScope)
             .distinctUntilChanged()
-            .observe(viewLifecycleOwner) {queryText ->
-                searchPhotoViewModel.loadFirstPage(queryText)
-                handleLoadMorePage(queryText, binding.recyclerView, searchPhotoViewModel)
+            .observe(viewLifecycleOwner) { queryText ->
+                if (queryText.isNotEmpty()) {
+                    searchPhotoViewModel.loadFirstPage(queryText)
+                    handleLoadMorePage(queryText, binding.recyclerView, searchPhotoViewModel)
+                }
             }
 
         searchPhotoViewModel.uiStateLiveData.observe(viewLifecycleOwner) { uiState ->

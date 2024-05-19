@@ -10,7 +10,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
 abstract class AbsListItemViewModel<T> : ViewModel() {
-    private val _uiState = MutableLiveData<UiState<T>>(UiState.FirstPageLoading)
+    private val _uiState = MutableLiveData<UiState<T>>(UiState.FirstPageIdle)
 
     internal val uiStateLiveData: LiveData<UiState<T>>
         get() = _uiState

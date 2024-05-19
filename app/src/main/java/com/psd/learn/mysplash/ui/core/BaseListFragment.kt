@@ -26,7 +26,7 @@ abstract class BaseListFragment<T, VB: ViewBinding>(
                 submitList(uiState.items)
             }
 
-            is UiState.FirstPageError -> {
+            is UiState.FirstPageError, UiState.FirstPageIdle -> {
                 setViewVisible(progressBar, false)
                 submitList(emptyList())
             }

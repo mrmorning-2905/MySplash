@@ -12,7 +12,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 
 object ServiceLocator {
-    const val UNSPLASH_BASE_URL = "https://api.unsplash.com/"
+    private const val UNSPLASH_BASE_URL = "https://api.unsplash.com/"
 
 
     @set:MainThread

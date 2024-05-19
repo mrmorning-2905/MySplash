@@ -1,6 +1,8 @@
 package com.psd.learn.mysplash.ui.core
 
 sealed interface UiState<out T> {
+
+    data object FirstPageIdle: UiState<Nothing>
     data object FirstPageLoading : UiState<Nothing>
     data object FirstPageError : UiState<Nothing>
     data class Content<T>(
