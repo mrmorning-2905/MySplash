@@ -10,15 +10,9 @@ class SearchPhotoViewModel(
     private val unSplashApiService: UnSplashApiService
 ) : AbsListItemViewModel<PhotoItem>() {
 
-//    private val _queryLiveData = MutableLiveData("")
-//    val queryLiveData get() = _queryLiveData
-
     private val _results = MutableLiveData(0)
     val result get() = _results
 
-//    fun textSearchChange(text: String) {
-//        _queryLiveData.value = text
-//    }
     override suspend fun getListItems(
         searchText: String,
         currentPage: Int,

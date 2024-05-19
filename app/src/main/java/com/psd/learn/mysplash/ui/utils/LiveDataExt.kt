@@ -1,6 +1,5 @@
 package com.psd.learn.mysplash.ui.utils
 
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import kotlinx.coroutines.CoroutineScope

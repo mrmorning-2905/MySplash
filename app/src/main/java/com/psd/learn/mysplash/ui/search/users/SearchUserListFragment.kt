@@ -12,7 +12,6 @@ import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.ViewModelFactory
 import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.databinding.SearchUserFragmentLayoutBinding
-import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.core.BaseListFragment
 import com.psd.learn.mysplash.ui.utils.debounce
 import com.psd.learn.mysplash.ui.viewmodels.SearchUserListViewModel

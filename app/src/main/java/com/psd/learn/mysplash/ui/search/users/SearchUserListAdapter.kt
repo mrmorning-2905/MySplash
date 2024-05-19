@@ -9,7 +9,6 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.databinding.SearchUserItemBinding
-import com.psd.learn.mysplash.ui.core.BaseListViewHolder
 
 
 object UserDiffCallback : DiffUtil.ItemCallback<UserItem>() {
