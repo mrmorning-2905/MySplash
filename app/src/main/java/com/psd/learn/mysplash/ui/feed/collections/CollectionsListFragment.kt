@@ -33,7 +33,7 @@ class CollectionsListFragment : BaseListFragment<CollectionItem, FeedCollections
     override fun setupView() {
         binding.recyclerView.run {
             setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = gridLayoutManager
             adapter = collectionListAdapter
         }
     }

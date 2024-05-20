@@ -2,6 +2,7 @@ package com.psd.learn.mysplash.ui.search.users
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -13,6 +14,7 @@ import com.psd.learn.mysplash.ViewModelFactory
 import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.databinding.SearchUserFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseListFragment
+import com.psd.learn.mysplash.ui.core.UiState
 import com.psd.learn.mysplash.ui.utils.debounce
 import com.psd.learn.mysplash.ui.viewmodels.SearchUserListViewModel
 import com.psd.learn.mysplash.ui.viewmodels.SearchViewModel
@@ -64,6 +66,7 @@ class SearchUserListFragment :
 
         searchUserViewModel.uiStateLiveData.observe(viewLifecycleOwner) { uiState ->
             renderUiState(uiState, binding.progressBar)
+            binding.searchResult.visibility = if (uiState is UiState.Content) View.VISIBLE else View.GONE
         }
 
         searchUserViewModel.result.observe(viewLifecycleOwner) { totalResult ->

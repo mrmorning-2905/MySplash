@@ -10,4 +10,9 @@ class SearchViewModel : ViewModel() {
     fun textSearchChange(text: String) {
         _queryLiveData.value = text
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        _queryLiveData.value = ""
+    }
 }

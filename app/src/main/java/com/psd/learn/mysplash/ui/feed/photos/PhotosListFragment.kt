@@ -1,9 +1,12 @@
 package com.psd.learn.mysplash.ui.feed.photos
 
+import android.content.res.Configuration
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.ViewModelFactory
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.FeedPhotosFragmentLayoutBinding
@@ -34,7 +37,7 @@ class PhotosListFragment :
     override fun setupView() {
         binding.recyclerView.run {
             setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = gridLayoutManager
             adapter = photosListAdapter
         }
     }
