@@ -8,9 +8,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.psd.learn.mysplash.ViewModelFactory
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.databinding.SearchCollectionFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseListFragment
@@ -19,11 +17,13 @@ import com.psd.learn.mysplash.ui.feed.collections.CollectionsListAdapter
 import com.psd.learn.mysplash.ui.utils.debounce
 import com.psd.learn.mysplash.ui.viewmodels.SearchCollectionViewModel
 import com.psd.learn.mysplash.ui.viewmodels.SearchViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SearchCollectionListFragment :
     BaseListFragment<CollectionItem, SearchCollectionFragmentLayoutBinding>(inflate = SearchCollectionFragmentLayoutBinding::inflate) {
-    private val mainSearchViewModel by activityViewModels<SearchViewModel> { ViewModelFactory }
-    private val searchCollectionViewModel by viewModels<SearchCollectionViewModel> { ViewModelFactory }
+    private val mainSearchViewModel by activityViewModels<SearchViewModel>()
+    private val searchCollectionViewModel by viewModels<SearchCollectionViewModel>()
 
     private val searchCollectionListAdapter by lazy(LazyThreadSafetyMode.NONE) {
         CollectionsListAdapter(

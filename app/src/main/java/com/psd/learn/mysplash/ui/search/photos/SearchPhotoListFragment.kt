@@ -8,9 +8,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.psd.learn.mysplash.ViewModelFactory
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.SearchPhotoFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseListFragment
@@ -19,11 +17,13 @@ import com.psd.learn.mysplash.ui.feed.photos.PhotosListAdapter
 import com.psd.learn.mysplash.ui.utils.debounce
 import com.psd.learn.mysplash.ui.viewmodels.SearchPhotoViewModel
 import com.psd.learn.mysplash.ui.viewmodels.SearchViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SearchPhotoListFragment :
     BaseListFragment<PhotoItem, SearchPhotoFragmentLayoutBinding>(inflate = SearchPhotoFragmentLayoutBinding::inflate) {
-    private val mainSearchViewModel by activityViewModels<SearchViewModel> { ViewModelFactory }
-    private val searchPhotoViewModel by viewModels<SearchPhotoViewModel> { ViewModelFactory }
+    private val mainSearchViewModel by activityViewModels<SearchViewModel>()
+    private val searchPhotoViewModel by viewModels<SearchPhotoViewModel>()
     private val searchPhotoAdapter by lazy(LazyThreadSafetyMode.NONE) {
         PhotosListAdapter(
             requestManager = Glide.with(this@SearchPhotoListFragment),

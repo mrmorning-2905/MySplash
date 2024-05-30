@@ -8,7 +8,9 @@ import androidx.fragment.app.add
 import androidx.fragment.app.commit
 import com.psd.learn.mysplash.databinding.ActivityMainBinding
 import com.psd.learn.mysplash.ui.feed.FeedFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private val binding by lazy(LazyThreadSafetyMode.NONE) { ActivityMainBinding.inflate(layoutInflater) }

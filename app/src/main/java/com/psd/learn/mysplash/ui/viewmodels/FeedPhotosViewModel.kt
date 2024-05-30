@@ -3,8 +3,11 @@ package com.psd.learn.mysplash.ui.viewmodels
 import com.psd.learn.mysplash.data.remote.entity.PhotoResponseItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class FeedPhotosViewModel(
+@HiltViewModel
+class FeedPhotosViewModel @Inject constructor(
     private val unSplashApiService: UnSplashApiService
 ) : AbsListItemViewModel<PhotoItem>() {
     init {

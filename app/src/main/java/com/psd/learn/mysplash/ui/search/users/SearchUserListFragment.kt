@@ -10,7 +10,6 @@ import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.psd.learn.mysplash.ViewModelFactory
 import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.databinding.SearchUserFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseListFragment
@@ -18,12 +17,15 @@ import com.psd.learn.mysplash.ui.core.UiState
 import com.psd.learn.mysplash.ui.utils.debounce
 import com.psd.learn.mysplash.ui.viewmodels.SearchUserListViewModel
 import com.psd.learn.mysplash.ui.viewmodels.SearchViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class SearchUserListFragment :
     BaseListFragment<UserItem, SearchUserFragmentLayoutBinding>(inflate = SearchUserFragmentLayoutBinding::inflate) {
-    private val mainSearchViewModel by activityViewModels<SearchViewModel> { ViewModelFactory }
+    private val mainSearchViewModel by activityViewModels<SearchViewModel>()
 
-    private val searchUserViewModel by viewModels<SearchUserListViewModel> { ViewModelFactory }
+    private val searchUserViewModel by viewModels<SearchUserListViewModel>()
 
     private val searUserListAdapter by lazy(LazyThreadSafetyMode.NONE) {
         SearchUserListAdapter(

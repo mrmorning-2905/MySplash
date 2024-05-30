@@ -10,7 +10,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.psd.learn.mysplash.ViewModelFactory
 import com.psd.learn.mysplash.databinding.SearchFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.search.collections.SearchCollectionListFragment
@@ -22,9 +21,11 @@ import com.psd.learn.mysplash.ui.utils.TAB_TITLES
 import com.psd.learn.mysplash.ui.viewmodels.SearchViewModel
 import com.psd.learn.mysplash.ui.widget.CustomTabViewHolder
 import com.psd.learn.mysplash.ui.widget.TabItem
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentLayoutBinding::inflate) {
-    private val viewModel by activityViewModels<SearchViewModel> { ViewModelFactory }
+    private val viewModel by activityViewModels<SearchViewModel>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViewPager()

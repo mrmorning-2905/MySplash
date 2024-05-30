@@ -1,22 +1,19 @@
 package com.psd.learn.mysplash.ui.feed.photos
 
-import android.content.res.Configuration
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.psd.learn.mysplash.R
-import com.psd.learn.mysplash.ViewModelFactory
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.FeedPhotosFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseListFragment
 import com.psd.learn.mysplash.ui.viewmodels.FeedPhotosViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PhotosListFragment :
     BaseListFragment<PhotoItem, FeedPhotosFragmentLayoutBinding>(inflate = FeedPhotosFragmentLayoutBinding::inflate) {
 
-    private val viewModel by viewModels<FeedPhotosViewModel> { ViewModelFactory }
+    private val viewModel by viewModels<FeedPhotosViewModel>()
 
     private val photosListAdapter by lazy(LazyThreadSafetyMode.NONE) {
         PhotosListAdapter(

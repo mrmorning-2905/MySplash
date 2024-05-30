@@ -3,6 +3,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.daggerHiltAndroid)
     kotlin("kapt")
 }
 
@@ -27,6 +28,17 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            val properties = Properties().apply {
+                load(rootProject.file("local.properties").inputStream())
+            }
+
+            buildConfigField(
+                type = "String",
+                name = "UNSPLASH_CLIENT_ID",
+                value = "\"" + properties["UNSPLASH_CLIENT_ID"]!!.toString() + "\"",
+            )
+
         }
 
         debug {
@@ -41,6 +53,23 @@ android {
             )
         }
     }
+
+    productFlavors {
+        create("dev") {
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-demo"
+            resValue("string", "app_name", "MySplash Dev")
+            buildConfigField("String", "UNSPLASH_BASE_URL", "\"https://api.unsplash.com/\"")
+        }
+
+        create("product") {
+            applicationIdSuffix = ".product"
+            versionNameSuffix = "-demo"
+            resValue("string", "app_name", "MySplash Product")
+            buildConfigField("String", "UNSPLASH_BASE_URL", "\"https://api.unsplash.com/123/\"")
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -52,6 +81,7 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        flavorDimensions += "version"
     }
 }
 
@@ -75,6 +105,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
+    implementation(libs.dagger.hilt)
+    kapt(libs.dagger.hilt.compiler)
 
     // Moshi
     val moshiVersion = "1.15.1"

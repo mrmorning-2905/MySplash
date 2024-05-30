@@ -5,8 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.remote.entity.SearchCollectionResponseItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class SearchCollectionViewModel(
+@HiltViewModel
+class SearchCollectionViewModel @Inject constructor(
     private val unSplashApiService: UnSplashApiService
 ) : AbsListItemViewModel<CollectionItem>(){
 

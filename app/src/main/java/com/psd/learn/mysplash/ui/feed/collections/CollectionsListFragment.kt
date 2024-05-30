@@ -2,17 +2,17 @@ package com.psd.learn.mysplash.ui.feed.collections
 
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.psd.learn.mysplash.ViewModelFactory
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.databinding.FeedCollectionsFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseListFragment
 import com.psd.learn.mysplash.ui.viewmodels.FeedCollectionsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CollectionsListFragment : BaseListFragment<CollectionItem, FeedCollectionsFragmentLayoutBinding>(inflate = FeedCollectionsFragmentLayoutBinding::inflate) {
 
-    private val viewModel by viewModels<FeedCollectionsViewModel> { ViewModelFactory }
+    private val viewModel by viewModels<FeedCollectionsViewModel>()
 
     private val collectionListAdapter by lazy(LazyThreadSafetyMode.NONE) {
         CollectionsListAdapter(
