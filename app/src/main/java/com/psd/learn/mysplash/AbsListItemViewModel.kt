@@ -1,6 +1,5 @@
-package com.psd.learn.mysplash.ui.viewmodels
+package com.psd.learn.mysplash
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -30,7 +29,6 @@ abstract class AbsListItemViewModel<T> : ViewModel() {
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Throwable) {
-                Log.d("sangpd", "loadFirstPage: error: $e")
                 _uiState.value = UiState.FirstPageError
             }
         }
@@ -62,7 +60,6 @@ abstract class AbsListItemViewModel<T> : ViewModel() {
                     } catch (e: CancellationException) {
                         throw e
                     } catch (e: Throwable) {
-                        Log.d("sangpd", "loadNextPage_error: $e")
                         _uiState.value = state.copy(nextPageState = UiState.NextPageState.Error)
                     }
                 }

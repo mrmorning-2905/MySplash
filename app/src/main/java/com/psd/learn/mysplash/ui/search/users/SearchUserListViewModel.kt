@@ -1,7 +1,7 @@
-package com.psd.learn.mysplash.ui.viewmodels
+package com.psd.learn.mysplash.ui.search.users
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.psd.learn.mysplash.AbsListItemViewModel
 import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.data.remote.entity.SearchUserResponseItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
@@ -20,7 +20,6 @@ class SearchUserListViewModel @Inject constructor(
         currentPage: Int,
         itemPerPage: Int
     ): List<UserItem> {
-        Log.d("sangpd", "SearchUserListViewModel_getListItems_searchText: $searchText")
         val searchResult = unSplashApiService.getSearchUserResult(
             query = searchText,
             page = currentPage,

@@ -1,56 +1,64 @@
 package com.psd.learn.mysplash.ui.feed.collections
 
 import android.annotation.SuppressLint
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.RequestManager
+import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.databinding.CoverPhotoItemBinding
-import com.psd.learn.mysplash.ui.core.BaseDiffItemCallback
+import com.psd.learn.mysplash.ui.core.BaseListAdapter
 import com.psd.learn.mysplash.ui.core.BaseListViewHolder
+import com.psd.learn.mysplash.ui.core.OnItemClickListener
+import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
+import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 
 class CollectionsListAdapter(
     private val requestManager: RequestManager,
-    private val onItemClickListener: (String) -> Unit,
-    private val onProfileClickListener: (String) -> Unit
-) : ListAdapter<CollectionItem, CollectionsListAdapter.CollectionItemViewHolder>(
-    BaseDiffItemCallback<CollectionItem>()
-) {
+    private val itemClickListener: OnItemClickListener
+) : BaseListAdapter<CollectionItem, CoverPhotoItemBinding>(R.layout.cover_photo_item, DIFF_COLLECTION_ITEM_CALLBACK) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CollectionItemViewHolder {
-        return CollectionItemViewHolder(
-            binding = CoverPhotoItemBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            ),
-            itemClicked = { position -> onItemClickListener(getItem(position).id) },
-            profileClicked = { position -> onProfileClickListener(getItem(position).userId) }
-        )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseListViewHolder<CollectionItem, CoverPhotoItemBinding> {
+        return CollectionItemListViewHolder(parent, viewType)
     }
 
-    override fun onBindViewHolder(holder: CollectionItemViewHolder, position: Int) {
-        holder.bind(getItem(position))
-    }
+    inner class CollectionItemListViewHolder(
+        parent: ViewGroup,
+        @LayoutRes layoutRes: Int
+    ) : BaseListViewHolder<CollectionItem, CoverPhotoItemBinding>(parent, layoutRes) {
 
-    inner class CollectionItemViewHolder(
-        private val binding: CoverPhotoItemBinding,
-        itemClicked: (Int) -> Unit,
-        profileClicked: (Int) -> Unit
-    ) : BaseListViewHolder<CollectionItem>(
-        binding,
-        requestManager,
-        itemClicked,
-        profileClicked
-    ) {
+        override val viewBinding: CoverPhotoItemBinding = CoverPhotoItemBinding.bind(itemView)
+        private lateinit var collectionItem: CollectionItem
+
+        init {
+            viewBinding.run {
+                coverPhoto.setOnClickListener { itemClickListener.coverPhotoClicked(collectionItem.collectionId) }
+                userOwnerContainer.setOnClickListener { itemClickListener.profileClicked(collectionItem.userId) }
+            }
+        }
 
         @SuppressLint("SetTextI18n")
-        override fun bind(item: CollectionItem) {
-            super.bind(item)
-            binding.run {
+        override fun onBindView(item: CollectionItem) {
+            collectionItem = item
+            viewBinding.run {
+                userProfile.loadProfilePicture(requestManager, item.userProfileUrl)
+                userName.text = item.userName
+                coverPhoto.loadCoverThumbnail(requestManager, item.coverPhotoUrl, item.coverThumbnailUrl, item.coverColor, true)
                 coverTitle.text = item.coverDescription
-                coverDetail.text = "${item.numberImages} images"
+                coverDetail.text = "${item.numberImages} Images"
+            }
+        }
+    }
+
+    companion object {
+        private val DIFF_COLLECTION_ITEM_CALLBACK = object : DiffUtil.ItemCallback<CollectionItem>() {
+            override fun areItemsTheSame(oldItem: CollectionItem, newItem: CollectionItem): Boolean {
+                return oldItem.collectionId == newItem.collectionId
+            }
+
+            override fun areContentsTheSame(oldItem: CollectionItem, newItem: CollectionItem): Boolean {
+                return oldItem == newItem
             }
         }
     }

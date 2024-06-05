@@ -1,53 +1,64 @@
 package com.psd.learn.mysplash.ui.feed.photos
 
 import android.annotation.SuppressLint
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.ListAdapter
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.DiffUtil
 import com.bumptech.glide.RequestManager
+import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.CoverPhotoItemBinding
-import com.psd.learn.mysplash.ui.core.BaseDiffItemCallback
+import com.psd.learn.mysplash.ui.core.BaseListAdapter
 import com.psd.learn.mysplash.ui.core.BaseListViewHolder
+import com.psd.learn.mysplash.ui.core.OnItemClickListener
+import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
+import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 
 class PhotosListAdapter(
     private val requestManager: RequestManager,
-    private val onItemClickListener: (String) -> Unit,
-    private val onProfileClickListener: (String) -> Unit
-) : ListAdapter<PhotoItem, PhotosListAdapter.PhotoListViewHolder>(BaseDiffItemCallback<PhotoItem>()) {
+    private val itemClickListener: OnItemClickListener
+) : BaseListAdapter<PhotoItem, CoverPhotoItemBinding>(R.layout.cover_photo_item, DIFF_PHOTO_ITEM_CALLBACK) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoListViewHolder {
-        return PhotoListViewHolder(
-            binding = CoverPhotoItemBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            ),
-            itemClicked = { position -> onItemClickListener(getItem(position).id) },
-            profileClicked = { position -> onProfileClickListener(getItem(position).userId) },
-        )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseListViewHolder<PhotoItem, CoverPhotoItemBinding> {
+        return PhotoItemListViewHolder(parent, viewType)
     }
 
-    override fun onBindViewHolder(holder: PhotoListViewHolder, position: Int) {
-        holder.bind(getItem(position))
-    }
+    inner class PhotoItemListViewHolder(
+        parent: ViewGroup,
+        @LayoutRes layoutRes: Int,
+    ) : BaseListViewHolder<PhotoItem, CoverPhotoItemBinding>(parent, layoutRes) {
 
-    inner class PhotoListViewHolder(
-        private val binding: CoverPhotoItemBinding,
-        itemClicked: (Int) -> Unit,
-        profileClicked: (Int) -> Unit
-    ) : BaseListViewHolder<PhotoItem>(
-        binding,
-        requestManager,
-        itemClicked,
-        profileClicked
-    ) {
+        override val viewBinding: CoverPhotoItemBinding = CoverPhotoItemBinding.bind(itemView)
+        private lateinit var photoItem: PhotoItem
+
+        init {
+            viewBinding.run {
+                coverPhoto.setOnClickListener { itemClickListener.coverPhotoClicked(photoItem.photoId) }
+                userOwnerContainer.setOnClickListener { itemClickListener.profileClicked(photoItem.userId) }
+            }
+        }
+
         @SuppressLint("SetTextI18n")
-        override fun bind(item: PhotoItem) {
-            super.bind(item)
-            binding.run {
+        override fun onBindView(item: PhotoItem) {
+            photoItem = item
+            viewBinding.run {
+                userProfile.loadProfilePicture(requestManager, item.userProfileUrl)
+                userName.text = item.userName
+                coverPhoto.loadCoverThumbnail(requestManager, item.coverPhotoUrl, item.coverThumbnailUrl, item.coverColor, true)
                 coverTitle.text = item.photoDescription
                 coverDetail.text = "${item.numberLikes} Likes"
+            }
+        }
+    }
+
+    companion object {
+        private val DIFF_PHOTO_ITEM_CALLBACK = object : DiffUtil.ItemCallback<PhotoItem>() {
+            override fun areItemsTheSame(oldItem: PhotoItem, newItem: PhotoItem): Boolean {
+                return oldItem.photoId == newItem.photoId
+            }
+
+            override fun areContentsTheSame(oldItem: PhotoItem, newItem: PhotoItem): Boolean {
+                return oldItem == newItem
             }
         }
     }

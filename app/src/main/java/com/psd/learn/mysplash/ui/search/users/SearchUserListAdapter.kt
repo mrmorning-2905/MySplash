@@ -1,67 +1,58 @@
 package com.psd.learn.mysplash.ui.search.users
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.databinding.SearchUserItemBinding
+import com.psd.learn.mysplash.ui.core.BaseListAdapter
+import com.psd.learn.mysplash.ui.core.BaseListViewHolder
+import com.psd.learn.mysplash.ui.core.OnItemClickListener
+import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 
 
-object UserDiffCallback : DiffUtil.ItemCallback<UserItem>() {
-    override fun areItemsTheSame(oldItem: UserItem, newItem: UserItem): Boolean {
-        return oldItem.userId == newItem.userId
-    }
-
-    override fun areContentsTheSame(oldItem: UserItem, newItem: UserItem): Boolean {
-        return oldItem == newItem
-    }
-
-}
 class SearchUserListAdapter(
     private val requestManager: RequestManager,
-    private val onItemClickListener: (UserItem) -> Unit
-) : ListAdapter<UserItem, SearchUserListAdapter.UserViewHolder>(UserDiffCallback) {
+    private val itemClickListener: OnItemClickListener
+) : BaseListAdapter<UserItem, SearchUserItemBinding>(R.layout.search_user_item, DIFF_USER_ITEM_CALLBACK) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        return UserViewHolder(
-            binding = SearchUserItemBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            ),
-            itemClicked = {position -> onItemClickListener(getItem(position))}
-        )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseListViewHolder<UserItem, SearchUserItemBinding> {
+        return UserItemViewHolder(parent, viewType)
     }
 
-    override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        holder.bind(getItem(position))
-    }
-    inner class UserViewHolder(
-        private val binding: SearchUserItemBinding,
-        itemClicked: (Int) -> Unit
-    ) : RecyclerView.ViewHolder(binding.root) {
+    inner class UserItemViewHolder(
+        parent: ViewGroup,
+        @LayoutRes layoutRes: Int
+    ) : BaseListViewHolder<UserItem, SearchUserItemBinding>(parent, layoutRes) {
+
+        override val viewBinding: SearchUserItemBinding = SearchUserItemBinding.bind(itemView)
+
         init {
-            binding.root.setOnClickListener {
-                itemClicked(adapterPosition)
+            viewBinding.root.setOnClickListener {
+                val item = getItem(adapterPosition)
+                itemClickListener.profileClicked(item.userId)
             }
         }
 
-        fun bind(item: UserItem) {
-            binding.run {
-                requestManager
-                    .load(item.profileUrl)
-                    .fitCenter()
-                    .circleCrop()
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(profileImage)
-
+        override fun onBindView(item: UserItem) {
+            viewBinding.run {
+                profileImage.loadProfilePicture(requestManager, item.profileUrl)
                 userName.text = item.userName
-
                 userDescription.text = item.userInfo
+            }
+        }
+    }
+
+    companion object {
+        private val DIFF_USER_ITEM_CALLBACK = object : DiffUtil.ItemCallback<UserItem>() {
+            override fun areItemsTheSame(oldItem: UserItem, newItem: UserItem): Boolean {
+                return oldItem.userId == newItem.userId
+            }
+
+            override fun areContentsTheSame(oldItem: UserItem, newItem: UserItem): Boolean {
+                return oldItem == newItem
             }
         }
     }

@@ -1,12 +1,10 @@
 package com.psd.learn.mysplash.ui.feed.photos
 
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.FeedPhotosFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseListFragment
-import com.psd.learn.mysplash.ui.viewmodels.FeedPhotosViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -18,13 +16,8 @@ class PhotosListFragment :
     private val photosListAdapter by lazy(LazyThreadSafetyMode.NONE) {
         PhotosListAdapter(
             requestManager = Glide.with(this@PhotosListFragment),
-            onItemClickListener = { photoId -> showMessageToast("clicked on photo have id: $photoId") },
-            onProfileClickListener = { userId -> showMessageToast("clicked on user profile have id: $userId") }
+            itemClickListener = mItemClickListener
         )
-    }
-
-    private fun showMessageToast(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun submitList(items: List<PhotoItem>) {

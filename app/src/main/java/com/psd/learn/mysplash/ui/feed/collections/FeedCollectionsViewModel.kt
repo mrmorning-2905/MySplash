@@ -1,8 +1,9 @@
-package com.psd.learn.mysplash.ui.viewmodels
+package com.psd.learn.mysplash.ui.feed.collections
 
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.remote.entity.CollectionResponseItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
+import com.psd.learn.mysplash.AbsListItemViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -23,12 +24,14 @@ class FeedCollectionsViewModel @Inject constructor(
 
 private fun CollectionResponseItem.toCollectionItem(): CollectionItem {
     return CollectionItem(
-        id = id,
+        collectionId = id,
         userName = user.name,
         userProfileUrl = user.profileImage.medium,
         coverPhotoUrl = coverPhoto.urls.regular,
         coverDescription = title,
         numberImages = totalPhotos,
-        userId = user.id
+        userId = user.id,
+        coverThumbnailUrl = coverPhoto.urls.thumb,
+        coverColor = coverPhoto.color
     )
 }

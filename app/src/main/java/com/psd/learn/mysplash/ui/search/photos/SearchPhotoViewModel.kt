@@ -1,7 +1,7 @@
-package com.psd.learn.mysplash.ui.viewmodels
+package com.psd.learn.mysplash.ui.search.photos
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.psd.learn.mysplash.AbsListItemViewModel
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.remote.entity.SearchPhotoResponseItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
@@ -21,7 +21,6 @@ class SearchPhotoViewModel @Inject constructor(
         currentPage: Int,
         itemPerPage: Int
     ): List<PhotoItem> {
-        Log.d("sangpd", "SearchPhotoViewModel_getListItems_searchText: $searchText")
         val searchResult = unSplashApiService.getSearchPhotoResult(
             query = searchText,
             page = currentPage,
@@ -34,12 +33,14 @@ class SearchPhotoViewModel @Inject constructor(
 
 private fun SearchPhotoResponseItem.Result.toPhotoItem(): PhotoItem {
     return PhotoItem(
-        id = id,
+        photoId = id,
         userName = user.name,
         userProfileUrl = user.profileImage.medium,
         coverPhotoUrl = urls.regular,
         photoDescription = altDescription,
         numberLikes = likes,
-        userId = user.id
+        userId = user.id,
+        coverThumbnailUrl = urls.thumb,
+        coverColor = color
     )
 }

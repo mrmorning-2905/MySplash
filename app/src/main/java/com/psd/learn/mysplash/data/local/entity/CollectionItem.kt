@@ -1,11 +1,13 @@
 package com.psd.learn.mysplash.data.local.entity
 
 data class CollectionItem(
-    override val id: String,
-    override val userName: String,
-    override val userProfileUrl: String,
-    override val coverPhotoUrl: String,
+    val collectionId: String,
+    val userName: String,
+    val userProfileUrl: String,
+    val coverPhotoUrl: String,
+    val coverThumbnailUrl: String,
+    val coverColor: String,
     val coverDescription: String,
     val numberImages: Int,
-    override val userId: String
-) : BaseEntity
+    val userId: String
+)

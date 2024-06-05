@@ -1,12 +1,10 @@
 package com.psd.learn.mysplash.ui.feed.collections
 
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.databinding.FeedCollectionsFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseListFragment
-import com.psd.learn.mysplash.ui.viewmodels.FeedCollectionsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -17,13 +15,8 @@ class CollectionsListFragment : BaseListFragment<CollectionItem, FeedCollections
     private val collectionListAdapter by lazy(LazyThreadSafetyMode.NONE) {
         CollectionsListAdapter(
             requestManager = Glide.with(this@CollectionsListFragment),
-            onItemClickListener = { photoId -> showMessageToast("clicked on collection have id: $photoId") },
-            onProfileClickListener = { userId -> showMessageToast("clicked on user profile have id: $userId") }
+            itemClickListener = mItemClickListener
         )
-    }
-
-    private fun showMessageToast(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun submitList(items: List<CollectionItem>) {

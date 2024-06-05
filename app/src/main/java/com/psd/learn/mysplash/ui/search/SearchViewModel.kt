@@ -1,4 +1,4 @@
-package com.psd.learn.mysplash.ui.viewmodels
+package com.psd.learn.mysplash.ui.search
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

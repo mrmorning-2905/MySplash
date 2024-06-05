@@ -5,12 +5,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.psd.learn.mysplash.R
-import com.psd.learn.mysplash.ui.viewmodels.AbsListItemViewModel
+import com.psd.learn.mysplash.AbsListItemViewModel
 
 abstract class BaseListFragment<T, VB: ViewBinding>(
     inflate: (LayoutInflater, ViewGroup?, Boolean) -> VB
@@ -23,6 +24,20 @@ abstract class BaseListFragment<T, VB: ViewBinding>(
         gridLayoutManager = GridLayoutManager(context, resources.getInteger(R.integer.grid_column_count))
         setupView()
         setupViewModel()
+    }
+
+    protected open val mItemClickListener = object : OnItemClickListener {
+        override fun coverPhotoClicked(photoId: String) {
+            showMessageToast("clicked on photo have id: $photoId")
+        }
+
+        override fun profileClicked(userId: String) {
+            showMessageToast("clicked on user profile have id: $userId")
+        }
+    }
+
+    private fun showMessageToast(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     protected fun renderUiState(uiState: UiState<T>, progressBar: View) {

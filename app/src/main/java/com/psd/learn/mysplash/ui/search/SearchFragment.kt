@@ -3,7 +3,6 @@ package com.psd.learn.mysplash.ui.search
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -18,7 +17,6 @@ import com.psd.learn.mysplash.ui.search.users.SearchUserListFragment
 import com.psd.learn.mysplash.ui.utils.TAB_ICON_SELECTED_DRAWABLES
 import com.psd.learn.mysplash.ui.utils.TAB_ICON_UNSELECTED_DRAWABLES
 import com.psd.learn.mysplash.ui.utils.TAB_TITLES
-import com.psd.learn.mysplash.ui.viewmodels.SearchViewModel
 import com.psd.learn.mysplash.ui.widget.CustomTabViewHolder
 import com.psd.learn.mysplash.ui.widget.TabItem
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,7 +72,6 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                Log.d("sangpd", "afterTextChanged: ${s.toString()}")
                 viewModel.textSearchChange(s.toString())
             }
         })

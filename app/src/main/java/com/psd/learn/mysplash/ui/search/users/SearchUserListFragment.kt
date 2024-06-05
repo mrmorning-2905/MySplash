@@ -1,9 +1,7 @@
 package com.psd.learn.mysplash.ui.search.users
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.distinctUntilChanged
@@ -15,8 +13,7 @@ import com.psd.learn.mysplash.databinding.SearchUserFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseListFragment
 import com.psd.learn.mysplash.ui.core.UiState
 import com.psd.learn.mysplash.ui.utils.debounce
-import com.psd.learn.mysplash.ui.viewmodels.SearchUserListViewModel
-import com.psd.learn.mysplash.ui.viewmodels.SearchViewModel
+import com.psd.learn.mysplash.ui.search.SearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -30,12 +27,8 @@ class SearchUserListFragment :
     private val searUserListAdapter by lazy(LazyThreadSafetyMode.NONE) {
         SearchUserListAdapter(
             requestManager = Glide.with(this@SearchUserListFragment),
-            onItemClickListener = { userItem -> showMessageToast("clicked on user profile have id: ${userItem.userId}") }
+            itemClickListener = mItemClickListener
         )
-    }
-
-    private fun showMessageToast(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     companion object {
@@ -77,7 +70,6 @@ class SearchUserListFragment :
     }
 
     override fun onDestroyView() {
-        Log.d("sangpd", "onDestroyView: SearchPhotoListFragment")
         binding.recyclerView.adapter = null
         super.onDestroyView()
     }
