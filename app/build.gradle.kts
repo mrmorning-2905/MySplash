@@ -107,7 +107,8 @@ dependencies {
     kapt(libs.androidx.room.compiler)
     implementation(libs.dagger.hilt)
     kapt(libs.dagger.hilt.compiler)
-
+    implementation(libs.paging.common.android)
+    implementation(libs.paging.runtime.ktx)
     // Moshi
     val moshiVersion = "1.15.1"
     implementation("com.squareup.moshi:moshi:$moshiVersion")

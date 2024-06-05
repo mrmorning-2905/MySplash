@@ -12,6 +12,7 @@ constraintlayout = "2.1.4"
 preferenceKtx = "1.2.1"
 androidx-room = "2.6.1"
 dagger = "2.51"
+paging3 = "3.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,6 +35,8 @@ viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx"
 livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version = "2.7.0" }
 dagger-hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "dagger"}
 dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "dagger"}
+paging-common-android = { group = "androidx.paging", name = "paging-common-android", version.ref = "paging3"}
+paging-runtime-ktx = { group = "androidx.paging", name = "paging-runtime-ktx", version.ref = "paging3"}
 
 
 [plugins]
