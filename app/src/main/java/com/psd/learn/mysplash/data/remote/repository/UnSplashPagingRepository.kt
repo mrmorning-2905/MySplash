@@ -7,8 +7,9 @@ import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.remote.datasource.SearchPhotoDataSource
 import com.psd.learn.mysplash.ui.utils.NETWORK_PAGE_SIZE
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class UnSplashPagingRepository(
+class UnSplashPagingRepository @Inject constructor(
     private val unSplashApiService: UnSplashApiService
 ) {
 

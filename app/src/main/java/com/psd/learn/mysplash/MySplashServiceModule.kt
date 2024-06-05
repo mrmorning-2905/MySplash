@@ -1,6 +1,7 @@
 package com.psd.learn.mysplash
 
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
+import com.psd.learn.mysplash.data.remote.repository.UnSplashPagingRepository
 import com.psd.learn.mysplash.network.AuthorizationInterceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -85,6 +86,12 @@ internal interface MySplashServiceModule {
         fun provideMySplashService(
             retrofit: Retrofit
         ): UnSplashApiService = UnSplashApiService(retrofit)
+
+        @Provides
+        @Singleton
+        fun providePagingRepository(unSplashApiService: UnSplashApiService) : UnSplashPagingRepository {
+            return UnSplashPagingRepository(unSplashApiService)
+        }
 
     }
 }
