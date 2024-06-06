@@ -34,7 +34,7 @@ private fun SearchPhotoResponseItem.Result.toPhotoItem(): PhotoItem {
         userName = user.name,
         userProfileUrl = user.profileImage.medium,
         coverPhotoUrl = urls.regular,
-        photoDescription = altDescription,
+        photoDescription = altDescription ?: "",
         numberLikes = likes,
         userId = user.id,
         coverThumbnailUrl = urls.thumb,

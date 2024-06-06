@@ -16,7 +16,7 @@ data class SearchPhotoResponseItem(
     @Keep
     data class Result(
         @Json(name = "alt_description")
-        val altDescription: String, // turned off laptop computer on top of brown wooden table
+        val altDescription: String? = null, // turned off laptop computer on top of brown wooden table
         @Json(name = "alternative_slugs")
         val alternativeSlugs: AlternativeSlugs,
         @Json(name = "asset_type")
@@ -131,7 +131,7 @@ data class SearchPhotoResponseItem(
                 @Keep
                 data class CoverPhoto(
                     @Json(name = "alt_description")
-                    val altDescription: String, // red fox standing on grass field
+                    val altDescription: String? = null, // red fox standing on grass field
                     @Json(name = "alternative_slugs")
                     val alternativeSlugs: AlternativeSlugs,
                     @Json(name = "asset_type")

@@ -45,10 +45,11 @@ class SearchPhotoListFragment :
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
         val pagingData = searchViewModel.getSearchResult<PhotoItem>(PagingSearchViewModel.SEARCH_PHOTOS_TYPE)
+        Log.d("sangpd", "SearchPhotoListFragment_onViewCreated: $pagingData")
         initPagingData(
             pagingUiState = searchViewModel.uiState,
-            pagingData = pagingData,
-            handleUiAction = searchViewModel.userAction)
+            pagingData = pagingData
+        )
     }
 
     private fun initAdapter() {
@@ -61,12 +62,14 @@ class SearchPhotoListFragment :
 
     private fun initPagingData(
         pagingUiState: StateFlow<PagingUiState>,
-        pagingData: Flow<PagingData<PhotoItem>>,
-        handleUiAction: (UiAction.Scroll) -> Unit
+        pagingData: Flow<PagingData<PhotoItem>>
     ) {
         binding.recyclerView.addOnScrollListener( object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (dy != 0) handleUiAction(UiAction.Scroll(currentQuery = pagingUiState.value.query))
+                if (dy != 0) {
+                    val scrollAction = UiAction.Scroll(currentQuery = pagingUiState.value.query)
+                    searchViewModel.onApplyUserAction(scrollAction)
+                }
             }
         })
 
@@ -87,7 +90,6 @@ class SearchPhotoListFragment :
 
         lifecycleScope.launch {
             pagingData.collectLatest {
-                Log.d("sangpd", "initPagingData: $it")
                 searchPhotoAdapter.submitData(it)
             }
         }

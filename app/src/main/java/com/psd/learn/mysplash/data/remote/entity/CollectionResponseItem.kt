@@ -38,7 +38,7 @@ data class CollectionResponseItem(
     @Keep
     data class CoverPhoto(
         @Json(name = "alt_description")
-        val altDescription: String, // a pregnant woman holding a teddy bear in a crib
+        val altDescription: String? = null, // a pregnant woman holding a teddy bear in a crib
         @Json(name = "alternative_slugs")
         val alternativeSlugs: AlternativeSlugs,
         @Json(name = "asset_type")

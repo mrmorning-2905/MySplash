@@ -43,10 +43,11 @@ class SearchCollectionListFragment :
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
         val pagingData = searchViewModel.getSearchResult<CollectionItem>(PagingSearchViewModel.SEARCH_COLLECTIONS_TYPE)
+        Log.d("sangpd", "SearchCollectionListFragment_onViewCreated: $pagingData")
         initPagingData(
             pagingUiState = searchViewModel.uiState,
-            pagingData = pagingData,
-            handleUiAction = searchViewModel.userAction)
+            pagingData = pagingData
+        )
     }
 
     private fun initAdapter() {
@@ -59,12 +60,14 @@ class SearchCollectionListFragment :
 
     private fun initPagingData(
         pagingUiState: StateFlow<PagingUiState>,
-        pagingData: Flow<PagingData<CollectionItem>>,
-        handleUiAction: (UiAction.Scroll) -> Unit
+        pagingData: Flow<PagingData<CollectionItem>>
     ) {
         binding.recyclerView.addOnScrollListener( object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (dy != 0) handleUiAction(UiAction.Scroll(currentQuery = pagingUiState.value.query))
+                if (dy != 0) {
+                    val scrollAction = UiAction.Scroll(currentQuery = pagingUiState.value.query)
+                    searchViewModel.onApplyUserAction(scrollAction)
+                }
             }
         })
 

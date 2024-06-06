@@ -1,6 +1,7 @@
 package com.psd.learn.mysplash.ui.search.users
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -43,10 +44,11 @@ class SearchUserListFragment :
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
         val pagingData = searchViewModel.getSearchResult<UserItem>(PagingSearchViewModel.SEARCH_USERS_TYPE)
+        Log.d("sangpd", "SearchUserListFragment_onViewCreated: $pagingData")
         initPagingData(
             pagingUiState = searchViewModel.uiState,
-            pagingData = pagingData,
-            handleUiAction = searchViewModel.userAction)
+            pagingData = pagingData
+        )
     }
 
     private fun initAdapter() {
@@ -59,12 +61,14 @@ class SearchUserListFragment :
 
     private fun initPagingData(
         pagingUiState: StateFlow<PagingUiState>,
-        pagingData: Flow<PagingData<UserItem>>,
-        handleUiAction: (UiAction.Scroll) -> Unit
+        pagingData: Flow<PagingData<UserItem>>
     ) {
         binding.recyclerView.addOnScrollListener( object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (dy != 0) handleUiAction(UiAction.Scroll(currentQuery = pagingUiState.value.query))
+                if (dy != 0) {
+                    val scrollAction = UiAction.Scroll(currentQuery = pagingUiState.value.query)
+                    searchViewModel.onApplyUserAction(scrollAction)
+                }
             }
         })
 

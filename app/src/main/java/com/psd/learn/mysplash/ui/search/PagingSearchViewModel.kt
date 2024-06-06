@@ -1,5 +1,6 @@
 package com.psd.learn.mysplash.ui.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -8,6 +9,7 @@ import com.psd.learn.mysplash.data.remote.repository.UnSplashPagingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -43,7 +45,11 @@ open class PagingSearchViewModel @Inject constructor(
             replay = 1
         )
 
-    val userAction: (UiAction) -> Unit = { action -> viewModelScope.launch { actionSharedFlow.emit(action) } }
+    fun onApplyUserAction(uiAction: UiAction) {
+        viewModelScope.launch {
+            actionSharedFlow.emit(uiAction)
+        }
+    }
 
     val uiState: StateFlow<PagingUiState>
         get() {
@@ -56,10 +62,12 @@ open class PagingSearchViewModel @Inject constructor(
     @Suppress("UNCHECKED_CAST")
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     fun <Item : Any> getSearchResult(searchType: Int): Flow<PagingData<Item>> {
+        Log.d("sangpd", "getSearchResult: _______searchType: $searchType")
         val result: Flow<PagingData<Item>> = searchAction
             .debounce(650L)
             .flatMapLatest {
                 val queryText = it.query
+                Log.d("sangpd", "getSearchResult_searchType: $searchType - queryText: $queryText")
                 when(searchType) {
                     SEARCH_PHOTOS_TYPE -> pagingRepository.getSearchPhotoResultStream(queryText)
                     SEARCH_COLLECTIONS_TYPE -> pagingRepository.getSearchCollectionsResultStream(queryText)

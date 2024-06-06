@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -73,18 +74,13 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                updateQueryTextSubmit(viewModel.userAction)
+                val queryText = s?.trim()?.toString() ?: ""
+                if (queryText.isNotEmpty()) {
+                    val searchAction = UiAction.Search(queryText)
+                    viewModel.onApplyUserAction(searchAction)
+                }
             }
         })
-    }
-
-    private fun updateQueryTextSubmit(onQueryChanged: (UiAction.Search) -> Unit) {
-        binding.searchEditText.text?.trim()?.let {
-            Log.d("sangpd", "updateQueryTextSubmit_query: $it")
-            if (it.isNotEmpty()) {
-                onQueryChanged(UiAction.Search(query = it.toString()))
-            }
-        }
     }
 
     private class SearchViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
