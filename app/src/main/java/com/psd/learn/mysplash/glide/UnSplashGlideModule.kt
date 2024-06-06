@@ -26,7 +26,6 @@ class UnSplashGlideModule : AppGlideModule() {
             OkHttpUrlLoader.Factory(entryPoint.okHttpClient)
         )
     }
-
 }
 
 @EntryPoint

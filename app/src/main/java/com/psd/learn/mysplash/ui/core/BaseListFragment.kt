@@ -22,16 +22,16 @@ abstract class BaseListFragment<T, VB: ViewBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         gridLayoutManager = GridLayoutManager(context, resources.getInteger(R.integer.grid_column_count))
-        setupView()
+        initAdapter()
         setupViewModel()
     }
 
     protected open val mItemClickListener = object : OnItemClickListener {
-        override fun coverPhotoClicked(photoId: String) {
+        override fun coverPhotoClicked(photoId: String?) {
             showMessageToast("clicked on photo have id: $photoId")
         }
 
-        override fun profileClicked(userId: String) {
+        override fun profileClicked(userId: String?) {
             showMessageToast("clicked on user profile have id: $userId")
         }
     }
@@ -83,7 +83,7 @@ abstract class BaseListFragment<T, VB: ViewBinding>(
     }
 
     abstract fun submitList(items: List<T>)
-    abstract fun setupView()
+    abstract fun initAdapter()
     abstract fun setupViewModel()
 
     companion object {

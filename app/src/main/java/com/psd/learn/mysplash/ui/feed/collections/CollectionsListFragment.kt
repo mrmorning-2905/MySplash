@@ -23,7 +23,7 @@ class CollectionsListFragment : BaseListFragment<CollectionItem, FeedCollections
         collectionListAdapter.submitList(items)
     }
 
-    override fun setupView() {
+    override fun initAdapter() {
         binding.recyclerView.run {
             setHasFixedSize(true)
             layoutManager = gridLayoutManager

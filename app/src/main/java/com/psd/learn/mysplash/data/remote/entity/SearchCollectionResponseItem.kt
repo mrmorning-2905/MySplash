@@ -55,7 +55,7 @@ data class SearchCollectionResponseItem(
             @Json(name = "asset_type")
             val assetType: String, // photo
             @Json(name = "blur_hash")
-            val blurHash: String, // L9IN,9^+XT9v1O%M?F%1MIIo9axt
+            val blurHash: String? = null, // L9IN,9^+XT9v1O%M?F%1MIIo9axt
             @Json(name = "breadcrumbs")
             val breadcrumbs: List<Breadcrumb>,
             @Json(name = "color")
@@ -257,7 +257,7 @@ data class SearchCollectionResponseItem(
             @Json(name = "asset_type")
             val assetType: String, // photo
             @Json(name = "blur_hash")
-            val blurHash: String, // L9IN,9^+XT9v1O%M?F%1MIIo9axt
+            val blurHash: String? = null, // L9IN,9^+XT9v1O%M?F%1MIIo9axt
             @Json(name = "created_at")
             val createdAt: String, // 2023-10-17T08:09:24Z
             @Json(name = "id")
@@ -355,7 +355,7 @@ data class SearchCollectionResponseItem(
                     @Json(name = "asset_type")
                     val assetType: String, // photo
                     @Json(name = "blur_hash")
-                    val blurHash: String, // LAHBYn00Dh9bMyRP4;s,Ql%1?coJ
+                    val blurHash: String? = null, // LAHBYn00Dh9bMyRP4;s,Ql%1?coJ
                     @Json(name = "breadcrumbs")
                     val breadcrumbs: List<Breadcrumb>,
                     @Json(name = "color")

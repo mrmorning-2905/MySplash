@@ -3,6 +3,7 @@ package com.psd.learn.mysplash.ui.search
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -23,7 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentLayoutBinding::inflate) {
-    private val viewModel by activityViewModels<SearchViewModel>()
+    private val viewModel by activityViewModels<PagingSearchViewModel>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViewPager()
@@ -72,9 +73,18 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                viewModel.textSearchChange(s.toString())
+                updateQueryTextSubmit(viewModel.userAction)
             }
         })
+    }
+
+    private fun updateQueryTextSubmit(onQueryChanged: (UiAction.Search) -> Unit) {
+        binding.searchEditText.text?.trim()?.let {
+            Log.d("sangpd", "updateQueryTextSubmit_query: $it")
+            if (it.isNotEmpty()) {
+                onQueryChanged(UiAction.Search(query = it.toString()))
+            }
+        }
     }
 
     private class SearchViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {

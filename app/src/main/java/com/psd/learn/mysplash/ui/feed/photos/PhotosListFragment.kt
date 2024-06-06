@@ -24,7 +24,7 @@ class PhotosListFragment :
         photosListAdapter.submitList(items)
     }
 
-    override fun setupView() {
+    override fun initAdapter() {
         binding.recyclerView.run {
             setHasFixedSize(true)
             layoutManager = gridLayoutManager

@@ -87,7 +87,7 @@ data class SearchUserResponseItem(
             @Json(name = "asset_type")
             val assetType: String, // photo
             @Json(name = "blur_hash")
-            val blurHash: String, // L98;6_oyR*S20Mn%xts:XRWBNGoL
+            val blurHash: String? = null, // L98;6_oyR*S20Mn%xts:XRWBNGoL
             @Json(name = "created_at")
             val createdAt: String, // 2021-05-06T19:10:13Z
             @Json(name = "id")
