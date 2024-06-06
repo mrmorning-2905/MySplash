@@ -15,7 +15,7 @@ data class PhotoResponseItem(
     @Json(name = "updated_at")
     val updatedAt: String, // 2024-05-09T23:55:30Z
     @Json(name = "promoted_at")
-    val promotedAt: String, // 2024-05-09T13:23:36Z
+    val promotedAt: String? = null, // 2024-05-09T13:23:36Z
     @Json(name = "width")
     val width: Int, // 5324
     @Json(name = "height")
