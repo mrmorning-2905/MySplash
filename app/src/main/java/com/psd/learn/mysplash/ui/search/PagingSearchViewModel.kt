@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.psd.learn.mysplash.data.local.entity.CollectionItem
+import com.psd.learn.mysplash.data.local.entity.PhotoItem
+import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashPagingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,9 +35,14 @@ open class PagingSearchViewModel @Inject constructor(
 
     private val actionSharedFlow = MutableSharedFlow<UiAction>()
 
-    private val searchAction: Flow<UiAction.Search> = actionSharedFlow
+    private val searchAction = actionSharedFlow
         .filterIsInstance<UiAction.Search>()
         .distinctUntilChanged()
+        .shareIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
+            replay = 1
+        )
 
     private val scrollAction = actionSharedFlow
         .filterIsInstance<UiAction.Scroll>()
@@ -59,31 +67,23 @@ open class PagingSearchViewModel @Inject constructor(
                 }.stateIn(scope = viewModelScope, started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000), initialValue = PagingUiState())
         }
 
-    @Suppress("UNCHECKED_CAST")
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    fun <Item : Any> getSearchResult(searchType: Int): Flow<PagingData<Item>> {
-        Log.d("sangpd", "getSearchResult: _______searchType: $searchType")
-        val result: Flow<PagingData<Item>> = searchAction
-            .debounce(650L)
-            .flatMapLatest {
-                val queryText = it.query
-                Log.d("sangpd", "getSearchResult_searchType: $searchType - queryText: $queryText")
-                when(searchType) {
-                    SEARCH_PHOTOS_TYPE -> pagingRepository.getSearchPhotoResultStream(queryText)
-                    SEARCH_COLLECTIONS_TYPE -> pagingRepository.getSearchCollectionsResultStream(queryText)
-                    SEARCH_USERS_TYPE -> pagingRepository.getSearchUsersResultStream(queryText)
-                    else -> error("UnKnown")
-                } as Flow<PagingData<Item>>
-            }
-            .cachedIn(viewModelScope)
-        return result
-    }
+    val searchPhotoPagingData: Flow<PagingData<PhotoItem>> = searchAction
+        .debounce(650L)
+        .flatMapLatest { search -> pagingRepository.getSearchPhotoResultStream(search.query) }
+        .cachedIn(viewModelScope)
 
-    companion object {
-        const val SEARCH_PHOTOS_TYPE = 0
-        const val SEARCH_COLLECTIONS_TYPE = 1
-        const val SEARCH_USERS_TYPE = 2
-    }
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val searchCollectionPagingData: Flow<PagingData<CollectionItem>> = searchAction
+        .debounce(650L)
+        .flatMapLatest { search -> pagingRepository.getSearchCollectionsResultStream(search.query) }
+        .cachedIn(viewModelScope)
+
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val searchUserPagingData: Flow<PagingData<UserItem>> = searchAction
+        .debounce(650L)
+        .flatMapLatest { search -> pagingRepository.getSearchUsersResultStream(search.query) }
+        .cachedIn(viewModelScope)
 }
 
 sealed class UiAction {
