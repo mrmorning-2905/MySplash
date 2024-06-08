@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
-import com.psd.learn.mysplash.databinding.FeedCollectionsFragmentLayoutBinding
+import com.psd.learn.mysplash.databinding.PhotoCollectionFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.CollectionPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
@@ -15,7 +15,7 @@ import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CollectionsListFragment: BasePagingFragment<CollectionItem, FeedCollectionsFragmentLayoutBinding>(inflate = FeedCollectionsFragmentLayoutBinding::inflate) {
+class CollectionsListFragment: BasePagingFragment<CollectionItem, PhotoCollectionFragmentLayoutBinding>(inflate = PhotoCollectionFragmentLayoutBinding::inflate) {
 
     override val pagingAdapter: BasePagingAdapter<CollectionItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
         CollectionPagingAdapter(

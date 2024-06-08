@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
-import com.psd.learn.mysplash.databinding.SearchCollectionFragmentLayoutBinding
+import com.psd.learn.mysplash.databinding.SearchPhotoCollectionFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.CollectionPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
@@ -16,12 +16,12 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SearchCollectionListFragment :
-    BasePagingFragment<CollectionItem, SearchCollectionFragmentLayoutBinding>(inflate = SearchCollectionFragmentLayoutBinding::inflate) {
+    BasePagingFragment<CollectionItem, SearchPhotoCollectionFragmentLayoutBinding>(inflate = SearchPhotoCollectionFragmentLayoutBinding::inflate) {
 
     private val searchViewModel by activityViewModels<PagingSearchViewModel>()
 
     override val recyclerView: RecyclerView
-        get() = binding.recyclerView
+        get() = binding.photoCollectionLayout.recyclerView
 
     override val pagingAdapter: BasePagingAdapter<CollectionItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
         CollectionPagingAdapter(
@@ -32,7 +32,7 @@ class SearchCollectionListFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        handleScroll(searchViewModel, searchViewModel.uiState)
+        handleScroll(searchViewModel)
         initPagingData(searchViewModel.searchCollectionPagingData)
     }
 

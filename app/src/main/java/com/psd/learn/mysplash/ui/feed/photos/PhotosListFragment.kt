@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
-import com.psd.learn.mysplash.databinding.FeedPhotosFragmentLayoutBinding
+import com.psd.learn.mysplash.databinding.PhotoCollectionFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.PhotoPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PhotosListFragment :
-    BasePagingFragment<PhotoItem, FeedPhotosFragmentLayoutBinding>(inflate = FeedPhotosFragmentLayoutBinding::inflate) {
+    BasePagingFragment<PhotoItem, PhotoCollectionFragmentLayoutBinding>(inflate = PhotoCollectionFragmentLayoutBinding::inflate) {
 
     private val viewModel by activityViewModels<PagingFeedViewModel>()
 

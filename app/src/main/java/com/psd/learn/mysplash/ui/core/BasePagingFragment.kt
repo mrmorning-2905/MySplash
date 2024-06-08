@@ -44,12 +44,13 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
 
     protected fun handleScroll(
         viewModel: PagingSearchViewModel,
-        pagingUiState: StateFlow<PagingUiState>
     ) {
+
+        val uiState = viewModel.uiState
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy != 0) {
-                    val scrollAction = UiAction.Scroll(currentQuery = pagingUiState.value.query)
+                    val scrollAction = UiAction.Scroll(currentQuery = uiState.value.query)
                     viewModel.onApplyUserAction(scrollAction)
                 }
             }
@@ -60,7 +61,7 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
             .distinctUntilChangedBy { it.source.refresh }
             .map { it.source.refresh is LoadState.NotLoading }
 
-        val hasNotScrollForCurrentSearch = pagingUiState
+        val hasNotScrollForCurrentSearch = uiState
             .map { it.hasNotScrolledForCurrentSearch }
             .distinctUntilChanged()
 

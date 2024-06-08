@@ -32,7 +32,7 @@ class SearchUserListFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        handleScroll(searchViewModel, searchViewModel.uiState)
+        handleScroll(searchViewModel)
         initPagingData(searchViewModel.searchUserPagingData)
     }
 
