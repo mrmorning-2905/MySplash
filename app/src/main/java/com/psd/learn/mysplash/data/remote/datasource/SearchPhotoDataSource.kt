@@ -3,6 +3,8 @@ package com.psd.learn.mysplash.data.remote.datasource
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.remote.entity.SearchPhotoResponseItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class SearchPhotoDataSource(
     private val unSplashApiService: UnSplashApiService,
@@ -17,11 +19,13 @@ class SearchPhotoDataSource(
 
         if (queryText == null) return emptyList()
 
-        val response = unSplashApiService.getSearchPhotoResult(
-            query = queryText,
-            page = page,
-            perPage = perPage
-        )
+        val response = withContext(Dispatchers.IO) {
+            unSplashApiService.getSearchPhotoResult(
+                query = queryText,
+                page = page,
+                perPage = perPage
+            )
+        }
 
         return response.results.map { it.toPhotoItem() }
     }

@@ -5,12 +5,12 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewbinding.ViewBinding
 
-abstract class BasePagingAdapter<Item : Any, VB : ViewBinding>(
+abstract class BasePagingAdapter<T : Any, VB : ViewBinding>(
     @LayoutRes private val layoutRes: Int,
-    diffItemCallback: DiffUtil.ItemCallback<Item>
-) : PagingDataAdapter<Item, BaseListViewHolder<Item, VB>>(diffItemCallback) {
+    diffItemCallback: DiffUtil.ItemCallback<T>
+) : PagingDataAdapter<T, BaseListViewHolder<T, VB>>(diffItemCallback) {
 
-    override fun onBindViewHolder(holder: BaseListViewHolder<Item, VB>, position: Int) {
+    override fun onBindViewHolder(holder: BaseListViewHolder<T, VB>, position: Int) {
         val item = getItem(position)
         item?.let { holder.onBindView(it) }
     }

@@ -27,13 +27,13 @@ import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-abstract class BasePagingFragment<Item : Any, VB : ViewBinding>(
+abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     inflate: (LayoutInflater, ViewGroup?, Boolean) -> VB
 ) : BaseFragment<VB>(inflate) {
 
     private var gridLayoutManager: GridLayoutManager? = null
 
-    abstract val pagingAdapter: BasePagingAdapter<Item, out ViewBinding>
+    abstract val pagingAdapter: BasePagingAdapter<T, out ViewBinding>
 
     abstract val recyclerView: RecyclerView
 
@@ -91,7 +91,7 @@ abstract class BasePagingFragment<Item : Any, VB : ViewBinding>(
     }
 
     protected fun initPagingData(
-        pagingData: Flow<PagingData<Item>>
+        pagingData: Flow<PagingData<T>>
     ) {
         lifecycleScope.launch {
             pagingData

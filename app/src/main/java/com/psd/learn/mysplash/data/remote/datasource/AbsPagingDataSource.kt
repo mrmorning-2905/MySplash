@@ -7,17 +7,17 @@ import com.psd.learn.mysplash.ui.utils.UNSPLASH_STARTING_PAGE_INDEX
 import retrofit2.HttpException
 import java.io.IOException
 
-abstract class AbsPagingDataSource<DataInfo : Any>(
+abstract class AbsPagingDataSource<T : Any>(
     private val queryText: String? = null
-) : PagingSource<Int, DataInfo>() {
+) : PagingSource<Int, T>() {
 
     abstract suspend fun getListDataPaging(
         queryText: String?,
         page: Int,
         perPage: Int
-    ): List<DataInfo>
+    ): List<T>
 
-    override fun getRefreshKey(state: PagingState<Int, DataInfo>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, T>): Int? {
         return state.anchorPosition?.let { anchorPos ->
             val resultPage = state.closestPageToPosition(anchorPos)
             resultPage?.prevKey?.plus(1)
@@ -25,7 +25,7 @@ abstract class AbsPagingDataSource<DataInfo : Any>(
         }
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, DataInfo> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
         val position = params.key ?: UNSPLASH_STARTING_PAGE_INDEX
         return try {
             val listDataInfo =
