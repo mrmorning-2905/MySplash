@@ -3,9 +3,7 @@ package com.psd.learn.mysplash.ui.search
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.KeyEvent
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -16,9 +14,9 @@ import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.search.collections.SearchCollectionListFragment
 import com.psd.learn.mysplash.ui.search.photos.SearchPhotoListFragment
 import com.psd.learn.mysplash.ui.search.users.SearchUserListFragment
-import com.psd.learn.mysplash.ui.utils.TAB_ICON_SELECTED_DRAWABLES
-import com.psd.learn.mysplash.ui.utils.TAB_ICON_UNSELECTED_DRAWABLES
-import com.psd.learn.mysplash.ui.utils.TAB_TITLES
+import com.psd.learn.mysplash.TAB_ICON_SELECTED_DRAWABLES
+import com.psd.learn.mysplash.TAB_ICON_UNSELECTED_DRAWABLES
+import com.psd.learn.mysplash.TAB_TITLES
 import com.psd.learn.mysplash.ui.widget.CustomTabViewHolder
 import com.psd.learn.mysplash.ui.widget.TabItem
 import dagger.hilt.android.AndroidEntryPoint

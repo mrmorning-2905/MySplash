@@ -1,10 +1,12 @@
 package com.psd.learn.mysplash.ui.search
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.psd.learn.mysplash.SEARCH_COLLECTIONS_TYPE
+import com.psd.learn.mysplash.SEARCH_PHOTOS_TYPE
+import com.psd.learn.mysplash.SEARCH_USERS_TYPE
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.local.entity.UserItem
@@ -12,7 +14,6 @@ import com.psd.learn.mysplash.data.remote.repository.UnSplashPagingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -70,19 +71,19 @@ open class PagingSearchViewModel @Inject constructor(
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val searchPhotoPagingData: Flow<PagingData<PhotoItem>> = searchAction
         .debounce(650L)
-        .flatMapLatest { search -> pagingRepository.getSearchPhotoResultStream(search.query) }
+        .flatMapLatest { search -> pagingRepository.getSearchResultStream<PhotoItem>(search.query, SEARCH_PHOTOS_TYPE) }
         .cachedIn(viewModelScope)
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val searchCollectionPagingData: Flow<PagingData<CollectionItem>> = searchAction
         .debounce(650L)
-        .flatMapLatest { search -> pagingRepository.getSearchCollectionsResultStream(search.query) }
+        .flatMapLatest { search -> pagingRepository.getSearchResultStream<CollectionItem>(search.query, SEARCH_COLLECTIONS_TYPE) }
         .cachedIn(viewModelScope)
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val searchUserPagingData: Flow<PagingData<UserItem>> = searchAction
         .debounce(650L)
-        .flatMapLatest { search -> pagingRepository.getSearchUsersResultStream(search.query) }
+        .flatMapLatest { search -> pagingRepository.getSearchResultStream<UserItem>(search.query, SEARCH_USERS_TYPE) }
         .cachedIn(viewModelScope)
 }
 

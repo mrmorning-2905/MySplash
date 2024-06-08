@@ -2,8 +2,8 @@ package com.psd.learn.mysplash.data.remote.datasource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.psd.learn.mysplash.ui.utils.NETWORK_PAGE_SIZE
-import com.psd.learn.mysplash.ui.utils.UNSPLASH_STARTING_PAGE_INDEX
+import com.psd.learn.mysplash.NETWORK_PAGE_SIZE
+import com.psd.learn.mysplash.UNSPLASH_STARTING_PAGE_INDEX
 import retrofit2.HttpException
 import java.io.IOException
 

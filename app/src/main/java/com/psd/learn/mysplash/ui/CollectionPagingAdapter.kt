@@ -1,4 +1,4 @@
-package com.psd.learn.mysplash.ui.feed.collections
+package com.psd.learn.mysplash.ui
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
@@ -8,17 +8,18 @@ import com.bumptech.glide.RequestManager
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.databinding.CoverPhotoItemBinding
-import com.psd.learn.mysplash.ui.core.BaseListAdapter
 import com.psd.learn.mysplash.ui.core.BaseListViewHolder
+import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.OnItemClickListener
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 
-class CollectionsListAdapter(
+class CollectionPagingAdapter(
     private val requestManager: RequestManager,
     private val itemClickListener: OnItemClickListener
-) : BaseListAdapter<CollectionItem, CoverPhotoItemBinding>(R.layout.cover_photo_item, DIFF_COLLECTION_ITEM_CALLBACK) {
-
+) : BasePagingAdapter<CollectionItem, CoverPhotoItemBinding>(
+    R.layout.cover_photo_item, DIFF_COLLECTION_ITEM_CALLBACK
+) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseListViewHolder<CollectionItem, CoverPhotoItemBinding> {
         return CollectionItemListViewHolder(parent, viewType)
     }

@@ -1,23 +1,23 @@
-package com.psd.learn.mysplash.ui.feed.photos
+package com.psd.learn.mysplash.data.remote.datasource
 
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.remote.entity.PhotoResponseItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
-import com.psd.learn.mysplash.AbsListItemViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-@HiltViewModel
-class FeedPhotosViewModel @Inject constructor(
+class FeedPhotosDataSource(
     private val unSplashApiService: UnSplashApiService
-) : AbsListItemViewModel<PhotoItem>() {
-    init {
-        loadFirstPage("")
-    }
-
-    override suspend fun getListItems(searchText: String, currentPage: Int, itemPerPage: Int): List<PhotoItem> {
-        return unSplashApiService.getPhotoListOnFeed(currentPage, itemPerPage)
-            .map { it.toPhotoItem() }
+) : AbsPagingDataSource<PhotoItem>() {
+    override suspend fun getListDataPaging(
+        queryText: String?,
+        page: Int,
+        perPage: Int
+    ): List<PhotoItem> {
+        val response = withContext(Dispatchers.IO) {
+            unSplashApiService.getPhotoListOnFeed(page, perPage)
+        }
+        return response.map { it.toPhotoItem() }
     }
 }
 

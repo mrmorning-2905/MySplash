@@ -3,13 +3,12 @@ package com.psd.learn.mysplash.data.remote.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import com.psd.learn.mysplash.data.remote.datasource.SearchDataSourceFactory
+import com.psd.learn.mysplash.NETWORK_PAGE_SIZE
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
-import com.psd.learn.mysplash.data.local.entity.UserItem
-import com.psd.learn.mysplash.data.remote.datasource.SearchCollectionDataSource
-import com.psd.learn.mysplash.data.remote.datasource.SearchPhotoDataSource
-import com.psd.learn.mysplash.data.remote.datasource.SearchUserDataSource
-import com.psd.learn.mysplash.ui.utils.NETWORK_PAGE_SIZE
+import com.psd.learn.mysplash.data.remote.datasource.FeedCollectionsDataSource
+import com.psd.learn.mysplash.data.remote.datasource.FeedPhotosDataSource
 import com.psd.learn.mysplash.utils.log.Logger
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -24,42 +23,31 @@ class UnSplashPagingRepository @Inject constructor(
         enablePlaceholders = false
     )
 
-    fun getSearchPhotoResultStream(query: String?): Flow<PagingData<PhotoItem>> {
-        Logger.d(TAG, "getSearchPhotoResultStream() - query: $query")
+    fun <T : Any> getSearchResultStream(query: String?, searchType: Int): Flow<PagingData<T>> {
+        Logger.d(TAG, "getSearchResultStream() - query: $query - searchType: $searchType")
         return Pager(
             config = pageConfig,
             pagingSourceFactory = {
-                SearchPhotoDataSource(
-                    unSplashApiService = unSplashApiService,
-                    queryText = query
+                SearchDataSourceFactory.getSearchDataSource<T>(
+                    unSplashApiService,
+                    searchType,
+                    query
                 )
             }
         ).flow
     }
 
-    fun getSearchCollectionsResultStream(query: String?): Flow<PagingData<CollectionItem>> {
-        Logger.d(TAG, "getSearchCollectionsResultStream() - query: $query")
+    fun getFeedPhotosStream(): Flow<PagingData<PhotoItem>> {
         return Pager(
             config = pageConfig,
-            pagingSourceFactory = {
-                SearchCollectionDataSource(
-                    unSplashApiService = unSplashApiService,
-                    queryText = query
-                )
-            }
+            pagingSourceFactory = { FeedPhotosDataSource(unSplashApiService) }
         ).flow
     }
 
-    fun getSearchUsersResultStream(query: String?): Flow<PagingData<UserItem>> {
-        Logger.d(TAG, "getSearchUsersResultStream() - query: $query")
+    fun getFeedCollectionsStream(): Flow<PagingData<CollectionItem>> {
         return Pager(
             config = pageConfig,
-            pagingSourceFactory = {
-                SearchUserDataSource(
-                    unSplashApiService = unSplashApiService,
-                    queryText = query
-                )
-            }
+            pagingSourceFactory = { FeedCollectionsDataSource(unSplashApiService) }
         ).flow
     }
 }

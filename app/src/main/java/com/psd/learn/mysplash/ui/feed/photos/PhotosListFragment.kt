@@ -1,42 +1,39 @@
 package com.psd.learn.mysplash.ui.feed.photos
 
-import androidx.fragment.app.viewModels
+import android.os.Bundle
+import android.view.View
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.FeedPhotosFragmentLayoutBinding
-import com.psd.learn.mysplash.ui.core.BaseListFragment
+import com.psd.learn.mysplash.ui.PhotoPagingAdapter
+import com.psd.learn.mysplash.ui.core.BasePagingAdapter
+import com.psd.learn.mysplash.ui.core.BasePagingFragment
+import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PhotosListFragment :
-    BaseListFragment<PhotoItem, FeedPhotosFragmentLayoutBinding>(inflate = FeedPhotosFragmentLayoutBinding::inflate) {
+    BasePagingFragment<PhotoItem, FeedPhotosFragmentLayoutBinding>(inflate = FeedPhotosFragmentLayoutBinding::inflate) {
 
-    private val viewModel by viewModels<FeedPhotosViewModel>()
+    private val viewModel by activityViewModels<PagingFeedViewModel>()
 
-    private val photosListAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        PhotosListAdapter(
+    override val pagingAdapter: BasePagingAdapter<PhotoItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
+        PhotoPagingAdapter(
             requestManager = Glide.with(this@PhotosListFragment),
             itemClickListener = mItemClickListener
         )
     }
 
-    override fun submitList(items: List<PhotoItem>) {
-        photosListAdapter.submitList(items)
-    }
+    override val recyclerView: RecyclerView
+        get() = binding.recyclerView
 
-    override fun initAdapter() {
-        binding.recyclerView.run {
-            setHasFixedSize(true)
-            layoutManager = gridLayoutManager
-            adapter = photosListAdapter
-        }
-    }
 
-    override fun setupViewModel() {
-        viewModel.uiStateLiveData.observe(viewLifecycleOwner) {
-            renderUiState(it, binding.progressBar)
-        }
-        handleLoadMorePage("", binding.recyclerView, viewModel)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initPagingData(viewModel.photoPagingDataFlow)
     }
 
     companion object {

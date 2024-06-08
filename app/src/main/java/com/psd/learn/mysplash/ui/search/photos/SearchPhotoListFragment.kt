@@ -8,6 +8,7 @@ import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.SearchPhotoFragmentLayoutBinding
+import com.psd.learn.mysplash.ui.PhotoPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
@@ -23,7 +24,7 @@ class SearchPhotoListFragment :
         get() = binding.recyclerView
 
     override val pagingAdapter: BasePagingAdapter<PhotoItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
-        SearchPhotoPagingAdapter(
+        PhotoPagingAdapter(
             requestManager = Glide.with(this@SearchPhotoListFragment),
             itemClickListener = mItemClickListener
         )
