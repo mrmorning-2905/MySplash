@@ -21,6 +21,7 @@ import androidx.viewbinding.ViewBinding
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import com.psd.learn.mysplash.ui.search.UiAction
+import com.psd.learn.mysplash.utils.log.Logger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -33,6 +34,8 @@ import kotlinx.coroutines.launch
 abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     inflate: (LayoutInflater, ViewGroup?, Boolean) -> VB
 ) : BaseFragment<VB>(inflate) {
+    override val TAG: String
+        get() = BasePagingFragment::class.java.simpleName
 
     private var gridLayoutManager: GridLayoutManager? = null
 
@@ -105,12 +108,23 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
         handleLoadState()
     }
 
+    private fun initLoadState() {
+        emptyTv.isVisible = true
+        progressBar.isVisible = false
+        retryBtn.isVisible = false
+    }
+
     private fun handleLoadState() {
+        Logger.d(TAG, "-----handleLoadState()-----")
+        initLoadState()
         lifecycleScope.launch {
             pagingAdapter.loadStateFlow
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .collect { loadState ->
                     val isListEmpty = loadState.refresh is LoadState.NotLoading && pagingAdapter.itemCount == 0
+                    Logger.d(TAG, "handleLoadState() - isListEmpty: $isListEmpty" +
+                            "\n loadState.refresh: ${loadState.refresh}" +
+                            "\n loadState.source.refresh: ${loadState.source.refresh}")
                     emptyTv.isVisible = isListEmpty
                     recyclerView.isVisible = !isListEmpty
                     progressBar.isVisible = loadState.source.refresh is LoadState.Loading
