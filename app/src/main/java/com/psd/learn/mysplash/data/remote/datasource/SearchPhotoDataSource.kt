@@ -11,6 +11,9 @@ class SearchPhotoDataSource(
     queryText: String?
 ) : AbsPagingDataSource<PhotoItem>(queryText) {
 
+    override val TAG: String
+        get() = SearchPhotoDataSource::class.java.simpleName
+
     override suspend fun getListDataPaging(
         queryText: String?,
         page: Int,

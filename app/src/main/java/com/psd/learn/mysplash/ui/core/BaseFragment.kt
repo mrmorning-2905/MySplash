@@ -12,6 +12,8 @@ abstract class BaseFragment<VB: ViewBinding>(
     private val inflate: (LayoutInflater, ViewGroup?, Boolean) -> VB
 ) : Fragment() {
 
+    protected open val TAG = BaseFragment::class.java.simpleName
+
     private var _binding: VB? = null
 
     protected val binding get() = _binding!!

@@ -11,6 +11,9 @@ class SearchCollectionDataSource (
     queryText: String?
 ) : AbsPagingDataSource<CollectionItem>(queryText) {
 
+    override val TAG: String
+        get() = SearchCollectionDataSource::class.java.simpleName
+
     override suspend fun getListDataPaging(
         queryText: String?,
         page: Int,

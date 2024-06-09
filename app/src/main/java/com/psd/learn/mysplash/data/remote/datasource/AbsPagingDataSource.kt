@@ -4,12 +4,15 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.psd.learn.mysplash.NETWORK_PAGE_SIZE
 import com.psd.learn.mysplash.UNSPLASH_STARTING_PAGE_INDEX
+import com.psd.learn.mysplash.utils.log.Logger
 import retrofit2.HttpException
 import java.io.IOException
 
 abstract class AbsPagingDataSource<T : Any>(
     private val queryText: String? = null
 ) : PagingSource<Int, T>() {
+
+    protected open val TAG = AbsPagingDataSource::class.java.simpleName
 
     abstract suspend fun getListDataPaging(
         queryText: String?,
@@ -39,8 +42,10 @@ abstract class AbsPagingDataSource<T : Any>(
                 nextKey = nextKey
             )
         } catch (e: IOException) {
+            Logger.e(TAG, "load() - IOException error: $e")
             LoadResult.Error(e)
         } catch (e: HttpException) {
+            Logger.e(TAG, "load() - HttpException error: $e")
             LoadResult.Error(e)
         }
     }

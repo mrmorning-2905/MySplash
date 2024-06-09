@@ -5,7 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -16,10 +20,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
-import com.psd.learn.mysplash.ui.search.PagingUiState
 import com.psd.learn.mysplash.ui.search.UiAction
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -36,6 +39,12 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     abstract val pagingAdapter: BasePagingAdapter<T, out ViewBinding>
 
     abstract val recyclerView: RecyclerView
+
+    abstract val emptyTv: TextView
+
+    abstract val progressBar: ProgressBar
+
+    abstract val retryBtn: Button
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -87,7 +96,32 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
         recyclerView.run {
             setHasFixedSize(true)
             layoutManager = gridLayoutManager
-            adapter = pagingAdapter
+            adapter = pagingAdapter.withLoadStateHeaderAndFooter (
+                header = PagingLoadStateAdapter { pagingAdapter.retry() },
+                footer = PagingLoadStateAdapter { pagingAdapter.retry() }
+            )
+        }
+
+        handleLoadState()
+    }
+
+    private fun handleLoadState() {
+        lifecycleScope.launch {
+            pagingAdapter.loadStateFlow
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collect { loadState ->
+                    val isListEmpty = loadState.refresh is LoadState.NotLoading && pagingAdapter.itemCount == 0
+                    emptyTv.isVisible = isListEmpty
+                    recyclerView.isVisible = !isListEmpty
+                    progressBar.isVisible = loadState.source.refresh is LoadState.Loading
+                    retryBtn.isVisible = loadState.source.refresh is LoadState.Error
+                }
+        }
+
+        retryBtn.apply {
+            if (isVisible) {
+                setOnClickListener { pagingAdapter.refresh() }
+            }
         }
     }
 

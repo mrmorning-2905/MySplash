@@ -19,9 +19,13 @@ import com.psd.learn.mysplash.TAB_ICON_UNSELECTED_DRAWABLES
 import com.psd.learn.mysplash.TAB_TITLES
 import com.psd.learn.mysplash.ui.widget.CustomTabViewHolder
 import com.psd.learn.mysplash.ui.widget.TabItem
+import com.psd.learn.mysplash.utils.log.Logger
 
 class FeedFragment :
     BaseFragment<FeedFragmentLayoutBinding>(inflate = FeedFragmentLayoutBinding::inflate) {
+
+    override val TAG: String
+        get() = FeedFragment::class.java.simpleName
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,6 +40,7 @@ class FeedFragment :
             with(binding.tabLayout) {
                 addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                     override fun onTabSelected(tab: TabLayout.Tab?) {
+                        Logger.d(TAG, "setupViewPager() - selectedTab: ${tab?.position}")
                         (tab?.customView as? CustomTabViewHolder)
                             ?.bind { tabItemStatus = tabItemStatus.copy(isSelected = true) }
                     }

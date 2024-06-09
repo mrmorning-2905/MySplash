@@ -11,6 +11,9 @@ class SearchUserDataSource(
     queryText: String?
 ) : AbsPagingDataSource<UserItem>(queryText) {
 
+    override val TAG: String
+        get() = SearchUserDataSource::class.java.simpleName
+
     override suspend fun getListDataPaging(
         queryText: String?,
         page: Int,

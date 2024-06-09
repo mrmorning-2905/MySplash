@@ -2,6 +2,9 @@ package com.psd.learn.mysplash.ui.feed.collections
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
@@ -26,6 +29,15 @@ class CollectionsListFragment: BasePagingFragment<CollectionItem, PhotoCollectio
 
     override val recyclerView: RecyclerView
         get() = binding.recyclerView
+
+    override val emptyTv: TextView
+        get() = binding.loadingContainer.emptyList
+
+    override val progressBar: ProgressBar
+        get() = binding.loadingContainer.progressBar
+
+    override val retryBtn: Button
+        get() = binding.loadingContainer.retryButton
 
     private val viewModel by activityViewModels<PagingFeedViewModel>()
 

@@ -9,6 +9,10 @@ import kotlinx.coroutines.withContext
 class FeedCollectionsDataSource(
     private val unSplashApiService: UnSplashApiService
 ) : AbsPagingDataSource<CollectionItem>() {
+
+    override val TAG: String
+        get() = FeedCollectionsDataSource::class.java.simpleName
+
     override suspend fun getListDataPaging(
         queryText: String?,
         page: Int,
