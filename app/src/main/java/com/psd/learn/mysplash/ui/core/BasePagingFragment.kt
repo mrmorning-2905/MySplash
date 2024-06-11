@@ -1,5 +1,6 @@
 package com.psd.learn.mysplash.ui.core
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,11 +20,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.psd.learn.mysplash.R
+import com.psd.learn.mysplash.SEARCH_COLLECTIONS_TYPE
+import com.psd.learn.mysplash.SEARCH_PHOTOS_TYPE
+import com.psd.learn.mysplash.SEARCH_USERS_TYPE
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import com.psd.learn.mysplash.ui.search.UiAction
 import com.psd.learn.mysplash.utils.log.Logger
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -122,9 +126,6 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .collect { loadState ->
                     val isListEmpty = loadState.refresh is LoadState.NotLoading && pagingAdapter.itemCount == 0
-                    Logger.d(TAG, "handleLoadState() - isListEmpty: $isListEmpty" +
-                            "\n loadState.refresh: ${loadState.refresh}" +
-                            "\n loadState.source.refresh: ${loadState.source.refresh}")
                     emptyTv.isVisible = isListEmpty
                     recyclerView.isVisible = !isListEmpty
                     progressBar.isVisible = loadState.source.refresh is LoadState.Loading
@@ -136,6 +137,29 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
             if (isVisible) {
                 setOnClickListener { pagingAdapter.refresh() }
             }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    protected fun binSearchResult(searchResultFlow: SharedFlow<Int>, searchType: Int, resultTv: TextView) {
+        lifecycleScope.launch {
+            searchResultFlow
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .distinctUntilChanged()
+                .collect { totalResult ->
+                    val searchTypeDes = getSearchTypeString(searchType)
+                    Logger.d(TAG, "onViewCreated() - totalResult of $searchTypeDes: $totalResult")
+                    resultTv.text = "Result: $totalResult $searchTypeDes"
+                }
+        }
+    }
+
+    private fun getSearchTypeString(searchType: Int): String {
+        return when(searchType) {
+            SEARCH_PHOTOS_TYPE -> "Images"
+            SEARCH_COLLECTIONS_TYPE -> "Collections"
+            SEARCH_USERS_TYPE -> "Users"
+            else -> "UnKnown"
         }
     }
 

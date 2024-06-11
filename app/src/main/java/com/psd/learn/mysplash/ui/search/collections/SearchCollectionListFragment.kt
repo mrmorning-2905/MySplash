@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
+import com.psd.learn.mysplash.SEARCH_COLLECTIONS_TYPE
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.databinding.SearchPhotoCollectionFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.CollectionPagingAdapter
@@ -46,6 +47,7 @@ class SearchCollectionListFragment :
         super.onViewCreated(view, savedInstanceState)
         handleScroll(searchViewModel)
         initPagingData(searchViewModel.searchCollectionPagingData)
+        binSearchResult(searchViewModel.searchCollectionTotal, SEARCH_COLLECTIONS_TYPE, binding.searchResult)
     }
 
     companion object {

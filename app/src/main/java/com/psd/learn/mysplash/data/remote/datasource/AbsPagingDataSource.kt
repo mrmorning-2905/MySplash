@@ -5,6 +5,7 @@ import androidx.paging.PagingState
 import com.psd.learn.mysplash.NETWORK_PAGE_SIZE
 import com.psd.learn.mysplash.UNSPLASH_STARTING_PAGE_INDEX
 import com.psd.learn.mysplash.utils.log.Logger
+import kotlinx.coroutines.flow.MutableSharedFlow
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -19,6 +20,8 @@ abstract class AbsPagingDataSource<T : Any>(
         page: Int,
         perPage: Int
     ): List<T>
+
+    open val searchResultTotal: MutableSharedFlow<Int> = MutableSharedFlow()
 
     override fun getRefreshKey(state: PagingState<Int, T>): Int? {
         return state.anchorPosition?.let { anchorPos ->

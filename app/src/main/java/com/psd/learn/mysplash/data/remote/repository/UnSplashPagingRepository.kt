@@ -3,14 +3,15 @@ package com.psd.learn.mysplash.data.remote.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.psd.learn.mysplash.data.remote.datasource.SearchDataSourceFactory
 import com.psd.learn.mysplash.NETWORK_PAGE_SIZE
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.remote.datasource.FeedCollectionsDataSource
 import com.psd.learn.mysplash.data.remote.datasource.FeedPhotosDataSource
+import com.psd.learn.mysplash.data.remote.datasource.SearchDataSourceFactory
 import com.psd.learn.mysplash.utils.log.Logger
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import javax.inject.Inject
 
 class UnSplashPagingRepository @Inject constructor(
@@ -23,17 +24,17 @@ class UnSplashPagingRepository @Inject constructor(
         enablePlaceholders = false
     )
 
-    fun <T : Any> getSearchResultStream(query: String?, searchType: Int): Flow<PagingData<T>> {
+    fun <T : Any> getSearchResultStream(query: String?, searchType: Int, onTotalResponse: (MutableSharedFlow<Int>) -> Unit): Flow<PagingData<T>> {
         Logger.d(TAG, "getSearchResultStream() - query: $query - searchType: $searchType")
+        val dataSource = SearchDataSourceFactory.getSearchDataSource<T>(
+            unSplashApiService,
+            searchType,
+            query
+        )
+        onTotalResponse(dataSource.searchResultTotal)
         return Pager(
             config = pageConfig,
-            pagingSourceFactory = {
-                SearchDataSourceFactory.getSearchDataSource<T>(
-                    unSplashApiService,
-                    searchType,
-                    query
-                )
-            }
+            pagingSourceFactory = { dataSource }
         ).flow
     }
 

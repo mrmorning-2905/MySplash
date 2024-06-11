@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
+import com.psd.learn.mysplash.SEARCH_USERS_TYPE
 import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.databinding.SearchUserFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
@@ -46,6 +47,7 @@ class SearchUserListFragment :
         super.onViewCreated(view, savedInstanceState)
         handleScroll(searchViewModel)
         initPagingData(searchViewModel.searchUserPagingData)
+        binSearchResult(searchViewModel.searchUserTotal, SEARCH_USERS_TYPE, binding.searchResult)
     }
 
     companion object {
