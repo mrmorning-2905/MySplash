@@ -83,9 +83,9 @@ open class PagingSearchViewModel @Inject constructor(
                 )
         }
 
-    private val _searchPhotoTotal = MutableSharedFlow<Int>()
-    private val _searchCollectionTotal = MutableSharedFlow<Int>()
-    private val _searchUserTotal = MutableSharedFlow<Int>()
+    private val _searchPhotoTotal = MutableSharedFlow<Int>(replay = 1)
+    private val _searchCollectionTotal = MutableSharedFlow<Int>(replay = 1)
+    private val _searchUserTotal = MutableSharedFlow<Int>(replay = 1)
 
     val searchPhotoTotal = _searchPhotoTotal.asSharedFlow()
     val searchCollectionTotal = _searchCollectionTotal.asSharedFlow()
