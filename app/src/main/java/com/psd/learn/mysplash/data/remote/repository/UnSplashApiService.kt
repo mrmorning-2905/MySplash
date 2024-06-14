@@ -8,6 +8,7 @@ import com.psd.learn.mysplash.data.remote.entity.SearchUserResponseItem
 import retrofit2.Retrofit
 import retrofit2.create
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UnSplashApiService {
@@ -23,6 +24,12 @@ interface UnSplashApiService {
         @Query("page") page: Int,
         @Query("per_page") perPage: Int
     ): List<CollectionResponseItem>
+
+    @GET("photos/{id}")
+    suspend fun getPhotoItem(
+        @Path("id") id: String
+    ): PhotoResponseItem
+
 
     @GET("search/photos")
     suspend fun getSearchPhotoResult(

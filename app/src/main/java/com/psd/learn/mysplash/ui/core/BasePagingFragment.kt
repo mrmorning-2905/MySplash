@@ -11,6 +11,8 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -23,8 +25,9 @@ import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.SEARCH_COLLECTIONS_TYPE
 import com.psd.learn.mysplash.SEARCH_PHOTOS_TYPE
 import com.psd.learn.mysplash.SEARCH_USERS_TYPE
+import com.psd.learn.mysplash.ui.feed.photos.PhotoDetailsFragment
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
-import com.psd.learn.mysplash.ui.search.UiAction
+import com.psd.learn.mysplash.ui.search.SearchAction
 import com.psd.learn.mysplash.utils.log.Logger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
@@ -66,7 +69,7 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 if (dy != 0) {
-                    val scrollAction = UiAction.Scroll(currentQuery = uiState.value.query)
+                    val scrollAction = SearchAction.Scroll(currentQuery = uiState.value.query)
                     viewModel.onApplyUserAction(scrollAction)
                 }
             }
@@ -142,13 +145,14 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
 
     @SuppressLint("SetTextI18n")
     protected fun binSearchResult(searchResultFlow: SharedFlow<Int>, searchType: Int, resultTv: TextView) {
+        Logger.d(TAG, "binSearchResult() - searchType: $searchType")
         lifecycleScope.launch {
             searchResultFlow
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .distinctUntilChanged()
-                .collect { totalResult ->
+                .collectLatest { totalResult ->
                     val searchTypeDes = getSearchTypeString(searchType)
-                    Logger.d(TAG, "onViewCreated() - totalResult of $searchTypeDes: $totalResult")
+                    Logger.d(TAG, "binSearchResult() - totalResult of $searchTypeDes: $totalResult")
                     resultTv.text = "Result: $totalResult $searchTypeDes"
                 }
         }
@@ -183,10 +187,26 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     protected open val mItemClickListener = object : OnItemClickListener {
         override fun coverPhotoClicked(photoId: String?) {
             showMessageToast("clicked on photo have id: $photoId")
+            openPhotoDetails(photoId)
         }
 
         override fun profileClicked(userId: String?) {
             showMessageToast("clicked on user profile have id: $userId")
+        }
+    }
+
+    private fun openPhotoDetails(photoId: String?) {
+        requireActivity().supportFragmentManager.commit {
+            setReorderingAllowed(true)
+            addToBackStack(null)
+            val bundle = Bundle().apply {
+                putString("PHOTO_ID", photoId)
+            }
+            replace<PhotoDetailsFragment>(
+                containerViewId = R.id.fragment_container_view,
+                tag = PhotoDetailsFragment::class.java.simpleName,
+                args = bundle
+            )
         }
     }
 

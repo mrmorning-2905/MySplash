@@ -80,7 +80,7 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
             override fun afterTextChanged(s: Editable?) {
                 val queryText = s?.trim()?.toString() ?: ""
                 if (queryText.isNotEmpty()) {
-                    val searchAction = UiAction.Search(queryText)
+                    val searchAction = SearchAction.Search(queryText)
                     viewModel.onApplyUserAction(searchAction)
                 }
             }

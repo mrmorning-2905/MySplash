@@ -7,11 +7,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class FeedPhotosDataSource(
-    private val unSplashApiService: UnSplashApiService
+    private val unSplashApiService: UnSplashApiService,
 ) : AbsPagingDataSource<PhotoItem>() {
 
     override val TAG: String
         get() = FeedPhotosDataSource::class.java.simpleName
+
     override suspend fun getListDataPaging(
         queryText: String?,
         page: Int,
@@ -24,7 +25,7 @@ class FeedPhotosDataSource(
     }
 }
 
-private fun PhotoResponseItem.toPhotoItem(): PhotoItem {
+fun PhotoResponseItem.toPhotoItem(): PhotoItem {
     return PhotoItem(
         photoId = id,
         userName = user.name,

@@ -4,18 +4,16 @@ import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.data.remote.entity.SearchUserResponseItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
 
 class SearchUserDataSource(
     private val unSplashApiService: UnSplashApiService,
-    queryText: String?
+    queryText: String?,
+    override val totalResult: (Int) -> Unit
 ) : AbsPagingDataSource<UserItem>(queryText) {
 
     override val TAG: String
         get() = SearchUserDataSource::class.java.simpleName
-
-    override val searchResultTotal = MutableSharedFlow<Int>()
     override suspend fun getListDataPaging(
         queryText: String?,
         page: Int,
@@ -30,9 +28,7 @@ class SearchUserDataSource(
                 perPage = perPage
             )
         }
-
-        val totalResult = response.total
-        searchResultTotal.emit(totalResult)
+        totalResult(response.total)
         return response.results.map { it.toUserItem() }
     }
 }

@@ -16,6 +16,7 @@ import com.psd.learn.mysplash.ui.PhotoPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
+import com.psd.learn.mysplash.utils.log.Logger
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

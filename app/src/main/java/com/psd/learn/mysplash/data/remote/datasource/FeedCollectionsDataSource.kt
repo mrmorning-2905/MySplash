@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class FeedCollectionsDataSource(
-    private val unSplashApiService: UnSplashApiService
+    private val unSplashApiService: UnSplashApiService,
 ) : AbsPagingDataSource<CollectionItem>() {
 
     override val TAG: String

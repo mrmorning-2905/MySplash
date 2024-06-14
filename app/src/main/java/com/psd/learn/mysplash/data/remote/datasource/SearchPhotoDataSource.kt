@@ -4,18 +4,16 @@ import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.remote.entity.SearchPhotoResponseItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.withContext
 
 class SearchPhotoDataSource(
     private val unSplashApiService: UnSplashApiService,
-    queryText: String?
+    queryText: String?,
+    override val totalResult: (Int) -> Unit
 ) : AbsPagingDataSource<PhotoItem>(queryText) {
 
     override val TAG: String
         get() = SearchPhotoDataSource::class.java.simpleName
-
-    override val searchResultTotal = MutableSharedFlow<Int>()
 
     override suspend fun getListDataPaging(
         queryText: String?,
@@ -32,12 +30,9 @@ class SearchPhotoDataSource(
                 perPage = perPage
             )
         }
-
-        val totalResult = response.total
-        searchResultTotal.emit(totalResult)
+        totalResult(response.total)
         return response.results.map { it.toPhotoItem() }
     }
-
 }
 
 private fun SearchPhotoResponseItem.Result.toPhotoItem(): PhotoItem {
