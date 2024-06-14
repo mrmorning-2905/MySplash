@@ -87,9 +87,9 @@ open class PagingSearchViewModel @Inject constructor(
     val searchPhotoPagingData: Flow<PagingData<PhotoItem>> = searchAction
         .debounce(650L)
         .flatMapLatest { search ->
-            pagingRepository.getSearchResultStream<PhotoItem>(search.query, SEARCH_PHOTOS_TYPE) {
+            pagingRepository.getSearchResultStream<PhotoItem>(search.query, SEARCH_PHOTOS_TYPE) { totalPhotos ->
                 viewModelScope.launch {
-                    _searchPhotoTotal.emit(it)
+                    _searchPhotoTotal.emit(totalPhotos)
                 }
             }
         }
@@ -99,9 +99,9 @@ open class PagingSearchViewModel @Inject constructor(
     val searchCollectionPagingData: Flow<PagingData<CollectionItem>> = searchAction
         .debounce(650L)
         .flatMapLatest { search ->
-            pagingRepository.getSearchResultStream<CollectionItem>(search.query, SEARCH_COLLECTIONS_TYPE) {
+            pagingRepository.getSearchResultStream<CollectionItem>(search.query, SEARCH_COLLECTIONS_TYPE) { totalCollections ->
                 viewModelScope.launch {
-                    _searchCollectionTotal.emit(it)
+                    _searchCollectionTotal.emit(totalCollections)
                 }
             }
         }
@@ -111,9 +111,9 @@ open class PagingSearchViewModel @Inject constructor(
     val searchUserPagingData: Flow<PagingData<UserItem>> = searchAction
         .debounce(650L)
         .flatMapLatest { search ->
-            pagingRepository.getSearchResultStream<UserItem>(search.query, SEARCH_USERS_TYPE) {
+            pagingRepository.getSearchResultStream<UserItem>(search.query, SEARCH_USERS_TYPE) { totalUsers ->
                 viewModelScope.launch {
-                    _searchUserTotal.emit(it)
+                    _searchUserTotal.emit(totalUsers)
                 }
             }
         }

@@ -11,7 +11,8 @@ import retrofit2.HttpException
 import java.io.IOException
 
 abstract class AbsPagingDataSource<T : Any>(
-    private val queryText: String? = null
+    private val queryText: String? = null,
+    open val totalResult: (Int) -> Unit = {}
 ) : PagingSource<Int, T>() {
 
     protected open val TAG = AbsPagingDataSource::class.java.simpleName
@@ -21,8 +22,6 @@ abstract class AbsPagingDataSource<T : Any>(
         page: Int,
         perPage: Int
     ): List<T>
-
-    open val totalResult: (Int) -> Unit = {}
 
     override fun getRefreshKey(state: PagingState<Int, T>): Int? {
         return state.anchorPosition?.let { anchorPos ->

@@ -1,5 +1,7 @@
 package com.psd.learn.mysplash.data.local.entity
 
+import com.psd.learn.mysplash.data.remote.entity.CollectionResponseItem
+
 data class CollectionItem(
     val collectionId: String,
     val userName: String,
@@ -11,3 +13,17 @@ data class CollectionItem(
     val numberImages: Int,
     val userId: String
 )
+
+fun CollectionResponseItem.toCollectionItem(): CollectionItem {
+    return CollectionItem(
+        collectionId = id,
+        userName = user.name,
+        userProfileUrl = user.profileImage.medium,
+        coverPhotoUrl = coverPhoto.urls.regular,
+        coverDescription = title,
+        numberImages = totalPhotos,
+        userId = user.id,
+        coverThumbnailUrl = coverPhoto.urls.thumb,
+        coverColor = coverPhoto.color ?: ""
+    )
+}

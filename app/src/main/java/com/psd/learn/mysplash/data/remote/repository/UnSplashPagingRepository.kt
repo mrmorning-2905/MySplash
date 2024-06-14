@@ -29,9 +29,7 @@ class UnSplashPagingRepository @Inject constructor(
             unSplashApiService,
             searchType,
             query
-        ) {
-            onTotalResult(it)
-        }
+        ) { total -> onTotalResult(total) }
         return Pager(
             config = pageConfig,
             pagingSourceFactory = { dataSource }

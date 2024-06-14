@@ -1,7 +1,7 @@
 package com.psd.learn.mysplash.data.remote.datasource
 
 import com.psd.learn.mysplash.data.local.entity.UserItem
-import com.psd.learn.mysplash.data.remote.entity.SearchUserResponseItem
+import com.psd.learn.mysplash.data.local.entity.toUserItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -31,13 +31,4 @@ class SearchUserDataSource(
         totalResult(response.total)
         return response.results.map { it.toUserItem() }
     }
-}
-
-private fun SearchUserResponseItem.Result.toUserItem(): UserItem {
-    return UserItem(
-        userId = id,
-        profileUrl = profileImage.medium,
-        userName = name,
-        userInfo = twitterUsername ?: ""
-    )
 }
