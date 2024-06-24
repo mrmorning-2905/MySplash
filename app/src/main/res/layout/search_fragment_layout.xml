@@ -13,7 +13,10 @@
                 android:id="@+id/text_input_query"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:endIconMode="clear_text">
+                android:background="@android:color/transparent"
+                app:boxBackgroundColor="@android:color/transparent"
+                app:endIconMode="clear_text"
+                app:startIconDrawable="@drawable/navigation_back_icon">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/searchEditText"

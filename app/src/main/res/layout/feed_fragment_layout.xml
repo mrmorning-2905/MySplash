@@ -13,9 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:tabMode="fixed"
-            app:tabGravity="fill"
-            app:tabSelectedTextColor="@color/md_theme_secondary"
-            app:tabTextColor="@color/tab_unselected_color"/>
+            app:tabGravity="fill"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager2.widget.ViewPager2

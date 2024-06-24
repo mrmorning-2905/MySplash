@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -31,6 +32,7 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
         super.onViewCreated(view, savedInstanceState)
         setupViewPager()
         setupSearchChange()
+        setUpNavigation()
     }
 
     private fun setupViewPager() {
@@ -81,7 +83,12 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
                 }
             }
         })
+    }
 
+    private fun setUpNavigation() {
+        binding.textInputQuery.setStartIconOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
     }
 
     private class SearchViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
