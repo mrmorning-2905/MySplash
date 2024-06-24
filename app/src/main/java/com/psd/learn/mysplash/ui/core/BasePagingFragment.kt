@@ -56,6 +56,16 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
 
     abstract val retryBtn: Button
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val rootView = super.onCreateView(inflater, container, savedInstanceState)
+        setupToolbar(false, "", false)
+        return rootView
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()

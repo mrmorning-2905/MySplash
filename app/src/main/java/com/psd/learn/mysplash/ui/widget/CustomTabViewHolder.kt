@@ -1,9 +1,13 @@
 package com.psd.learn.mysplash.ui.widget
 
 import android.content.Context
+import android.graphics.fonts.FontStyle
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
+import androidx.core.widget.TextViewCompat
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.databinding.TabLayoutCustomBinding
 
@@ -25,11 +29,20 @@ class CustomTabViewHolder @JvmOverloads constructor(
 
             binding.tabTitle.apply {
                 text = field.text
-                setTextColor(
-                    when (field.isSelected) {
-                        true -> R.color.md_theme_secondary
-                        false -> R.color.tab_unselected_color
+                setTextSize(
+                    TypedValue.COMPLEX_UNIT_SP, when (field.isSelected) {
+                        true -> 20f
+                        false -> 18f
                     }
+                )
+                setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        when (field.isSelected) {
+                            true -> R.color.md_theme_secondary
+                            false -> R.color.tab_unselected_color
+                        }
+                    )
                 )
             }
         }
