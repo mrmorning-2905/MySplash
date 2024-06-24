@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import androidx.appcompat.content.res.AppCompatResources
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.databinding.TabLayoutCustomBinding
 
@@ -20,7 +19,7 @@ class CustomTabViewHolder @JvmOverloads constructor(
         addView(binding.root, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
     }
 
-    var tabItemStatus: TabItem = TabItem("", -1, -1, false)
+    var tabItemStatus: TabItem = TabItem("", false)
         set(value) {
             field = value
 
@@ -33,13 +32,6 @@ class CustomTabViewHolder @JvmOverloads constructor(
                     }
                 )
             }
-
-            binding.tabIcon.setImageDrawable(
-                when (field.isSelected) {
-                    true -> AppCompatResources.getDrawable(context, field.iconResSelected)
-                    false -> AppCompatResources.getDrawable(context, field.iconResUnselected)
-                }
-            )
         }
 
     fun bind(block: CustomTabViewHolder.() -> Unit) {

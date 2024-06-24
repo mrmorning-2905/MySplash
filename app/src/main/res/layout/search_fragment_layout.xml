@@ -12,8 +12,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:navigationIcon="@drawable/navigation_back_icon">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/text_input_query"
@@ -28,6 +27,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Search..."
                     android:imeOptions="actionSearch"
+                    app:endIconMode="clear_text"
                     android:inputType="textNoSuggestions"
                     android:selectAllOnFocus="true"
                     android:singleLine="true" />

@@ -14,8 +14,6 @@ import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.feed.collections.CollectionsListFragment
 import com.psd.learn.mysplash.ui.feed.photos.PhotosListFragment
 import com.psd.learn.mysplash.ui.search.SearchFragment
-import com.psd.learn.mysplash.TAB_ICON_SELECTED_DRAWABLES
-import com.psd.learn.mysplash.TAB_ICON_UNSELECTED_DRAWABLES
 import com.psd.learn.mysplash.TAB_TITLES
 import com.psd.learn.mysplash.ui.widget.CustomTabViewHolder
 import com.psd.learn.mysplash.ui.widget.TabItem
@@ -61,8 +59,6 @@ class FeedFragment :
                     customView = CustomTabViewHolder(context).apply {
                         tabItemStatus = TabItem(
                             text = TAB_TITLES[position],
-                            iconResUnselected = TAB_ICON_UNSELECTED_DRAWABLES[position],
-                            iconResSelected = TAB_ICON_SELECTED_DRAWABLES[position],
                             isSelected = position == 0)
                     }
                 }
