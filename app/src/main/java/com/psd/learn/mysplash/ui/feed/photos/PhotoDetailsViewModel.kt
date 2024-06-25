@@ -16,7 +16,7 @@ class PhotoDetailsViewModel @Inject constructor(
     private val photoDetailsDataSource: PhotoDetailsDataSource
 ) : ViewModel() {
 
-    private val _photoDetailsResult = MutableSharedFlow<ResultState>()
+    private val _photoDetailsResult = MutableSharedFlow<ResultState>(replay = 1)
     val photoDetailsResult = _photoDetailsResult.asSharedFlow()
     fun getPhotoDetailResult(photoId: String) {
         viewModelScope.launch {

@@ -11,11 +11,10 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
@@ -25,7 +24,6 @@ import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.SEARCH_COLLECTIONS_TYPE
 import com.psd.learn.mysplash.SEARCH_PHOTOS_TYPE
 import com.psd.learn.mysplash.SEARCH_USERS_TYPE
-import com.psd.learn.mysplash.ui.feed.photos.PhotoDetailsFragment
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import com.psd.learn.mysplash.ui.search.SearchAction
 import com.psd.learn.mysplash.utils.log.Logger
@@ -206,18 +204,17 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     }
 
     private fun openPhotoDetails(photoId: String?) {
-        requireActivity().supportFragmentManager.commit {
-            setReorderingAllowed(true)
-            addToBackStack(null)
-            val bundle = Bundle().apply {
-                putString("PHOTO_ID", photoId)
-            }
-            replace<PhotoDetailsFragment>(
-                containerViewId = R.id.fragment_container_view,
-                tag = PhotoDetailsFragment::class.java.simpleName,
-                args = bundle
-            )
+        val bundle = Bundle().apply {
+            putString("PHOTO_ID", photoId)
         }
+        val navHost = findNavController()
+        val actionId = when (val currentDestId = navHost.currentDestination?.id) {
+            R.id.feed_fragment_dest -> R.id.action_feedFragment_to_detailsPhotoFragment
+            R.id.search_fragment_dest -> R.id.action_searchFragment_to_detailsPhotoFragment
+            else -> error("doesn't support action at this fragment_currentDestId: $currentDestId")
+        }
+        navHost.navigate(actionId, bundle)
+
     }
 
     private fun showMessageToast(message: String) {

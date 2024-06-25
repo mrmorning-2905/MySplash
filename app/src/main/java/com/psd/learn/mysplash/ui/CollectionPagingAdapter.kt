@@ -35,7 +35,7 @@ class CollectionPagingAdapter(
         init {
             viewBinding.run {
                 coverPhoto.setOnClickListener { itemClickListener.coverPhotoClicked(collectionItem.collectionId) }
-                userOwnerContainer.setOnClickListener { itemClickListener.profileClicked(collectionItem.userId) }
+                profileLayout.userOwnerContainer.setOnClickListener { itemClickListener.profileClicked(collectionItem.userId) }
             }
         }
 
@@ -43,8 +43,8 @@ class CollectionPagingAdapter(
         override fun onBindView(item: CollectionItem) {
             collectionItem = item
             viewBinding.run {
-                userProfile.loadProfilePicture(requestManager, item.userProfileUrl)
-                userName.text = item.userName
+                profileLayout.userProfile.loadProfilePicture(requestManager, item.userProfileUrl)
+                profileLayout.userName.text = item.userName
                 coverPhoto.loadCoverThumbnail(requestManager, item.coverPhotoUrl, item.coverThumbnailUrl, item.coverColor, true)
                 coverTitle.text = item.coverDescription
                 coverDetail.text = "${item.numberImages} Images"

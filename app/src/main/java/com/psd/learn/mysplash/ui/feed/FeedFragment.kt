@@ -3,18 +3,18 @@ package com.psd.learn.mysplash.ui.feed
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
-import androidx.fragment.app.replace
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.psd.learn.mysplash.R
+import com.psd.learn.mysplash.TAB_TITLES
 import com.psd.learn.mysplash.databinding.FeedFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.feed.collections.CollectionsListFragment
 import com.psd.learn.mysplash.ui.feed.photos.PhotosListFragment
-import com.psd.learn.mysplash.ui.search.SearchFragment
-import com.psd.learn.mysplash.TAB_TITLES
 import com.psd.learn.mysplash.ui.widget.CustomTabViewHolder
 import com.psd.learn.mysplash.ui.widget.TabItem
 import com.psd.learn.mysplash.utils.log.Logger
@@ -33,7 +33,7 @@ class FeedFragment :
 
     private fun setupViewPager() {
         binding.viewPager.run {
-            adapter = FeedViewPagerAdapter(this@FeedFragment)
+            adapter = FeedViewPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
 
             with(binding.tabLayout) {
                 addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -70,18 +70,12 @@ class FeedFragment :
         binding.bottomAppbar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.search_menu -> {
-                    parentFragmentManager.commit {
-                        setReorderingAllowed(true)
-                        addToBackStack(null)
-                        replace<SearchFragment>(
-                            containerViewId = R.id.fragment_container_view,
-                            tag = SearchFragment::class.java.simpleName
-                        )
-                    }
+                    gotoSearchFragment()
                     true
                 }
 
                 R.id.sort_by_menu -> {
+                    //TODO handle sort menu
                     false
                 }
 
@@ -90,7 +84,12 @@ class FeedFragment :
         }
     }
 
-    private class FeedViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+    private fun gotoSearchFragment() {
+        val action = FeedFragmentDirections.actionFeedFragmentToSearchFragment()
+        findNavController().navigate(action)
+    }
+
+    private class FeedViewPagerAdapter(fragment: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragment, lifecycle) {
         override fun getItemCount(): Int = 2
 
         override fun createFragment(position: Int): Fragment {

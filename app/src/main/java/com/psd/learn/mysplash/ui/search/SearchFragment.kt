@@ -6,7 +6,10 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -37,7 +40,7 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
 
     private fun setupViewPager() {
         binding.viewPager.run {
-            adapter = SearchViewPagerAdapter(this@SearchFragment)
+            adapter = SearchViewPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
             with(binding.tabLayout) {
                 addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                     override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -87,11 +90,11 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
 
     private fun setUpNavigation() {
         binding.textInputQuery.setStartIconOnClickListener {
-            parentFragmentManager.popBackStack()
+            findNavController().popBackStack()
         }
     }
 
-    private class SearchViewPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+    private class SearchViewPagerAdapter(fragment: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragment, lifecycle) {
         override fun getItemCount(): Int {
             return 3
         }

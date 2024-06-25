@@ -14,15 +14,15 @@ import com.psd.learn.mysplash.databinding.PhotoDetailsFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.utils.ResultState
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
+import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 import com.psd.learn.mysplash.utils.log.Logger
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class PhotoDetailsFragment : BaseFragment<PhotoDetailsFragmentLayoutBinding>(inflate = PhotoDetailsFragmentLayoutBinding::inflate) {
+class PhotoDetailsFragment :
+    BaseFragment<PhotoDetailsFragmentLayoutBinding>(inflate = PhotoDetailsFragmentLayoutBinding::inflate) {
 
     private val photoDetailsViewModel by viewModels<PhotoDetailsViewModel>()
 
@@ -49,19 +49,39 @@ class PhotoDetailsFragment : BaseFragment<PhotoDetailsFragmentLayoutBinding>(inf
         lifecycleScope.launch {
             photoDetailsViewModel.photoDetailsResult
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-/*                .filterIsInstance<ResultState.Success<PhotoItem>>()*/
                 .distinctUntilChanged()
                 .collect { resultState ->
                     Logger.d("sangpd", "state is: $resultState")
-//                    val photoItem = resultState.data
-//                    binding.coverImage.loadCoverThumbnail(
-//                        requestManager = Glide.with(this@PhotoDetailsFragment),
-//                        coverUrl = photoItem.coverPhotoUrl,
-//                        thumbnailUrl = photoItem.coverThumbnailUrl,
-//                        coverColor = photoItem.coverColor,
-//                        centerCrop = true
-//                    )
+                    renderUiState(resultState)
                 }
+        }
+    }
+
+    private fun renderUiState(state: ResultState) {
+        when (state) {
+            is ResultState.Loading -> {
+                binding.progressBar.visibility = View.VISIBLE
+            }
+
+            is ResultState.Success<*> -> {
+                binding.progressBar.visibility = View.GONE
+                val photoItem = state.data as PhotoItem
+                binding.coverImage.loadCoverThumbnail(
+                    requestManager = Glide.with(this@PhotoDetailsFragment),
+                    coverUrl = photoItem.coverPhotoUrl,
+                    thumbnailUrl = photoItem.coverThumbnailUrl,
+                    coverColor = photoItem.coverColor,
+                    centerCrop = true
+                )
+
+                binding.profileLayout.run {
+                    userProfile.loadProfilePicture(Glide.with(this@PhotoDetailsFragment), photoItem.userProfileUrl)
+                    userName.text = photoItem.userName
+                }
+            }
+            else -> {
+                binding.progressBar.visibility = View.VISIBLE
+            }
         }
     }
 

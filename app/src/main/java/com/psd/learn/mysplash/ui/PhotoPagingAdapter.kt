@@ -46,7 +46,7 @@ class PhotoPagingAdapter(
         init {
             viewBinding.run {
                 coverPhoto.setOnClickListener { itemClickListener.coverPhotoClicked(photoItem.photoId) }
-                userOwnerContainer.setOnClickListener { itemClickListener.profileClicked(photoItem.userId) }
+                profileLayout.userOwnerContainer.setOnClickListener { itemClickListener.profileClicked(photoItem.userId) }
             }
         }
 
@@ -54,8 +54,8 @@ class PhotoPagingAdapter(
         override fun onBindView(item: PhotoItem) {
             photoItem = item
             viewBinding.run {
-                userProfile.loadProfilePicture(requestManager, item.userProfileUrl)
-                userName.text = item.userName
+                profileLayout.userProfile.loadProfilePicture(requestManager, item.userProfileUrl)
+                profileLayout.userName.text = item.userName
                 coverPhoto.loadCoverThumbnail(requestManager, item.coverPhotoUrl, item.coverThumbnailUrl, item.coverColor, true)
                 coverTitle.text = item.photoDescription
                 coverDetail.text = "${item.numberLikes} Likes"
