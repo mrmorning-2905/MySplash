@@ -1,5 +1,6 @@
 package com.psd.learn.mysplash.ui.feed.photos
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,12 +27,10 @@ class PhotoDetailsFragment :
 
     private val photoDetailsViewModel by viewModels<PhotoDetailsViewModel>()
 
-    private val photoId: String
-        get() = arguments?.getString("PHOTO_ID") ?: ""
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        photoDetailsViewModel.getPhotoDetailResult(photoId)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val photoId = arguments?.getString("PHOTO_ID") ?: ""
+        photoDetailsViewModel.emitPhotoId(photoId)
     }
 
     override fun onCreateView(
