@@ -9,7 +9,7 @@ import com.psd.learn.mysplash.ui.core.BaseListAdapter
 import com.psd.learn.mysplash.ui.core.BaseListViewHolder
 
 class TagListAdapter(
-    /*private val itemClick: (String) -> Unit*/
+    private val itemClick: (String) -> Unit
 ) : BaseListAdapter<String, TagCardViewItemBinding>(R.layout.tag_card_view_item, TAG_DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(
@@ -29,11 +29,11 @@ class TagListAdapter(
 
         private lateinit var tagName: String
 
-/*        init {
+        init {
             viewBinding.tagCardContainer.setOnClickListener {
                 itemClick(tagName)
             }
-        }*/
+        }
 
         override fun onBindView(item: String) {
             tagName = item

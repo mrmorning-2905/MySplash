@@ -7,7 +7,7 @@
     <color name="md_theme_onSecondary">#FFFFFF</color>
     <color name="md_theme_secondaryContainer">#D0F2A5</color>
     <color name="md_theme_onSecondaryContainer">#385217</color>
-    <color name="basic_divider_line_color">#A85F6368</color>
+    <color name="basic_divider_line_color">#635F6368</color>
     <color name="tab_unselected_color">#5f6368</color>
 
     <color name="image_btn_color_bg">#F3F7F9</color>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/cover_image"
-        android:layout_height="300dp"
         android:layout_width="match_parent"
+        android:layout_height="300dp"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -15,8 +15,8 @@
 
     <LinearLayout
         android:id="@+id/location_container"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="@id/cover_image"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,26 +25,26 @@
 
         <ImageView
             android:id="@+id/location_icon"
-            android:layout_gravity="center"
-            android:layout_height="24dp"
             android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
             android:src="@drawable/location_icon" />
 
         <TextView
             android:id="@+id/address"
             style="@style/HeadLine.H6"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:gravity="center"/>
+            android:gravity="center" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/user_behavior_container"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:layout_width="match_parent"
         android:orientation="horizontal"
         android:weightSum="3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,45 +53,45 @@
 
         <include
             android:id="@+id/profile_layout"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
+            layout="@layout/user_profile_layout"
             android:layout_width="wrap_content"
-            layout="@layout/user_profile_layout" />
+            android:layout_height="wrap_content"
+            android:layout_weight="2" />
 
         <LinearLayout
             android:id="@+id/button_container"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cover_image">
 
             <ImageButton
-                android:background="@android:color/transparent"
                 android:id="@+id/download_btn"
-                android:layout_gravity="center"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:background="@android:color/transparent"
                 android:src="@drawable/download_icon" />
 
             <ImageButton
-                android:background="@android:color/transparent"
                 android:id="@+id/favorite_btn"
-                android:layout_gravity="center"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:background="@android:color/transparent"
                 android:src="@drawable/favorite_icon" />
 
             <ImageButton
-                android:background="@android:color/transparent"
                 android:id="@+id/bookmark_btn"
-                android:layout_gravity="center"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:background="@android:color/transparent"
                 android:src="@drawable/bookmark_icon" />
         </LinearLayout>
 
@@ -101,21 +101,22 @@
         android:id="@+id/camera_info_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_behavior_container"
-        android:orientation="vertical">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_behavior_container">
 
         <View
-            android:layout_marginTop="10dp"
-            style="@style/ListDivider" />
+            style="@style/ListDivider"
+            android:layout_marginTop="10dp" />
 
         <GridView
             android:id="@+id/camera_info_gridview"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
+            android:listSelector="@android:color/transparent"
             android:numColumns="2" />
     </LinearLayout>
 
@@ -123,39 +124,49 @@
         android:id="@+id/image_info_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/camera_info_container"
-        android:orientation="vertical">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/camera_info_container">
 
-        <View
-            style="@style/ListDivider" />
+        <View style="@style/ListDivider" />
 
         <GridView
             android:id="@+id/image_info_gridview"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
+            android:listSelector="@android:color/transparent"
             android:numColumns="3" />
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tag_recycle_view"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:id="@+id/tag_container"
         android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:scrollbars="horizontal"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_info_container" />
+        app:layout_constraintTop_toBottomOf="@id/image_info_container">
+
+        <View style="@style/ListDivider" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tag_recycle_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:scrollbars="horizontal" />
+
+    </LinearLayout>
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"
-        android:indeterminate="true"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -165,12 +176,12 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/set_wallpaper_fab_btn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="24dp"
-        android:layout_width="wrap_content"
+        android:contentDescription="TODO"
         android:src="@drawable/add_floating_icon"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="TODO" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
