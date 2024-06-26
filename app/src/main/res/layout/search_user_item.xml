@@ -23,14 +23,14 @@
 
         <TextView
             android:id="@+id/user_name"
-            style="@style/HeadLine.H5"
+            style="@style/TitleStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical" />
 
         <TextView
             android:id="@+id/user_description"
-            style="@style/SubTitle.Medium"
+            style="@style/SubTitle.Regular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical" />

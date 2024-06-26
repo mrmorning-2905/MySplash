@@ -62,7 +62,7 @@
 
                 <TextView
                     android:id="@+id/cover_detail"
-                    style="@style/SubTitle.Regular"
+                    style="@style/SubTitle.Regular.White"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </LinearLayout>

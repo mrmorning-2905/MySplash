@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/photo_details_fragment_dest"
-        android:name="com.psd.learn.mysplash.ui.feed.photos.PhotoDetailsFragment"
+        android:name="com.psd.learn.mysplash.ui.feed.photos.details.PhotoDetailsFragment"
         android:label="Photo Details" >
 
         <action

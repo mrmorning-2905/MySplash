@@ -31,19 +31,19 @@
             android:src="@drawable/location_icon" />
 
         <TextView
-            android:gravity="center"
             android:id="@+id/address"
+            style="@style/HeadLine.H6"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_width="wrap_content"
-            android:text="Ha noi, Vietnam"
-            android:textSize="24dp" />
+            android:layout_marginStart="10dp"
+            android:gravity="center"/>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/user_behavior_container"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:weightSum="3"
@@ -97,46 +97,59 @@
 
     </LinearLayout>
 
-    <GridView
-        android:background="#2D7E2424"
-        android:id="@+id/camera_info_gridview"
-        android:layout_height="180dp"
+    <LinearLayout
+        android:id="@+id/camera_info_container"
         android:layout_width="match_parent"
-        android:numColumns="2"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_behavior_container" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_behavior_container"
+        android:orientation="vertical">
+
+        <View
+            android:layout_marginTop="10dp"
+            style="@style/ListDivider" />
+
+        <GridView
+            android:id="@+id/camera_info_gridview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:numColumns="2" />
+    </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/image_info"
-        android:layout_height="wrap_content"
+        android:id="@+id/image_info_container"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/camera_info_gridview">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/camera_info_container"
+        android:orientation="vertical">
 
-        <include
-            android:id="@+id/number_view"
-            layout="@layout/info_grid_item" />
+        <View
+            style="@style/ListDivider" />
 
-        <include
-            android:id="@+id/number_download"
-            layout="@layout/info_grid_item" />
+        <GridView
+            android:id="@+id/image_info_gridview"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:numColumns="3" />
 
-        <include
-            android:id="@+id/number_likes"
-            layout="@layout/info_grid_item" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tag_recycle_view"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
         android:scrollbars="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_info" />
+        app:layout_constraintTop_toBottomOf="@id/image_info_container" />
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"

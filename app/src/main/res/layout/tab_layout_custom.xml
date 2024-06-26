@@ -7,9 +7,9 @@
 
     <TextView
         android:id="@+id/tab_title"
+        style="@style/TitleStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="17dp"
         android:gravity="center"
         android:ellipsize="end"
         android:maxLines="1"

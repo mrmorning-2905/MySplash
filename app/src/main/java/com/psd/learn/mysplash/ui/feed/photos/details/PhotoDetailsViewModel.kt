@@ -1,4 +1,4 @@
-package com.psd.learn.mysplash.ui.feed.photos
+package com.psd.learn.mysplash.ui.feed.photos.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

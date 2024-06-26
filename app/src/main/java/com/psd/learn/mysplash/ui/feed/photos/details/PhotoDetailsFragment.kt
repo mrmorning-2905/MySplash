@@ -1,4 +1,4 @@
-package com.psd.learn.mysplash.ui.feed.photos
+package com.psd.learn.mysplash.ui.feed.photos.details
 
 import android.content.Context
 import android.os.Bundle
@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.PhotoDetailsFragmentLayoutBinding
@@ -57,6 +58,7 @@ class PhotoDetailsFragment :
     }
 
     private fun renderUiState(state: ResultState) {
+        setVisibleView(state is ResultState.Loading)
         when (state) {
             is ResultState.Loading -> {
                 binding.progressBar.visibility = View.VISIBLE
@@ -74,13 +76,62 @@ class PhotoDetailsFragment :
                 )
 
                 binding.profileLayout.run {
-                    userProfile.loadProfilePicture(Glide.with(this@PhotoDetailsFragment), photoItem.userProfileUrl)
+                    userProfile.loadProfilePicture(
+                        Glide.with(this@PhotoDetailsFragment),
+                        photoItem.userProfileUrl
+                    )
                     userName.text = photoItem.userName
                 }
+                binding.address.text = photoItem.location
+                bindCameraInfo(photoItem)
+                bindPhotoInfo(photoItem)
+                bindTagList(photoItem)
             }
+
             else -> {
                 binding.progressBar.visibility = View.VISIBLE
             }
+        }
+    }
+
+    private fun setVisibleView(isLoading: Boolean) {
+        val state = if (isLoading) View.GONE else View.VISIBLE
+        binding.run {
+            locationContainer.visibility = state
+            userBehaviorContainer.visibility = state
+            cameraInfoContainer.visibility = state
+            imageInfoContainer.visibility = state
+        }
+    }
+
+    private fun bindCameraInfo(photoItem: PhotoItem) {
+        val detailsInfoList = arrayListOf(
+            InfoModel("Camera", photoItem.cameraName),
+            InfoModel("Focal Length", photoItem.focalLength),
+            InfoModel("ISO", photoItem.iso),
+            InfoModel("Aperture", photoItem.aperture),
+            InfoModel("Exposure Time", photoItem.exposureTime),
+            InfoModel("Dimensions", "${photoItem.width} x ${photoItem.height}"),
+        )
+        val infoGridViewAdapter = PhotoInfoGridAdapter(requireContext(), detailsInfoList)
+        binding.cameraInfoGridview.adapter = infoGridViewAdapter
+    }
+
+    private fun bindPhotoInfo(photoItem: PhotoItem) {
+        val photoInfoList = arrayListOf(
+            InfoModel("Views", photoItem.numberView.toString()),
+            InfoModel("Downloads", photoItem.numberDownload.toString()),
+            InfoModel("Likes", photoItem.numberLikes.toString()),
+        )
+        val infoGridViewAdapter = PhotoInfoGridAdapter(requireContext(), photoInfoList)
+        binding.imageInfoGridview.adapter = infoGridViewAdapter
+    }
+
+    private fun bindTagList(photoItem: PhotoItem) {
+        binding.tagRecycleView.run {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = TagListAdapter().apply { submitList(photoItem.tagList.toList()) }
         }
     }
 
