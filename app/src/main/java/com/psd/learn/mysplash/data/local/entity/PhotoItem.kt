@@ -1,32 +1,72 @@
 package com.psd.learn.mysplash.data.local.entity
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.psd.learn.mysplash.data.remote.entity.PhotoResponseItem
 
+@Entity(tableName = "PHOTO_TABLE")
 data class PhotoItem (
+    @PrimaryKey
+    @ColumnInfo(name = "photo_id")
     val photoId: String,
-    val userName: String,
-    val userProfileUrl: String,
-    val coverPhotoUrl: String,
-    val coverThumbnailUrl: String,
-    val coverColor: String,
-    val photoDescription: String,
-    val numberLikes: Int,
-    val numberView: Int,
-    val numberDownload: Int,
+
+    @ColumnInfo(name = "user_id")
     val userId: String,
+
+    @ColumnInfo(name = "user_name")
+    val userName: String,
+
+    @ColumnInfo(name = "profile_url")
+    val userProfileUrl: String,
+
+    @ColumnInfo(name = "cover_url")
+    val coverPhotoUrl: String,
+
+    @ColumnInfo(name = "thumbnail_url")
+    val coverThumbnailUrl: String,
+
+    @ColumnInfo(name = "cover_color")
+    val coverColor: String,
+
+    @ColumnInfo(name = "photo_des")
+    val photoDescription: String,
+
+    @ColumnInfo(name = "likes")
+    val numberLikes: Int,
+
+    @ColumnInfo(name = "views")
+    val numberView: Int,
+
+    @ColumnInfo(name = "downloads")
+    val numberDownload: Int,
+
+    @ColumnInfo(name = "width")
     val width: Int,
+
+    @ColumnInfo(name = "height")
     val height: Int,
 
     //tag
-    val tagList: Set<String>,
+    //val tagList: Set<String> = emptySet(),
 
+    @ColumnInfo(name = "location")
     val location: String,
 
     //Exif
+    @ColumnInfo(name = "camera")
     val cameraName: String,
+
+    @ColumnInfo(name = "focal_length")
     val focalLength: String,
+
+    @ColumnInfo(name = "iso")
     val iso: String,
+
+    @ColumnInfo(name = "aperture")
     val aperture: String,
+
+    @ColumnInfo(name = "exposure_time")
     val exposureTime: String
 )
 
@@ -51,7 +91,6 @@ fun PhotoResponseItem.toPhotoItem(): PhotoItem {
         iso = exif?.iso?.toString() ?: "Unknown",
         aperture = exif?.aperture ?: "Unknown",
         exposureTime = exif?.exposureTime ?: "Unknown",
-        tagList = tags?.flatMap { listOf(it.title, it.type) }?.toSet() ?: emptySet()
-
+        //tagList = tags?.flatMap { listOf(it.title, it.type) }?.toSet() ?: emptySet()
     )
 }

@@ -5,13 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.PhotoDetailsFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
@@ -68,31 +69,24 @@ class PhotoDetailsFragment :
             is ResultState.Success<*> -> {
                 binding.progressBar.visibility = View.GONE
                 val photoItem = state.data as PhotoItem
-                binding.coverImage.loadCoverThumbnail(
-                    requestManager = Glide.with(this@PhotoDetailsFragment),
-                    coverUrl = photoItem.coverPhotoUrl,
-                    thumbnailUrl = photoItem.coverThumbnailUrl,
-                    coverColor = photoItem.coverColor,
-                    centerCrop = true
-                )
-
-                binding.profileLayout.run {
-                    userProfile.loadProfilePicture(
-                        Glide.with(this@PhotoDetailsFragment),
-                        photoItem.userProfileUrl
-                    )
-                    userName.text = photoItem.userName
-                }
-                binding.address.text = photoItem.location
+                bindImageView(photoItem)
                 bindCameraInfo(photoItem)
                 bindPhotoInfo(photoItem)
                 bindTagList(photoItem)
+                addFavorite(photoItem)
             }
 
             else -> {
                 binding.progressBar.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun addFavorite(photoItem: PhotoItem) {
+        binding.favoriteBtn.setOnClickListener {
+            photoDetailsViewModel.insertFavoritePhoto(photoItem)
+        }
+        photoDetailsViewModel.getAllFavoritePhotos()
     }
 
     private fun setVisibleView(isLoading: Boolean) {
@@ -134,9 +128,45 @@ class PhotoDetailsFragment :
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = TagListAdapter { tag ->
-                Toast.makeText(context, "search with tag: $tag", Toast.LENGTH_SHORT).show()
-            }.apply { submitList(photoItem.tagList.toList()) }
+                gotoSearchFragment(tag)
+            }.apply { submitList(emptyList()/*photoItem.tagList.toList()*/) }
         }
+    }
+
+    private fun gotoSearchFragment(searchText: String) {
+        val navController = findNavController()
+        val actionId = R.id.action_photoDetails_to_searchFragment
+        val bundle = Bundle().apply {
+            putString("KEY_WORD", searchText)
+        }
+        navController.navigate(actionId, bundle)
+    }
+
+    private fun bindImageView(photoItem: PhotoItem) {
+        val requestManager = Glide.with(this@PhotoDetailsFragment)
+        binding.coverImage.loadCoverThumbnail(
+            requestManager = requestManager,
+            coverUrl = photoItem.coverPhotoUrl,
+            thumbnailUrl = photoItem.coverThumbnailUrl,
+            coverColor = photoItem.coverColor,
+            centerCrop = true
+        )
+
+        binding.profileLayout.run {
+            userProfile.loadProfilePicture(
+                requestManager,
+                photoItem.userProfileUrl
+            )
+            userName.text = photoItem.userName
+        }
+        binding.address.text = photoItem.location
+    }
+
+    override fun onDestroyView() {
+        binding.tagRecycleView.adapter = null
+        binding.imageInfoGridview.adapter = null
+        binding.cameraInfoGridview.adapter = null
+        super.onDestroyView()
     }
 
     companion object {

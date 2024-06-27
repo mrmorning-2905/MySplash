@@ -1,5 +1,6 @@
 package com.psd.learn.mysplash.ui.search
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -30,7 +31,16 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
     override val TAG: String
         get() = SearchFragment::class.java.simpleName
 
+    private val searchText: String
+        get() = arguments?.getString("KEY_WORD") ?: ""
+
     private val viewModel by activityViewModels<PagingSearchViewModel>()
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Logger.d(TAG, "searchText from tag: $searchText")
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViewPager()
@@ -73,6 +83,11 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
     }
 
     private fun setupSearchChange() {
+        if (searchText.isNotEmpty()) {
+            binding.searchEditText.setText(searchText)
+            viewModel.onApplyUserAction(SearchAction.Search(searchText))
+        }
+
         binding.searchEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 

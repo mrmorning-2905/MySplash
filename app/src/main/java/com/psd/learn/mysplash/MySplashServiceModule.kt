@@ -1,5 +1,9 @@
 package com.psd.learn.mysplash
 
+import android.content.Context
+import com.psd.learn.mysplash.data.local.dao.PhotosDao
+import com.psd.learn.mysplash.data.local.database.PhotoDatabase
+import com.psd.learn.mysplash.data.local.datasource.PhotoLocalDataSource
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
 import com.psd.learn.mysplash.data.remote.repository.UnSplashPagingRepository
 import com.psd.learn.mysplash.network.AuthorizationInterceptor
@@ -8,12 +12,16 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -30,6 +38,21 @@ annotation class MySplashBaseUrlQualifier
 internal interface MySplashServiceModule {
 
     companion object {
+        @Provides
+        @Singleton
+        @Named("main")
+        fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+        @Provides
+        @Singleton
+        @Named("io")
+        fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
+
+        @Provides
+        @Singleton
+        @Named("default")
+        fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
+
         @Provides
         @MySplashBaseUrlQualifier
         fun provideMySplashBaseUrl(): String = BuildConfig.UNSPLASH_BASE_URL
@@ -91,6 +114,29 @@ internal interface MySplashServiceModule {
         @Singleton
         fun providePagingRepository(unSplashApiService: UnSplashApiService) : UnSplashPagingRepository {
             return UnSplashPagingRepository(unSplashApiService)
+        }
+
+        @Provides
+        @Singleton
+        fun providePhotoLocalDatabase(
+            @ApplicationContext
+            applicationContext: Context
+        ): PhotoDatabase = PhotoDatabase.getInstance(applicationContext)
+
+        @Provides
+        @Singleton
+        fun providePhotoDao(
+            photoDatabase: PhotoDatabase
+        ): PhotosDao = photoDatabase.photoDao()
+
+        @Provides
+        @Singleton
+        fun providePhotoLocalDataSource(
+            photosDao: PhotosDao,
+            @Named("io")
+            dispatcher: CoroutineDispatcher
+        ): PhotoLocalDataSource {
+            return PhotoLocalDataSource(photosDao, dispatcher)
         }
 
     }

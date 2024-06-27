@@ -37,7 +37,7 @@ open class PagingSearchViewModel @Inject constructor(
 
     private val TAG = PagingSearchViewModel::class.java.simpleName
 
-    private val actionSharedFlow = MutableSharedFlow<SearchAction>()
+    private val actionSharedFlow = MutableSharedFlow<SearchAction>(replay = 1)
 
     private val searchAction = actionSharedFlow
         .filterIsInstance<SearchAction.Search>()

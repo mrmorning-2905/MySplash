@@ -2,6 +2,8 @@ package com.psd.learn.mysplash.ui.feed.photos.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.psd.learn.mysplash.data.local.datasource.PhotoLocalDataSource
+import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.remote.datasource.PhotoDetailsDataSource
 import com.psd.learn.mysplash.ui.utils.ResultState
 import com.psd.learn.mysplash.utils.log.Logger
@@ -20,7 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PhotoDetailsViewModel @Inject constructor(
-    private val photoDetailsDataSource: PhotoDetailsDataSource
+    private val photoDetailsDataSource: PhotoDetailsDataSource,
+    private val photoLocalDataSource: PhotoLocalDataSource
 ) : ViewModel() {
 
     private val TAG = PhotoDetailsDataSource::class.java.simpleName
@@ -53,6 +56,20 @@ class PhotoDetailsViewModel @Inject constructor(
     fun emitPhotoId(id: String) {
         viewModelScope.launch {
             photoIdSharedFlow.emit(id)
+        }
+    }
+
+    fun insertFavoritePhoto(photoItem: PhotoItem) {
+        Logger.d(TAG, "insertFavoritePhoto() - photo: ${photoItem.photoId}")
+        viewModelScope.launch {
+            photoLocalDataSource.addFavoritePhoto(photoItem)
+        }
+    }
+
+    fun getAllFavoritePhotos() {
+        viewModelScope.launch {
+            val result = photoLocalDataSource.getPhotoList()
+            Logger.d(TAG, "getAllFavoritePhotos() - result: $result")
         }
     }
 }
