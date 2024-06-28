@@ -9,11 +9,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.psd.learn.mysplash.FEED_TAB_TITLES
 import com.psd.learn.mysplash.R
-import com.psd.learn.mysplash.TAB_TITLES
 import com.psd.learn.mysplash.databinding.FeedFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.feed.collections.CollectionsListFragment
+import com.psd.learn.mysplash.ui.feed.photos.FavoritePhotosListFragment
 import com.psd.learn.mysplash.ui.feed.photos.PhotosListFragment
 import com.psd.learn.mysplash.ui.widget.CustomTabViewHolder
 import com.psd.learn.mysplash.ui.widget.TabItem
@@ -58,7 +59,7 @@ class FeedFragment :
                 tab.apply {
                     customView = CustomTabViewHolder(context).apply {
                         tabItemStatus = TabItem(
-                            text = TAB_TITLES[position],
+                            text = FEED_TAB_TITLES[position],
                             isSelected = position == 0)
                     }
                 }
@@ -90,12 +91,13 @@ class FeedFragment :
     }
 
     private class FeedViewPagerAdapter(fragment: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragment, lifecycle) {
-        override fun getItemCount(): Int = 2
+        override fun getItemCount(): Int = 3
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> PhotosListFragment.newInstance()
                 1 -> CollectionsListFragment.newInstance()
+                2 -> FavoritePhotosListFragment.newInstance()
                 else -> error("Invalid position: $position")
             }
         }

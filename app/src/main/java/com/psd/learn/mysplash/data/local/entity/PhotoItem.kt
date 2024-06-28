@@ -48,7 +48,8 @@ data class PhotoItem (
     val height: Int,
 
     //tag
-    //val tagList: Set<String> = emptySet(),
+    @ColumnInfo(name = "tags")
+    val tagSet: Set<String>,
 
     @ColumnInfo(name = "location")
     val location: String,
@@ -68,6 +69,22 @@ data class PhotoItem (
 
     @ColumnInfo(name = "exposure_time")
     val exposureTime: String
+
+)
+
+data class ExifInfo(
+    val cameraName: String? = "Unknown",
+    val iso: String? = "Unknown",
+    val exposureTime: String? = "Unknown",
+    val aperture: String? = "Unknown",
+    val focalLength: String? = "Unknown",
+    val dimension: String? = "Unknown"
+)
+
+data class ViewInfo(
+    val numberView: Int? = 0,
+    val numberLikes: Int? = 0,
+    val numberDownload: Int? = 0
 )
 
 fun PhotoResponseItem.toPhotoItem(): PhotoItem {
@@ -91,6 +108,11 @@ fun PhotoResponseItem.toPhotoItem(): PhotoItem {
         iso = exif?.iso?.toString() ?: "Unknown",
         aperture = exif?.aperture ?: "Unknown",
         exposureTime = exif?.exposureTime ?: "Unknown",
-        //tagList = tags?.flatMap { listOf(it.title, it.type) }?.toSet() ?: emptySet()
+        tagSet = getTagSet(tags)
     )
+}
+
+private fun getTagSet(tags: List<PhotoResponseItem.Tag>?): Set<String> {
+    if (tags.isNullOrEmpty()) return emptySet()
+    return tags.map { it.title.trim() }.toSet()
 }

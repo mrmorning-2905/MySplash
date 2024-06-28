@@ -2,11 +2,9 @@ package com.psd.learn.mysplash.data.remote.datasource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.psd.learn.mysplash.NETWORK_PAGE_SIZE
-import com.psd.learn.mysplash.UNSPLASH_STARTING_PAGE_INDEX
+import com.psd.learn.mysplash.PAGING_SIZE
+import com.psd.learn.mysplash.START_PAGE_INDEX
 import com.psd.learn.mysplash.utils.log.Logger
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -32,16 +30,16 @@ abstract class AbsPagingDataSource<T : Any>(
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
-        val position = params.key ?: UNSPLASH_STARTING_PAGE_INDEX
+        val position = params.key ?: START_PAGE_INDEX
         return try {
             val listDataInfo =
                 getListDataPaging(queryText = queryText, page = position, perPage = params.loadSize)
             val nextKey =
-                if (listDataInfo.isEmpty()) null else (position + (params.loadSize / NETWORK_PAGE_SIZE))
+                if (listDataInfo.isEmpty()) null else (position + (params.loadSize / PAGING_SIZE))
 
             LoadResult.Page(
                 data = listDataInfo,
-                prevKey = if (position == UNSPLASH_STARTING_PAGE_INDEX) null else position - 1,
+                prevKey = if (position == START_PAGE_INDEX) null else position - 1,
                 nextKey = nextKey
             )
         } catch (e: IOException) {

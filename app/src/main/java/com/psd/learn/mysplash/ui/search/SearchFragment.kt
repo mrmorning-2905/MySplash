@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -19,7 +18,7 @@ import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.search.collections.SearchCollectionListFragment
 import com.psd.learn.mysplash.ui.search.photos.SearchPhotoListFragment
 import com.psd.learn.mysplash.ui.search.users.SearchUserListFragment
-import com.psd.learn.mysplash.TAB_TITLES
+import com.psd.learn.mysplash.SEARCH_TAB_TITLES
 import com.psd.learn.mysplash.ui.widget.CustomTabViewHolder
 import com.psd.learn.mysplash.ui.widget.TabItem
 import com.psd.learn.mysplash.utils.log.Logger
@@ -74,7 +73,7 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
                 tab.apply {
                     customView = CustomTabViewHolder(context).apply {
                         tabItemStatus = TabItem(
-                            text = TAB_TITLES[position],
+                            text = SEARCH_TAB_TITLES[position],
                             isSelected = position == 0)
                     }
                 }

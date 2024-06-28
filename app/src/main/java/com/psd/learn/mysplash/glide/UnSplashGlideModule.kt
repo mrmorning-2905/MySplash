@@ -16,7 +16,6 @@ import java.io.InputStream
 
 @GlideModule
 class UnSplashGlideModule : AppGlideModule() {
-
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
         super.registerComponents(context, glide, registry)
         val entryPoint: GlideEntryPoint = EntryPointAccessors.fromApplication<GlideEntryPoint>(context)

@@ -1,6 +1,6 @@
 package com.psd.learn.mysplash.network
 
-import com.psd.learn.mysplash.MySplashClientIdQualifier
+import com.psd.learn.mysplash.di.MySplashClientIdQualifier
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject

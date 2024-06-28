@@ -34,6 +34,7 @@ class PhotoDetailsFragment :
         super.onAttach(context)
         val photoId = arguments?.getString("PHOTO_ID") ?: ""
         photoDetailsViewModel.emitPhotoId(photoId)
+        photoDetailsViewModel.getAllFavoritePhotos()
     }
 
     override fun onCreateView(
@@ -86,7 +87,6 @@ class PhotoDetailsFragment :
         binding.favoriteBtn.setOnClickListener {
             photoDetailsViewModel.insertFavoritePhoto(photoItem)
         }
-        photoDetailsViewModel.getAllFavoritePhotos()
     }
 
     private fun setVisibleView(isLoading: Boolean) {
@@ -129,7 +129,7 @@ class PhotoDetailsFragment :
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = TagListAdapter { tag ->
                 gotoSearchFragment(tag)
-            }.apply { submitList(emptyList()/*photoItem.tagList.toList()*/) }
+            }.apply { submitList(photoItem.tagSet.toList()) }
         }
     }
 
