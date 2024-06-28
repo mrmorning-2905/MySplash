@@ -146,7 +146,9 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
 
         retryBtn.apply {
             if (isVisible) {
-                setOnClickListener { pagingAdapter.refresh() }
+                setOnClickListener {
+                    pagingAdapter.retry()
+                }
             }
         }
     }

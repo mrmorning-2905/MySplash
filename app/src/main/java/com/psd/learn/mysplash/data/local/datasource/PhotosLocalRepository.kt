@@ -46,4 +46,11 @@ class PhotosLocalRepository (
             photosDao.deletePhoto(photoItem)
         }
     }
+
+    suspend fun checkFavoritePhotoById(photoId: String): Boolean {
+        val photoItem = withContext(dispatcher) {
+            photosDao.getPhotoById(photoId)
+        }
+        return photoItem != null
+    }
 }

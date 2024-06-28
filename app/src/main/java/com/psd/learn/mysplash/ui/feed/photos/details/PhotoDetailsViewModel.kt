@@ -11,8 +11,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -29,6 +31,8 @@ class PhotoDetailsViewModel @Inject constructor(
     private val TAG = PhotoDetailsDataSource::class.java.simpleName
 
     private val photoIdSharedFlow = MutableSharedFlow<String>(replay = 1)
+    private val _isFavoritePhoto = MutableStateFlow(false)
+    val isFavoritePhoto = _isFavoritePhoto.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val photoDetailsResult: StateFlow<ResultState> = photoIdSharedFlow
@@ -37,6 +41,9 @@ class PhotoDetailsViewModel @Inject constructor(
             flow {
                 try {
                     val photoItem = photoDetailsDataSource.getPhoto(id)
+                    val isFavorite = photoLocalRepo.checkFavoritePhotoById(id)
+                    Logger.d("sangpd", "photo with ID: $id isFavorite: $isFavorite")
+                    _isFavoritePhoto.value = isFavorite
                     emit(ResultState.Success(data = photoItem))
                 } catch (e: CancellationException) {
                     throw e
@@ -63,6 +70,14 @@ class PhotoDetailsViewModel @Inject constructor(
         Logger.d(TAG, "insertFavoritePhoto() - photo: ${photoItem.photoId}")
         viewModelScope.launch {
             photoLocalRepo.addFavoritePhoto(photoItem)
+            _isFavoritePhoto.value = true
+        }
+    }
+
+    fun removeFavoritePhoto(photoItem: PhotoItem) {
+        viewModelScope.launch {
+            photoLocalRepo.removeFavoritePhoto(photoItem)
+            _isFavoritePhoto.value = false
         }
     }
 
@@ -72,4 +87,5 @@ class PhotoDetailsViewModel @Inject constructor(
             Logger.d(TAG, "getAllFavoritePhotos() - result: $result")
         }
     }
+
 }

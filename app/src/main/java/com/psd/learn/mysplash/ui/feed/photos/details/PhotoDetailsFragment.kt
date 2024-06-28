@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -34,7 +35,6 @@ class PhotoDetailsFragment :
         super.onAttach(context)
         val photoId = arguments?.getString("PHOTO_ID") ?: ""
         photoDetailsViewModel.emitPhotoId(photoId)
-        photoDetailsViewModel.getAllFavoritePhotos()
     }
 
     override fun onCreateView(
@@ -74,7 +74,7 @@ class PhotoDetailsFragment :
                 bindCameraInfo(photoItem)
                 bindPhotoInfo(photoItem)
                 bindTagList(photoItem)
-                addFavorite(photoItem)
+                handleFavoriteBtnClick(photoItem)
             }
 
             else -> {
@@ -83,9 +83,26 @@ class PhotoDetailsFragment :
         }
     }
 
-    private fun addFavorite(photoItem: PhotoItem) {
-        binding.favoriteBtn.setOnClickListener {
-            photoDetailsViewModel.insertFavoritePhoto(photoItem)
+    private fun updateFavoriteBtn(isFavorite: Boolean) {
+        val favoriteIcon = if (isFavorite) R.drawable.favorite_selected_icon else R.drawable.favorite_icon
+        binding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(requireContext(), favoriteIcon))
+    }
+
+    private fun handleFavoriteBtnClick(photoItem: PhotoItem) {
+        lifecycleScope.launch {
+            photoDetailsViewModel.isFavoritePhoto
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .distinctUntilChanged()
+                .collect { isFavorite ->
+                    updateFavoriteBtn(isFavorite)
+                    binding.favoriteBtn.setOnClickListener {
+                        if (isFavorite) {
+                            photoDetailsViewModel.removeFavoritePhoto(photoItem)
+                        } else {
+                            photoDetailsViewModel.insertFavoritePhoto(photoItem)
+                        }
+                    }
+                }
         }
     }
 
