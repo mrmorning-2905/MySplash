@@ -1,5 +1,6 @@
 package com.psd.learn.mysplash.data.local.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -36,4 +37,7 @@ interface PhotosDao {
 
     @Query("SELECT photo_id FROM PHOTO_TABLE")
     suspend fun getAllPhotosId(): List<String>
+
+    @Query("SELECT * FROM PHOTO_TABLE")
+    fun getAllPhotosPagingSource(): PagingSource<Int, PhotoItem>
 }

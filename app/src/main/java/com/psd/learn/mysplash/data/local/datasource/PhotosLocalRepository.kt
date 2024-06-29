@@ -19,7 +19,7 @@ class PhotosLocalRepository (
     fun getFavoritePhotosStream(): Flow<PagingData<PhotoItem>> {
         return Pager(
             config = PagingConfig(pageSize = PAGING_SIZE, enablePlaceholders = false),
-            pagingSourceFactory = {PhotosLocalPagingSource(photosDao)}
+            pagingSourceFactory = { photosDao.getAllPhotosPagingSource()}
         ).flow
     }
 
