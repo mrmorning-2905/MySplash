@@ -32,9 +32,6 @@ interface PhotosDao {
     @Query("SELECT * FROM PHOTO_TABLE WHERE photo_id =:photoId")
     suspend fun getPhotoById(photoId: String): PhotoItem?
 
-    @Query("SELECT * FROM PHOTO_TABLE LIMIT $PAGING_SIZE OFFSET (:page - 1) * $PAGING_SIZE")
-    suspend fun getPhotosWithLimit(page: Int): List<PhotoItem>
-
     @Query("SELECT photo_id FROM PHOTO_TABLE")
     suspend fun getAllPhotosId(): List<String>
 

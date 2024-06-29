@@ -14,7 +14,7 @@ import com.psd.learn.mysplash.ui.core.OnItemClickListener
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 
-class PhotoPagingAdapter(
+class   PhotoPagingAdapter(
     private val requestManager: RequestManager,
     private val itemClickListener: OnItemClickListener
 ) : BasePagingAdapter<PhotoItem, CoverPhotoItemBinding>(R.layout.cover_photo_item, DIFF_PHOTO_ITEM_CALLBACK){

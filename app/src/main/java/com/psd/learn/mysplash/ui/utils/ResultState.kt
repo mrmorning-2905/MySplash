@@ -15,14 +15,3 @@ sealed class ResultState {
         }
     }
 }
-
-/*
-sealed class LoggedState {
-    data class OnSuccess(val data: List<XYZ>) : LoggedState()
-    object OnEmpty : LoggedState()
-    data class IsLoading(val isLoading: Boolean = true) : LoggedState()
-    data class OnError(val message: String) : LoggedState()
-
-    https://velog.io/@wonseok/StateFlow-SharedFlow
-    https://stackoverflow.com/questions/67413165/kotlin-flow-how-can-i-get-the-cache-data-from-subscription-in-flow-when-i-have
-} */
