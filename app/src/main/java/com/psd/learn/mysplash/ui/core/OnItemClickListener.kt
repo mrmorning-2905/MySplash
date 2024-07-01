@@ -1,7 +1,11 @@
 package com.psd.learn.mysplash.ui.core
 
+import com.psd.learn.mysplash.data.local.entity.PhotoItem
+
 interface OnItemClickListener {
-    fun coverPhotoClicked(photoId: String?)
+    fun coverPhotoClicked(coverId: String?)
 
     fun profileClicked(userId: String?)
+
+    fun addOrRemoveFavorite(photoItem: PhotoItem)
 }

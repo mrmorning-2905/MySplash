@@ -52,6 +52,18 @@ class SearchPhotoListFragment :
         binSearchResult(searchViewModel.searchPhotoTotal, SEARCH_PHOTOS_TYPE, binding.searchResult)
     }
 
+    override fun handleCoverPhotoClicked(coverId: String?) {
+        openPhotoDetails(coverId)
+    }
+
+    override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
+        if (photoItem.isFavorite) {
+            searchViewModel.removeFavoritePhoto(photoItem)
+        } else {
+            searchViewModel.insertFavoritePhoto(photoItem)
+        }
+    }
+
     companion object {
         fun newInstance() = SearchPhotoListFragment()
     }

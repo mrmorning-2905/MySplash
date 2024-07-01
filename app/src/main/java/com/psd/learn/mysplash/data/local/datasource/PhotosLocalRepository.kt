@@ -6,7 +6,6 @@ import androidx.paging.PagingData
 import com.psd.learn.mysplash.PAGING_SIZE
 import com.psd.learn.mysplash.data.local.dao.PhotosDao
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
-import com.psd.learn.mysplash.utils.log.Logger
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -21,18 +20,6 @@ class PhotosLocalRepository (
             config = PagingConfig(pageSize = PAGING_SIZE, enablePlaceholders = false),
             pagingSourceFactory = { photosDao.getAllPhotosPagingSource()}
         ).flow
-    }
-
-    suspend fun getPhotoList(): List<PhotoItem> {
-        val result = withContext(dispatcher) {
-            try {
-                photosDao.getAllPhotos()
-            } catch (e: Exception) {
-                Logger.d("sangpd", "getPhotoList - exception: $e")
-                emptyList()
-            }
-        }
-        return result
     }
 
     suspend fun addFavoritePhoto(photoItem: PhotoItem) {
@@ -53,4 +40,6 @@ class PhotosLocalRepository (
         }
         return photoItem != null
     }
+
+    fun getPhotoIdsStream(): Flow<List<String>> = photosDao.getAllPhotoIds()
 }

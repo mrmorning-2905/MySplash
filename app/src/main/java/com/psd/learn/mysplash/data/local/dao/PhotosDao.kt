@@ -6,8 +6,8 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.psd.learn.mysplash.PAGING_SIZE
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PhotosDao {
@@ -26,14 +26,11 @@ interface PhotosDao {
     @Query("DELETE FROM PHOTO_TABLE")
     suspend fun deleteAllPhotos()
 
-    @Query("SELECT * FROM PHOTO_TABLE")
-    suspend fun getAllPhotos(): List<PhotoItem>
-
     @Query("SELECT * FROM PHOTO_TABLE WHERE photo_id =:photoId")
     suspend fun getPhotoById(photoId: String): PhotoItem?
 
     @Query("SELECT photo_id FROM PHOTO_TABLE")
-    suspend fun getAllPhotosId(): List<String>
+    fun getAllPhotoIds(): Flow<List<String>>
 
     @Query("SELECT * FROM PHOTO_TABLE")
     fun getAllPhotosPagingSource(): PagingSource<Int, PhotoItem>

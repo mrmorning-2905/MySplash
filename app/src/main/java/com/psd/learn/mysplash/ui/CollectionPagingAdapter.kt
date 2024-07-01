@@ -1,6 +1,7 @@
 package com.psd.learn.mysplash.ui
 
 import android.annotation.SuppressLint
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.DiffUtil
@@ -48,6 +49,7 @@ class CollectionPagingAdapter(
                 coverPhoto.loadCoverThumbnail(requestManager, item.coverPhotoUrl, item.coverThumbnailUrl, item.coverColor, true)
                 coverTitle.text = item.coverDescription
                 coverDetail.text = "${item.numberImages} Images"
+                favoriteBtn.visibility = View.GONE
             }
         }
     }

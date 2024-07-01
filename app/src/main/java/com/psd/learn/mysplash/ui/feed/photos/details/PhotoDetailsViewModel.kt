@@ -69,7 +69,7 @@ class PhotoDetailsViewModel @Inject constructor(
     fun insertFavoritePhoto(photoItem: PhotoItem) {
         Logger.d(TAG, "insertFavoritePhoto() - photo: ${photoItem.photoId}")
         viewModelScope.launch {
-            photoLocalRepo.addFavoritePhoto(photoItem)
+            photoLocalRepo.addFavoritePhoto(photoItem.copy(isFavorite = true))
             _isFavoritePhoto.value = true
         }
     }
@@ -80,12 +80,4 @@ class PhotoDetailsViewModel @Inject constructor(
             _isFavoritePhoto.value = false
         }
     }
-
-    fun getAllFavoritePhotos() {
-        viewModelScope.launch {
-            val result = photoLocalRepo.getPhotoList()
-            Logger.d(TAG, "getAllFavoritePhotos() - result: $result")
-        }
-    }
-
 }

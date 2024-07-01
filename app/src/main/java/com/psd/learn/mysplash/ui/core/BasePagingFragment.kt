@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -24,6 +23,7 @@ import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.SEARCH_COLLECTIONS_TYPE
 import com.psd.learn.mysplash.SEARCH_PHOTOS_TYPE
 import com.psd.learn.mysplash.SEARCH_USERS_TYPE
+import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import com.psd.learn.mysplash.ui.search.SearchAction
 import com.psd.learn.mysplash.utils.log.Logger
@@ -195,17 +195,23 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     }
 
     protected open val mItemClickListener = object : OnItemClickListener {
-        override fun coverPhotoClicked(photoId: String?) {
-            showMessageToast("clicked on photo have id: $photoId")
-            openPhotoDetails(photoId)
+        override fun coverPhotoClicked(coverId: String?) {
+            handleCoverPhotoClicked(coverId)
         }
-
         override fun profileClicked(userId: String?) {
-            showMessageToast("clicked on user profile have id: $userId")
+            handleProfileClicked(userId)
+        }
+        override fun addOrRemoveFavorite(photoItem: PhotoItem) {
+            handleAddOrRemoveFavorite(photoItem)
         }
     }
 
-    private fun openPhotoDetails(photoId: String?) {
+    open fun handleProfileClicked(userId: String?) {}
+    open fun handleCoverPhotoClicked(coverId: String?) {}
+    open fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {}
+
+
+    protected fun openPhotoDetails(photoId: String?) {
         val bundle = Bundle().apply {
             putString("PHOTO_ID", photoId)
         }
@@ -217,10 +223,6 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
         }
         navHost.navigate(actionId, bundle)
 
-    }
-
-    private fun showMessageToast(message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun onDestroyView() {

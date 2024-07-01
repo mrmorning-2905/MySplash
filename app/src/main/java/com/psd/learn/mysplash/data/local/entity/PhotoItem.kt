@@ -68,8 +68,10 @@ data class PhotoItem (
     val aperture: String,
 
     @ColumnInfo(name = "exposure_time")
-    val exposureTime: String
+    val exposureTime: String,
 
+    @ColumnInfo(name = "is_favorite")
+    val isFavorite: Boolean = false
 )
 
 data class ExifInfo(

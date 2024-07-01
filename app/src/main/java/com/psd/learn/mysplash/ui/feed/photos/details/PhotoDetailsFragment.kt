@@ -54,7 +54,6 @@ class PhotoDetailsFragment :
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .distinctUntilChanged()
                 .collect { resultState ->
-                    Logger.d("sangpd", "state is: $resultState")
                     renderUiState(resultState)
                 }
         }
@@ -74,7 +73,7 @@ class PhotoDetailsFragment :
                 bindCameraInfo(photoItem)
                 bindPhotoInfo(photoItem)
                 bindTagList(photoItem)
-                handleFavoriteBtnClick(photoItem)
+                bindFavoriteBtn(photoItem)
             }
 
             else -> {
@@ -88,7 +87,7 @@ class PhotoDetailsFragment :
         binding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(requireContext(), favoriteIcon))
     }
 
-    private fun handleFavoriteBtnClick(photoItem: PhotoItem) {
+    private fun bindFavoriteBtn(photoItem: PhotoItem) {
         lifecycleScope.launch {
             photoDetailsViewModel.isFavoritePhoto
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)

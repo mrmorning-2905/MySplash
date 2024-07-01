@@ -14,7 +14,9 @@ import com.psd.learn.mysplash.databinding.PhotoCollectionFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.PhotoPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
+import com.psd.learn.mysplash.ui.core.OnItemClickListener
 import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
+import com.psd.learn.mysplash.utils.log.Logger
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -45,6 +47,19 @@ class PhotosListFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initPagingData(viewModel.photoPagingDataFlow)
+    }
+
+    override fun handleCoverPhotoClicked(coverId: String?) {
+        openPhotoDetails(coverId)
+    }
+
+    override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
+        Logger.d("sangpd", "handleAddOrRemoveFavorite clicked() - isFavorite: ${photoItem.isFavorite}")
+        if (photoItem.isFavorite) {
+            viewModel.removeFavoritePhoto(photoItem)
+        } else {
+            viewModel.insertFavoritePhoto(photoItem)
+        }
     }
 
     companion object {

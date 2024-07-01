@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.psd.learn.mysplash.SEARCH_COLLECTIONS_TYPE
 import com.psd.learn.mysplash.SEARCH_PHOTOS_TYPE
 import com.psd.learn.mysplash.SEARCH_USERS_TYPE
+import com.psd.learn.mysplash.data.local.datasource.PhotosLocalRepository
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.local.entity.UserItem
@@ -32,12 +34,21 @@ import javax.inject.Inject
 
 @HiltViewModel
 open class PagingSearchViewModel @Inject constructor(
-    private val pagingRepository: UnSplashPagingRepository
+    private val pagingRepository: UnSplashPagingRepository,
+    private val photosLocalRepository: PhotosLocalRepository
 ) : ViewModel() {
 
     private val TAG = PagingSearchViewModel::class.java.simpleName
 
     private val actionSharedFlow = MutableSharedFlow<SearchAction>(replay = 1)
+
+    private val _searchPhotoTotal = MutableSharedFlow<Int>(replay = 1)
+    private val _searchCollectionTotal = MutableSharedFlow<Int>(replay = 1)
+    private val _searchUserTotal = MutableSharedFlow<Int>(replay = 1)
+
+    val searchPhotoTotal = _searchPhotoTotal.asSharedFlow()
+    val searchCollectionTotal = _searchCollectionTotal.asSharedFlow()
+    val searchUserTotal = _searchUserTotal.asSharedFlow()
 
     private val searchAction = actionSharedFlow
         .filterIsInstance<SearchAction.Search>()
@@ -75,14 +86,6 @@ open class PagingSearchViewModel @Inject constructor(
                 )
         }
 
-    private val _searchPhotoTotal = MutableSharedFlow<Int>(replay = 1)
-    private val _searchCollectionTotal = MutableSharedFlow<Int>(replay = 1)
-    private val _searchUserTotal = MutableSharedFlow<Int>(replay = 1)
-
-    val searchPhotoTotal = _searchPhotoTotal.asSharedFlow()
-    val searchCollectionTotal = _searchCollectionTotal.asSharedFlow()
-    val searchUserTotal = _searchUserTotal.asSharedFlow()
-
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val searchPhotoPagingData: Flow<PagingData<PhotoItem>> = searchAction
         .debounce(650L)
@@ -90,6 +93,17 @@ open class PagingSearchViewModel @Inject constructor(
             pagingRepository.getSearchResultStream<PhotoItem>(search.query, SEARCH_PHOTOS_TYPE) { totalPhotos ->
                 viewModelScope.launch {
                     _searchPhotoTotal.emit(totalPhotos)
+                }
+            }
+        }
+        .cachedIn(viewModelScope)
+        .combine(photosLocalRepository.getPhotoIdsStream()) { remotePagingPhotos, localPhotoIds ->
+            remotePagingPhotos.map { photoItem ->
+                val isFavorite = localPhotoIds.contains(photoItem.photoId)
+                if (isFavorite) {
+                    photoItem.copy(isFavorite = true)
+                } else {
+                    photoItem
                 }
             }
         }
@@ -118,6 +132,18 @@ open class PagingSearchViewModel @Inject constructor(
             }
         }
         .cachedIn(viewModelScope)
+
+    fun insertFavoritePhoto(photoItem: PhotoItem) {
+        viewModelScope.launch {
+            photosLocalRepository.addFavoritePhoto(photoItem.copy(isFavorite = true))
+        }
+    }
+
+    fun removeFavoritePhoto(photoItem: PhotoItem) {
+        viewModelScope.launch {
+            photosLocalRepository.removeFavoritePhoto(photoItem)
+        }
+    }
 }
 
 sealed class SearchAction {

@@ -45,6 +45,18 @@ class FavoritePhotosListFragment :
         initPagingData(viewModel.favoritePhotoFlow)
     }
 
+    override fun handleCoverPhotoClicked(coverId: String?) {
+        openPhotoDetails(coverId)
+    }
+
+    override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
+        if (photoItem.isFavorite) {
+            viewModel.removeFavoritePhoto(photoItem)
+        } else {
+            viewModel.insertFavoritePhoto(photoItem)
+        }
+    }
+
     companion object {
         fun newInstance() = FavoritePhotosListFragment()
     }
