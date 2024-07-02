@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -17,10 +18,10 @@ import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.PhotoDetailsFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
+import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
 import com.psd.learn.mysplash.ui.utils.ResultState
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
-import com.psd.learn.mysplash.utils.log.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -30,6 +31,7 @@ class PhotoDetailsFragment :
     BaseFragment<PhotoDetailsFragmentLayoutBinding>(inflate = PhotoDetailsFragmentLayoutBinding::inflate) {
 
     private val photoDetailsViewModel by viewModels<PhotoDetailsViewModel>()
+    private val photoFeedViewModel by activityViewModels<PagingFeedViewModel>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -89,17 +91,14 @@ class PhotoDetailsFragment :
 
     private fun bindFavoriteBtn(photoItem: PhotoItem) {
         lifecycleScope.launch {
-            photoDetailsViewModel.isFavoritePhoto
+            photoDetailsViewModel.currentFavoriteStateFlow
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .distinctUntilChanged()
-                .collect { isFavorite ->
-                    updateFavoriteBtn(isFavorite)
+                .collect { currentState ->
+                    updateFavoriteBtn(currentState)
                     binding.favoriteBtn.setOnClickListener {
-                        if (isFavorite) {
-                            photoDetailsViewModel.removeFavoritePhoto(photoItem)
-                        } else {
-                            photoDetailsViewModel.insertFavoritePhoto(photoItem)
-                        }
+                        photoDetailsViewModel.setIsFavoritePhotoState(!currentState)
+                        photoFeedViewModel.addOrRemoveFavorite(photoItem, currentState)
                     }
                 }
         }

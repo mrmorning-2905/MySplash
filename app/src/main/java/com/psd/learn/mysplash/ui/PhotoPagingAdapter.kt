@@ -1,7 +1,6 @@
 package com.psd.learn.mysplash.ui
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -18,10 +17,10 @@ import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 import com.psd.learn.mysplash.utils.log.Logger
 
-class   PhotoPagingAdapter(
+class PhotoPagingAdapter(
     private val requestManager: RequestManager,
     private val itemClickListener: OnItemClickListener
-) : BasePagingAdapter<PhotoItem, CoverPhotoItemBinding>(R.layout.cover_photo_item, DIFF_PHOTO_ITEM_CALLBACK){
+) : BasePagingAdapter<PhotoItem, CoverPhotoItemBinding>(R.layout.cover_photo_item, DIFF_PHOTO_ITEM_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseListViewHolder<PhotoItem, CoverPhotoItemBinding> {
         return PhotoItemListViewHolder(parent, viewType)
@@ -30,15 +29,11 @@ class   PhotoPagingAdapter(
     companion object {
         private val DIFF_PHOTO_ITEM_CALLBACK = object : DiffUtil.ItemCallback<PhotoItem>() {
             override fun areItemsTheSame(oldItem: PhotoItem, newItem: PhotoItem): Boolean {
-                val result = oldItem.photoId == newItem.photoId
-                Logger.d("sangpd", "areItemsTheSame() - result: $result")
-                return result
+                return oldItem.photoId == newItem.photoId
             }
 
             override fun areContentsTheSame(oldItem: PhotoItem, newItem: PhotoItem): Boolean {
-                val result = oldItem == newItem
-                Logger.d("sangpd", "areContentsTheSame() - result: $result")
-                return result
+                return oldItem == newItem
             }
         }
     }
@@ -55,7 +50,10 @@ class   PhotoPagingAdapter(
             viewBinding.run {
                 coverPhoto.setOnClickListener { itemClickListener.coverPhotoClicked(photoItem.photoId) }
                 profileLayout.userOwnerContainer.setOnClickListener { itemClickListener.profileClicked(photoItem.userId) }
-                favoriteBtn.setOnClickListener { itemClickListener.addOrRemoveFavorite(photoItem) }
+                favoriteBtn.setOnClickListener {
+                    itemClickListener.addOrRemoveFavorite(photoItem)
+                    notifyItemChanged(adapterPosition)
+                }
             }
         }
 
@@ -69,7 +67,8 @@ class   PhotoPagingAdapter(
                 coverTitle.text = item.photoDescription
                 coverDetail.text = "${item.numberLikes} Likes"
                 favoriteBtn.visibility = View.VISIBLE
-                val favoriteIcon = if (item.isFavorite) R.drawable.favorite_selected_icon else R.drawable.favorite_icon
+                Logger.d("sangpd", "onBindView: photoId: ${photoItem.photoId} - isFavorite: ${photoItem.isFavorite}")
+                val favoriteIcon = if (photoItem.isFavorite) R.drawable.favorite_selected_icon else R.drawable.favorite_icon
                 favoriteBtn.setImageDrawable(ContextCompat.getDrawable(parent.context, favoriteIcon))
             }
         }

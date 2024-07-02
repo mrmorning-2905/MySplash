@@ -50,11 +50,8 @@ class FavoritePhotosListFragment :
     }
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
-        if (photoItem.isFavorite) {
-            viewModel.removeFavoritePhoto(photoItem)
-        } else {
-            viewModel.insertFavoritePhoto(photoItem)
-        }
+        val currentState = photoItem.isFavorite
+        viewModel.addOrRemoveFavorite(photoItem, currentState)
     }
 
     companion object {

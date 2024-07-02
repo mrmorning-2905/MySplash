@@ -3,7 +3,6 @@ package com.psd.learn.mysplash.ui.feed.photos.details
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.psd.learn.mysplash.data.local.datasource.PhotosLocalRepository
-import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.remote.datasource.PhotoDetailsDataSource
 import com.psd.learn.mysplash.ui.utils.ResultState
 import com.psd.learn.mysplash.utils.log.Logger
@@ -31,8 +30,8 @@ class PhotoDetailsViewModel @Inject constructor(
     private val TAG = PhotoDetailsDataSource::class.java.simpleName
 
     private val photoIdSharedFlow = MutableSharedFlow<String>(replay = 1)
-    private val _isFavoritePhoto = MutableStateFlow(false)
-    val isFavoritePhoto = _isFavoritePhoto.asStateFlow()
+    private val _currentFavoriteStateFlow = MutableStateFlow(false)
+    val currentFavoriteStateFlow = _currentFavoriteStateFlow.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val photoDetailsResult: StateFlow<ResultState> = photoIdSharedFlow
@@ -43,7 +42,7 @@ class PhotoDetailsViewModel @Inject constructor(
                     val photoItem = photoDetailsDataSource.getPhoto(id)
                     val isFavorite = photoLocalRepo.checkFavoritePhotoById(id)
                     Logger.d("sangpd", "photo with ID: $id isFavorite: $isFavorite")
-                    _isFavoritePhoto.value = isFavorite
+                    _currentFavoriteStateFlow.value = isFavorite
                     emit(ResultState.Success(data = photoItem))
                 } catch (e: CancellationException) {
                     throw e
@@ -66,18 +65,7 @@ class PhotoDetailsViewModel @Inject constructor(
         }
     }
 
-    fun insertFavoritePhoto(photoItem: PhotoItem) {
-        Logger.d(TAG, "insertFavoritePhoto() - photo: ${photoItem.photoId}")
-        viewModelScope.launch {
-            photoLocalRepo.addFavoritePhoto(photoItem.copy(isFavorite = true))
-            _isFavoritePhoto.value = true
-        }
-    }
-
-    fun removeFavoritePhoto(photoItem: PhotoItem) {
-        viewModelScope.launch {
-            photoLocalRepo.removeFavoritePhoto(photoItem)
-            _isFavoritePhoto.value = false
-        }
+    fun setIsFavoritePhotoState(state: Boolean) {
+        _currentFavoriteStateFlow.value = state
     }
 }
