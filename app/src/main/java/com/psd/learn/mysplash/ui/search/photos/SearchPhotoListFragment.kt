@@ -48,7 +48,7 @@ class SearchPhotoListFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         handleScroll(searchViewModel)
-        initPagingData(searchViewModel.searchPhotoPagingData)
+        bindPagingListWithLiveData(searchViewModel.searchPhotoPagingData)
         binSearchResult(searchViewModel.searchPhotoTotal, SEARCH_PHOTOS_TYPE, binding.searchResult)
     }
 
@@ -57,11 +57,8 @@ class SearchPhotoListFragment :
     }
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
-        if (photoItem.isFavorite) {
-            searchViewModel.removeFavoritePhoto(photoItem)
-        } else {
-            searchViewModel.insertFavoritePhoto(photoItem)
-        }
+        val currentState = photoItem.isFavorite
+        searchViewModel.addOrRemoveFavoriteFromSearch(currentState, photoItem)
     }
 
     companion object {

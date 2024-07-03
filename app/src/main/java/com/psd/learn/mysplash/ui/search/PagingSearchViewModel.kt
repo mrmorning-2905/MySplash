@@ -1,6 +1,8 @@
 package com.psd.learn.mysplash.ui.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
@@ -13,11 +15,15 @@ import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashPagingRepository
+import com.psd.learn.mysplash.ui.feed.photos.FavoriteAction
+import com.psd.learn.mysplash.ui.feed.photos.FavoritePhotoHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -26,6 +32,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
@@ -39,6 +46,8 @@ open class PagingSearchViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val TAG = PagingSearchViewModel::class.java.simpleName
+
+    private val favoriteActionStateFlow = MutableStateFlow<List<FavoriteAction>>(emptyList())
 
     private val actionSharedFlow = MutableSharedFlow<SearchAction>(replay = 1)
 
@@ -87,7 +96,7 @@ open class PagingSearchViewModel @Inject constructor(
         }
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    val searchPhotoPagingData: Flow<PagingData<PhotoItem>> = searchAction
+    val searchPhotoPagingData = searchAction
         .debounce(650L)
         .flatMapLatest { search ->
             pagingRepository.getSearchResultStream<PhotoItem>(search.query, SEARCH_PHOTOS_TYPE) { totalPhotos ->
@@ -96,18 +105,17 @@ open class PagingSearchViewModel @Inject constructor(
                 }
             }
         }
+        .map { pagingData: PagingData<PhotoItem> ->
+            FavoritePhotoHelper.mappingFavoriteFromLocal(photosLocalRepository, pagingData)
+        }
+        .flowOn(Dispatchers.IO)
         .cachedIn(viewModelScope)
-        .combine(photosLocalRepository.getPhotoIdsStream()) { remotePagingPhotos, localPhotoIds ->
-            remotePagingPhotos.map { photoItem ->
-                val isFavorite = localPhotoIds.contains(photoItem.photoId)
-                if (isFavorite) {
-                    photoItem.copy(isFavorite = true)
-                } else {
-                    photoItem
-                }
+        .combine(favoriteActionStateFlow) { pagingData, actions ->
+            actions.fold(pagingData) { acc, event ->
+                FavoritePhotoHelper.applyEvent(acc, event)
             }
         }
-        .cachedIn(viewModelScope)
+        .asLiveData()
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val searchCollectionPagingData: Flow<PagingData<CollectionItem>> = searchAction
@@ -133,15 +141,10 @@ open class PagingSearchViewModel @Inject constructor(
         }
         .cachedIn(viewModelScope)
 
-    fun insertFavoritePhoto(photoItem: PhotoItem) {
+    fun addOrRemoveFavoriteFromSearch(currentState: Boolean, photoItem: PhotoItem) {
+        Log.d("sangpd", "addOrRemoveFavorite-isFavorite: ${photoItem.isFavorite}")
         viewModelScope.launch {
-            photosLocalRepository.addFavoritePhoto(photoItem.copy(isFavorite = true))
-        }
-    }
-
-    fun removeFavoritePhoto(photoItem: PhotoItem) {
-        viewModelScope.launch {
-            photosLocalRepository.removeFavoritePhoto(photoItem)
+            FavoritePhotoHelper.executeAddOrRemoveFavorite(photosLocalRepository, photoItem, currentState, favoriteActionStateFlow)
         }
     }
 }

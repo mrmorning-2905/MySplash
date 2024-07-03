@@ -51,7 +51,7 @@ class FavoritePhotosListFragment :
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
         val currentState = photoItem.isFavorite
-        viewModel.addOrRemoveFavorite(photoItem, currentState)
+        viewModel.addOrRemoveFavoriteFromFeed(currentState, photoItem)
     }
 
     companion object {

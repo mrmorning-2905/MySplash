@@ -11,6 +11,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -114,7 +115,7 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
         recyclerView.run {
             setHasFixedSize(true)
             layoutManager = gridLayoutManager
-            adapter = pagingAdapter.withLoadStateHeaderAndFooter (
+            adapter = pagingAdapter.withLoadStateHeaderAndFooter(
                 header = PagingLoadStateAdapter { pagingAdapter.retry() },
                 footer = PagingLoadStateAdapter { pagingAdapter.retry() }
             )
@@ -169,7 +170,7 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     }
 
     private fun getSearchTypeString(searchType: Int): String {
-        return when(searchType) {
+        return when (searchType) {
             SEARCH_PHOTOS_TYPE -> "Images"
             SEARCH_COLLECTIONS_TYPE -> "Collections"
             SEARCH_USERS_TYPE -> "Users"
@@ -187,6 +188,16 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
         }
     }
 
+    protected fun bindPagingListWithLiveData(
+        pagingData: LiveData<PagingData<T>>
+    ) {
+        pagingData.observe(viewLifecycleOwner) {
+            lifecycleScope.launch {
+                pagingAdapter.submitData(it)
+            }
+        }
+    }
+
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         gridLayoutManager?.let {
@@ -198,9 +209,11 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
         override fun coverPhotoClicked(coverId: String?) {
             handleCoverPhotoClicked(coverId)
         }
+
         override fun profileClicked(userId: String?) {
             handleProfileClicked(userId)
         }
+
         override fun addOrRemoveFavorite(photoItem: PhotoItem) {
             handleAddOrRemoveFavorite(photoItem)
         }
