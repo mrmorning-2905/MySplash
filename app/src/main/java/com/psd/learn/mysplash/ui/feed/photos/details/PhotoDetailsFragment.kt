@@ -20,6 +20,7 @@ import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.PhotoDetailsFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
+import com.psd.learn.mysplash.ui.feed.collections.details.CollectionDetailsViewModel
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import com.psd.learn.mysplash.ui.utils.ResultState
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
@@ -35,6 +36,7 @@ class PhotoDetailsFragment :
     private val photoDetailsViewModel by viewModels<PhotoDetailsViewModel>()
     private val photoFeedViewModel by activityViewModels<PagingFeedViewModel>()
     private val photoSearchViewModel by activityViewModels<PagingSearchViewModel>()
+    private val collectionDetailViewModel by activityViewModels<CollectionDetailsViewModel>()
     private val previousDestination : Int?
         get() = findNavController().previousBackStackEntry?.destination?.id
 
@@ -105,10 +107,16 @@ class PhotoDetailsFragment :
                         photoDetailsViewModel.setIsFavoritePhotoState(!currentState)
                         when (previousDestination) {
                             R.id.feed_fragment_dest -> {
+                                Log.d("sangpd", "bindFavoriteBtn--------: ")
                                 photoFeedViewModel.addOrRemoveFavoriteFromFeed(currentState, photoItem)
                             }
                             R.id.search_fragment_dest -> {
+                                Log.d("sangpd", "bindFavoriteBtn=========: ")
                                 photoSearchViewModel.addOrRemoveFavoriteFromSearch(currentState, photoItem)
+                            }
+                            R.id.collection_details_fragment_dest -> {
+                                Log.d("sangpd", "bindFavoriteBtn______: ")
+                                collectionDetailViewModel.addOrRemoveFavoriteFromCollectionDetails(currentState, photoItem)
                             }
                         }
                     }

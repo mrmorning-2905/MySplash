@@ -1,7 +1,10 @@
 package com.psd.learn.mysplash.data.local.entity
 
+import android.os.Parcelable
 import com.psd.learn.mysplash.data.remote.entity.CollectionResponseItem
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class CollectionItem(
     val collectionId: String,
     val userName: String,
@@ -12,7 +15,7 @@ data class CollectionItem(
     val coverDescription: String,
     val numberImages: Int,
     val userId: String
-)
+) : Parcelable
 
 fun CollectionResponseItem.toCollectionItem(): CollectionItem {
     return CollectionItem(

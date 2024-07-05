@@ -9,20 +9,24 @@ import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
+import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.CollectionDetailsFragmentBinding
 import com.psd.learn.mysplash.ui.PhotoPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
 import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CollectionDetailsFragment  :
     BasePagingFragment<PhotoItem, CollectionDetailsFragmentBinding>(inflate = CollectionDetailsFragmentBinding::inflate) {
 
-    private val viewModel by activityViewModels<PagingFeedViewModel>()
+    private val collectionDetailsViewModel by activityViewModels<CollectionDetailsViewModel>()
 
     override val pagingAdapter: BasePagingAdapter<PhotoItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
         PhotoPagingAdapter(
@@ -43,26 +47,28 @@ class CollectionDetailsFragment  :
     override val retryBtn: Button
         get() = binding.photoCollectionList.loadingContainer.retryButton
 
-    private val collectionId: String
-        get() = arguments?.getString("COLLECTION_ID") ?: ""
-
-    private val collectionName: String
-        get() = arguments?.getString("COLLECTION_NAME") ?: ""
+    private val collectionInfo: CollectionItem?
+        get() = arguments?.getParcelable("COLLECTION_INFO")
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
+        val collectionId = collectionInfo?.collectionId
+        collectionId?.let {
+            collectionDetailsViewModel.setCollectionId(it)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val rootView = super.onCreateView(inflater, container, savedInstanceState)
-        setupToolbar(true, collectionName, true)
+        setupToolbar(true, collectionInfo?.coverDescription ?: "", true)
         return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bindPagingListWithLiveData(viewModel.photoPagingDataFlow)
+        val collectionDescription = collectionInfo?.let { "${it.numberImages} Images - Created by: ${it.userName}" } ?: ""
+        binding.collectionDescriptionHeader.text = collectionDescription
+        bindPagingListWithLiveData(collectionDetailsViewModel.collectionPhotos)
     }
 
     override fun handleCoverPhotoClicked(item: PhotoItem) {
@@ -71,6 +77,6 @@ class CollectionDetailsFragment  :
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
         val currentState = photoItem.isFavorite
-        viewModel.addOrRemoveFavoriteFromFeed(currentState, photoItem)
+        collectionDetailsViewModel.addOrRemoveFavoriteFromCollectionDetails(currentState, photoItem)
     }
 }

@@ -242,8 +242,7 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
 
     protected fun openCollectionDetails(collectionItem: CollectionItem) {
         val bundle = Bundle().apply {
-            putString("COLLECTION_ID", collectionItem.collectionId)
-            putString("COLLECTION_NAME", collectionItem.coverDescription)
+            putParcelable("COLLECTION_INFO", collectionItem)
         }
         val navHost = findNavController()
         val actionId = when (val currentDestId = navHost.currentDestination?.id) {

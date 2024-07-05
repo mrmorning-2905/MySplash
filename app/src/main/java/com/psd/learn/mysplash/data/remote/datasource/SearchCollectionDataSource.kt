@@ -16,16 +16,16 @@ class SearchCollectionDataSource (
         get() = SearchCollectionDataSource::class.java.simpleName
 
     override suspend fun getListDataPaging(
-        queryText: String?,
+        query: String?,
         page: Int,
         perPage: Int
     ): List<CollectionItem> {
 
-        if (queryText == null) return emptyList()
+        if (query == null) return emptyList()
 
         val response = withContext(Dispatchers.IO) {
             unSplashApiService.getSearchCollectionResult(
-                query = queryText,
+                query = query,
                 page = page,
                 perPage = perPage
             )

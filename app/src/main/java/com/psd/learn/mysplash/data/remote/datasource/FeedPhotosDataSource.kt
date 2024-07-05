@@ -14,7 +14,7 @@ class FeedPhotosDataSource(
         get() = FeedPhotosDataSource::class.java.simpleName
 
     override suspend fun getListDataPaging(
-        queryText: String?,
+        query: String?,
         page: Int,
         perPage: Int
     ): List<PhotoItem> {

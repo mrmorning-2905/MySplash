@@ -9,14 +9,14 @@ import retrofit2.HttpException
 import java.io.IOException
 
 abstract class AbsPagingDataSource<T : Any>(
-    private val queryText: String? = null,
+    private val query: String? = null,
     open val totalResult: (Int) -> Unit = {}
 ) : PagingSource<Int, T>() {
 
     protected open val TAG = AbsPagingDataSource::class.java.simpleName
 
     abstract suspend fun getListDataPaging(
-        queryText: String?,
+        query: String?,
         page: Int,
         perPage: Int
     ): List<T>
@@ -33,7 +33,7 @@ abstract class AbsPagingDataSource<T : Any>(
         val position = params.key ?: START_PAGE_INDEX
         return try {
             val listDataInfo =
-                getListDataPaging(queryText = queryText, page = position, perPage = params.loadSize)
+                getListDataPaging(query = query, page = position, perPage = params.loadSize)
             val nextKey =
                 if (listDataInfo.isEmpty()) null else (position + (params.loadSize / PAGING_SIZE))
 

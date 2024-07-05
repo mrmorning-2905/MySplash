@@ -15,15 +15,15 @@ class SearchUserDataSource(
     override val TAG: String
         get() = SearchUserDataSource::class.java.simpleName
     override suspend fun getListDataPaging(
-        queryText: String?,
+        query: String?,
         page: Int,
         perPage: Int
     ): List<UserItem> {
 
-        if (queryText == null) return emptyList()
+        if (query == null) return emptyList()
         val response = withContext(Dispatchers.IO) {
             unSplashApiService.getSearchUserResult(
-                query = queryText,
+                query = query,
                 page = page,
                 perPage = perPage
             )

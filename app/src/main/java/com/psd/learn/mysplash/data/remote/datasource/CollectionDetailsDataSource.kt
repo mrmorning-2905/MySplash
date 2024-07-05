@@ -6,31 +6,24 @@ import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class SearchPhotoDataSource(
+class CollectionDetailsDataSource(
     private val unSplashApiService: UnSplashApiService,
-    queryText: String?,
-    override val totalResult: (Int) -> Unit
-) : AbsPagingDataSource<PhotoItem>(queryText) {
-
-    override val TAG: String
-        get() = SearchPhotoDataSource::class.java.simpleName
+    query: String?
+) : AbsPagingDataSource<PhotoItem>(query) {
 
     override suspend fun getListDataPaging(
         query: String?,
         page: Int,
         perPage: Int
     ): List<PhotoItem> {
-
         if (query == null) return emptyList()
-
-        val response = withContext(Dispatchers.IO) {
-            unSplashApiService.getSearchPhotoResult(
-                query = query,
+        return withContext(Dispatchers.IO) {
+            unSplashApiService.getPhotosOfCollection(
+                id = query,
                 page = page,
                 perPage = perPage
-            )
+            ).map { it.toPhotoItem() }
         }
-        totalResult(response.total)
-        return response.results.map { it.toPhotoItem() }
     }
+
 }
