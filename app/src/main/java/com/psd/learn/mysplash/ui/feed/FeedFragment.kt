@@ -14,7 +14,7 @@ import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.databinding.FeedFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.feed.collections.CollectionsListFragment
-import com.psd.learn.mysplash.ui.feed.photos.FavoritePhotosListFragment
+import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotosListFragment
 import com.psd.learn.mysplash.ui.feed.photos.PhotosListFragment
 import com.psd.learn.mysplash.ui.widget.CustomTabViewHolder
 import com.psd.learn.mysplash.ui.widget.TabItem

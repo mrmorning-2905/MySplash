@@ -25,6 +25,13 @@ interface UnSplashApiService {
         @Query("per_page") perPage: Int
     ): List<CollectionResponseItem>
 
+    @GET("collections/{id}/photos")
+    suspend fun getPhotosOfCollection(
+        @Path("id") id: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int
+    ): List<PhotoResponseItem>
+
     @GET("photos/{id}")
     suspend fun getPhotoItem(
         @Path("id") id: String

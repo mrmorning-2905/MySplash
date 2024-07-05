@@ -17,7 +17,7 @@ import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 
 class CollectionPagingAdapter(
     private val requestManager: RequestManager,
-    private val itemClickListener: OnItemClickListener
+    private val itemClickListener: OnItemClickListener<CollectionItem>
 ) : BasePagingAdapter<CollectionItem, CoverPhotoItemBinding>(
     R.layout.cover_photo_item, DIFF_COLLECTION_ITEM_CALLBACK
 ) {
@@ -35,7 +35,7 @@ class CollectionPagingAdapter(
 
         init {
             viewBinding.run {
-                coverPhoto.setOnClickListener { itemClickListener.coverPhotoClicked(collectionItem.collectionId) }
+                coverPhoto.setOnClickListener { itemClickListener.coverPhotoClicked(collectionItem) }
                 profileLayout.userOwnerContainer.setOnClickListener { itemClickListener.profileClicked(collectionItem.userId) }
             }
         }

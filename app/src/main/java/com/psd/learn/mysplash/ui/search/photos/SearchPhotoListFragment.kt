@@ -16,7 +16,6 @@ import com.psd.learn.mysplash.ui.PhotoPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
-import com.psd.learn.mysplash.utils.log.Logger
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -52,8 +51,8 @@ class SearchPhotoListFragment :
         binSearchResult(searchViewModel.searchPhotoTotal, SEARCH_PHOTOS_TYPE, binding.searchResult)
     }
 
-    override fun handleCoverPhotoClicked(coverId: String?) {
-        openPhotoDetails(coverId)
+    override fun handleCoverPhotoClicked(item: PhotoItem) {
+        openPhotoDetails(item)
     }
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {

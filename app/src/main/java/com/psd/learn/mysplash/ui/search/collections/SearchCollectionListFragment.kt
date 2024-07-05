@@ -50,6 +50,10 @@ class SearchCollectionListFragment :
         binSearchResult(searchViewModel.searchCollectionTotal, SEARCH_COLLECTIONS_TYPE, binding.searchResult)
     }
 
+    override fun handleCoverPhotoClicked(item: CollectionItem) {
+        openCollectionDetails(item)
+    }
+
     companion object {
         fun newInstance() = SearchCollectionListFragment()
     }

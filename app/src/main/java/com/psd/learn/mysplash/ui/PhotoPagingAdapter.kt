@@ -19,7 +19,7 @@ import com.psd.learn.mysplash.utils.log.Logger
 
 class PhotoPagingAdapter(
     private val requestManager: RequestManager,
-    private val itemClickListener: OnItemClickListener
+    private val itemClickListener: OnItemClickListener<PhotoItem>
 ) : BasePagingAdapter<PhotoItem, CoverPhotoItemBinding>(R.layout.cover_photo_item, DIFF_PHOTO_ITEM_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseListViewHolder<PhotoItem, CoverPhotoItemBinding> {
@@ -48,7 +48,7 @@ class PhotoPagingAdapter(
 
         init {
             viewBinding.run {
-                coverPhoto.setOnClickListener { itemClickListener.coverPhotoClicked(photoItem.photoId) }
+                coverPhoto.setOnClickListener { itemClickListener.coverPhotoClicked(photoItem) }
                 profileLayout.userOwnerContainer.setOnClickListener { itemClickListener.profileClicked(photoItem.userId) }
                 favoriteBtn.setOnClickListener {
                     itemClickListener.addOrRemoveFavorite(photoItem)

@@ -1,4 +1,4 @@
-package com.psd.learn.mysplash.ui.feed.photos
+package com.psd.learn.mysplash.ui.feed.photos.favorite
 
 import android.os.Bundle
 import android.view.View
@@ -45,8 +45,8 @@ class FavoritePhotosListFragment :
         initPagingData(viewModel.favoritePhotoFlow)
     }
 
-    override fun handleCoverPhotoClicked(coverId: String?) {
-        openPhotoDetails(coverId)
+    override fun handleCoverPhotoClicked(item: PhotoItem) {
+        openPhotoDetails(item)
     }
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {

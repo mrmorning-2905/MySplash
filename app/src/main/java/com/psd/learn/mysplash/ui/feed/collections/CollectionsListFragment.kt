@@ -46,6 +46,10 @@ class CollectionsListFragment: BasePagingFragment<CollectionItem, PhotoCollectio
         initPagingData(viewModel.collectionPagingDataFlow)
     }
 
+    override fun handleCoverPhotoClicked(item: CollectionItem) {
+        openCollectionDetails(item)
+    }
+
     companion object {
         fun newInstance() = CollectionsListFragment()
     }

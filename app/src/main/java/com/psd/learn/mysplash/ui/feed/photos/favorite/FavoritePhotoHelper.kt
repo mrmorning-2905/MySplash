@@ -1,4 +1,4 @@
-package com.psd.learn.mysplash.ui.feed.photos
+package com.psd.learn.mysplash.ui.feed.photos.favorite
 
 import androidx.paging.PagingData
 import androidx.paging.map

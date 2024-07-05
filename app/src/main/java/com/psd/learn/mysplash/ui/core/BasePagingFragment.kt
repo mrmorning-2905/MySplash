@@ -24,6 +24,7 @@ import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.SEARCH_COLLECTIONS_TYPE
 import com.psd.learn.mysplash.SEARCH_PHOTOS_TYPE
 import com.psd.learn.mysplash.SEARCH_USERS_TYPE
+import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import com.psd.learn.mysplash.ui.search.SearchAction
@@ -205,9 +206,9 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
         }
     }
 
-    protected open val mItemClickListener = object : OnItemClickListener {
-        override fun coverPhotoClicked(coverId: String?) {
-            handleCoverPhotoClicked(coverId)
+    protected open val mItemClickListener = object : OnItemClickListener<T> {
+        override fun coverPhotoClicked(item: T) {
+            handleCoverPhotoClicked(item)
         }
 
         override fun profileClicked(userId: String?) {
@@ -220,19 +221,35 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     }
 
     open fun handleProfileClicked(userId: String?) {}
-    open fun handleCoverPhotoClicked(coverId: String?) {}
+    open fun handleCoverPhotoClicked(item: T) {}
     open fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {}
 
 
-    protected fun openPhotoDetails(photoId: String?) {
+    protected fun openPhotoDetails(photoItem: PhotoItem) {
         val bundle = Bundle().apply {
-            putString("PHOTO_ID", photoId)
+            putString("PHOTO_ID", photoItem.photoId)
         }
         val navHost = findNavController()
         val actionId = when (val currentDestId = navHost.currentDestination?.id) {
             R.id.feed_fragment_dest -> R.id.action_feedFragment_to_detailsPhotoFragment
             R.id.search_fragment_dest -> R.id.action_searchFragment_to_detailsPhotoFragment
-            else -> error("doesn't support action at this fragment_currentDestId: $currentDestId")
+            R.id.collection_details_fragment_dest -> R.id.action_collectionDetails_to_detailsPhotoFragment
+            else -> error("openPhotoDetails() - doesn't support action at this fragment_currentDestId: $currentDestId")
+        }
+        navHost.navigate(actionId, bundle)
+
+    }
+
+    protected fun openCollectionDetails(collectionItem: CollectionItem) {
+        val bundle = Bundle().apply {
+            putString("COLLECTION_ID", collectionItem.collectionId)
+            putString("COLLECTION_NAME", collectionItem.coverDescription)
+        }
+        val navHost = findNavController()
+        val actionId = when (val currentDestId = navHost.currentDestination?.id) {
+            R.id.feed_fragment_dest -> R.id.action_feedFragment_to_collectionDetailsFragment
+            R.id.search_fragment_dest -> R.id.action_searchFragment_to_collectionDetailsFragment
+            else -> error("openCollectionDetails() - doesn't support action at this fragment_currentDestId: $currentDestId")
         }
         navHost.navigate(actionId, bundle)
 

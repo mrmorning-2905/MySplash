@@ -15,7 +15,7 @@ import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 
 class SearchUserListAdapter(
     private val requestManager: RequestManager,
-    private val itemClickListener: OnItemClickListener
+    private val itemClickListener: OnItemClickListener<UserItem>
 ) : BasePagingAdapter<UserItem, SearchUserItemBinding>(R.layout.search_user_item, DIFF_USER_ITEM_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseListViewHolder<UserItem, SearchUserItemBinding> {
