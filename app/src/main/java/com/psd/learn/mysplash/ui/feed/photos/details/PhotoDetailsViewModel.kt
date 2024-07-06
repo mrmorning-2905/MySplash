@@ -3,7 +3,9 @@ package com.psd.learn.mysplash.ui.feed.photos.details
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.psd.learn.mysplash.data.local.datasource.PhotosLocalRepository
+import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.remote.datasource.PhotoDetailsDataSource
+import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import com.psd.learn.mysplash.ui.utils.ResultState
 import com.psd.learn.mysplash.utils.log.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -67,5 +69,11 @@ class PhotoDetailsViewModel @Inject constructor(
 
     fun setIsFavoritePhotoState(state: Boolean) {
         _currentFavoriteStateFlow.value = state
+    }
+
+    fun addOrRemoveFavorite(currentState: Boolean, photoItem: PhotoItem) {
+        viewModelScope.launch {
+            FavoritePhotoHelper.executeAddOrRemoveFavorite(photoLocalRepo, photoItem, currentState)
+        }
     }
 }

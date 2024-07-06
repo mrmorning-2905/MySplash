@@ -33,9 +33,6 @@ class PhotoDetailsFragment :
     BaseFragment<PhotoDetailsFragmentLayoutBinding>(inflate = PhotoDetailsFragmentLayoutBinding::inflate) {
 
     private val photoDetailsViewModel by viewModels<PhotoDetailsViewModel>()
-    private val photoFeedViewModel by activityViewModels<PagingFeedViewModel>()
-    private val photoSearchViewModel by activityViewModels<PagingSearchViewModel>()
-    private val collectionDetailViewModel by activityViewModels<CollectionDetailsViewModel>()
     private val previousDestination : Int?
         get() = findNavController().previousBackStackEntry?.destination?.id
 
@@ -104,17 +101,7 @@ class PhotoDetailsFragment :
                     updateFavoriteBtn(currentState)
                     binding.favoriteBtn.setOnClickListener {
                         photoDetailsViewModel.setIsFavoritePhotoState(!currentState)
-                        when (previousDestination) {
-                            R.id.feed_fragment_dest -> {
-                                photoFeedViewModel.addOrRemoveFavoriteFromFeed(currentState, photoItem)
-                            }
-                            R.id.search_fragment_dest -> {
-                                photoSearchViewModel.addOrRemoveFavoriteFromSearch(currentState, photoItem)
-                            }
-                            R.id.collection_details_fragment_dest -> {
-                                collectionDetailViewModel.addOrRemoveFavoriteFromCollectionDetails(currentState, photoItem)
-                            }
-                        }
+                        photoDetailsViewModel.addOrRemoveFavorite(currentState, photoItem)
                     }
                 }
         }

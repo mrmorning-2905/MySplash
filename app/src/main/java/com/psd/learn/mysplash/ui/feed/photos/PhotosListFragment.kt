@@ -15,11 +15,14 @@ import com.psd.learn.mysplash.ui.PhotoPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
 import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
+import com.psd.learn.mysplash.ui.feed.photos.favorite.AddOrRemoveFavoriteResult
+import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoriteAction
+import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PhotosListFragment :
-    BasePagingFragment<PhotoItem, PhotoCollectionFragmentLayoutBinding>(inflate = PhotoCollectionFragmentLayoutBinding::inflate) {
+    BasePagingFragment<PhotoItem, PhotoCollectionFragmentLayoutBinding>(inflate = PhotoCollectionFragmentLayoutBinding::inflate), AddOrRemoveFavoriteResult {
 
     private val viewModel by activityViewModels<PagingFeedViewModel>()
 
@@ -42,6 +45,11 @@ class PhotosListFragment :
     override val retryBtn: Button
         get() = binding.loadingContainer.retryButton
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        FavoritePhotoHelper.addResultListener(this)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindPagingListWithLiveData(viewModel.photoPagingDataFlow)
@@ -58,5 +66,18 @@ class PhotosListFragment :
 
     companion object {
         fun newInstance() = PhotosListFragment()
+    }
+
+    override fun updateFavorite(currentState: Boolean, photoItem: PhotoItem) {
+        if (currentState) {
+            viewModel.onFavoriteAction(FavoriteAction.AddFavorite(photoItem))
+        } else {
+            viewModel.onFavoriteAction(FavoriteAction.RemoveFavorite(photoItem))
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        FavoritePhotoHelper.removeResultListener(this)
     }
 }

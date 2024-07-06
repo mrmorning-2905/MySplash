@@ -15,12 +15,15 @@ import com.psd.learn.mysplash.databinding.SearchPhotoCollectionFragmentLayoutBin
 import com.psd.learn.mysplash.ui.PhotoPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
+import com.psd.learn.mysplash.ui.feed.photos.favorite.AddOrRemoveFavoriteResult
+import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoriteAction
+import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SearchPhotoListFragment :
-    BasePagingFragment<PhotoItem, SearchPhotoCollectionFragmentLayoutBinding>(inflate = SearchPhotoCollectionFragmentLayoutBinding::inflate) {
+    BasePagingFragment<PhotoItem, SearchPhotoCollectionFragmentLayoutBinding>(inflate = SearchPhotoCollectionFragmentLayoutBinding::inflate), AddOrRemoveFavoriteResult {
 
     private val searchViewModel by activityViewModels<PagingSearchViewModel>()
 
@@ -44,6 +47,11 @@ class SearchPhotoListFragment :
         )
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        FavoritePhotoHelper.addResultListener(this)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         handleScroll(searchViewModel)
@@ -62,5 +70,18 @@ class SearchPhotoListFragment :
 
     companion object {
         fun newInstance() = SearchPhotoListFragment()
+    }
+
+    override fun updateFavorite(currentState: Boolean, photoItem: PhotoItem) {
+        if (currentState) {
+            searchViewModel.onFavoriteAction(FavoriteAction.AddFavorite(photoItem))
+        } else {
+            searchViewModel.onFavoriteAction(FavoriteAction.RemoveFavorite(photoItem))
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        FavoritePhotoHelper.removeResultListener(this)
     }
 }

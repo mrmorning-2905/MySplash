@@ -4,9 +4,10 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.psd.learn.mysplash.data.local.datasource.PhotosLocalRepository
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
-import kotlinx.coroutines.flow.MutableStateFlow
 
 object FavoritePhotoHelper {
+
+    private val resultListListener: ArrayList<AddOrRemoveFavoriteResult> = ArrayList()
     fun applyEvent(
         pagingData: PagingData<PhotoItem>,
         action: FavoriteAction
@@ -28,20 +29,31 @@ object FavoritePhotoHelper {
             }
         }
     }
+    fun addResultListener(result: AddOrRemoveFavoriteResult) {
+        resultListListener.add(result)
+    }
+
+    fun removeResultListener(result: AddOrRemoveFavoriteResult) {
+        resultListListener.remove(result)
+    }
+
+    private fun notifyResult(currentStatus: Boolean, photoItem: PhotoItem) {
+        resultListListener.forEach {
+            it.updateFavorite(currentStatus, photoItem)
+        }
+    }
 
     suspend fun executeAddOrRemoveFavorite(
         localRepo: PhotosLocalRepository,
         photoItem: PhotoItem,
-        currentState: Boolean,
-        actionStateFlow: MutableStateFlow<List<FavoriteAction>>
+        currentState: Boolean
     ) {
         if (currentState) {
-            onFavoriteAction(actionStateFlow, FavoriteAction.RemoveFavorite(photoItem))
             localRepo.removeFavoritePhoto(photoItem)
         } else {
-            onFavoriteAction(actionStateFlow, FavoriteAction.AddFavorite(photoItem))
             localRepo.addFavoritePhoto(photoItem.copy(isFavorite = true))
         }
+        notifyResult(!currentState, photoItem)
     }
 
     fun mappingFavoriteFromLocal(
@@ -55,13 +67,13 @@ object FavoritePhotoHelper {
         }
     }
 
-
-    private fun onFavoriteAction(actionStateFlow: MutableStateFlow<List<FavoriteAction>>, action: FavoriteAction) {
-        actionStateFlow.value += action
-    }
 }
 
 sealed class FavoriteAction {
     data class AddFavorite(val data: PhotoItem) : FavoriteAction()
     data class RemoveFavorite(val data: PhotoItem) : FavoriteAction()
+}
+
+interface AddOrRemoveFavoriteResult {
+    fun updateFavorite(currentState: Boolean, photoItem: PhotoItem)
 }

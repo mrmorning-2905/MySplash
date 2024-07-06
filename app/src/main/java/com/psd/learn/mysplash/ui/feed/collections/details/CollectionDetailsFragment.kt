@@ -18,11 +18,14 @@ import com.psd.learn.mysplash.databinding.CollectionDetailsFragmentBinding
 import com.psd.learn.mysplash.ui.PhotoPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
+import com.psd.learn.mysplash.ui.feed.photos.favorite.AddOrRemoveFavoriteResult
+import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoriteAction
+import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class CollectionDetailsFragment  :
-    BasePagingFragment<PhotoItem, CollectionDetailsFragmentBinding>(inflate = CollectionDetailsFragmentBinding::inflate) {
+    BasePagingFragment<PhotoItem, CollectionDetailsFragmentBinding>(inflate = CollectionDetailsFragmentBinding::inflate), AddOrRemoveFavoriteResult {
 
     private val collectionDetailsViewModel by activityViewModels<CollectionDetailsViewModel>()
 
@@ -56,6 +59,11 @@ class CollectionDetailsFragment  :
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        FavoritePhotoHelper.addResultListener(this)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val rootView = super.onCreateView(inflater, container, savedInstanceState)
         setupToolbar(true, collectionInfo?.coverDescription ?: "", true)
@@ -76,5 +84,18 @@ class CollectionDetailsFragment  :
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
         val currentState = photoItem.isFavorite
         collectionDetailsViewModel.addOrRemoveFavoriteFromCollectionDetails(currentState, photoItem)
+    }
+
+    override fun updateFavorite(currentState: Boolean, photoItem: PhotoItem) {
+        if (currentState) {
+            collectionDetailsViewModel.onFavoriteAction(FavoriteAction.AddFavorite(photoItem))
+        } else {
+            collectionDetailsViewModel.onFavoriteAction(FavoriteAction.RemoveFavorite(photoItem))
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        FavoritePhotoHelper.removeResultListener(this)
     }
 }

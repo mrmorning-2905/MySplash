@@ -53,8 +53,12 @@ class PagingFeedViewModel @Inject constructor(
 
     fun addOrRemoveFavoriteFromFeed(currentState: Boolean, photoItem: PhotoItem) {
         viewModelScope.launch {
-            FavoritePhotoHelper.executeAddOrRemoveFavorite(photosLocalRepo, photoItem, currentState, favoriteActionStateFlow)
+            FavoritePhotoHelper.executeAddOrRemoveFavorite(photosLocalRepo, photoItem, currentState)
         }
+    }
+
+    fun onFavoriteAction( action: FavoriteAction) {
+        favoriteActionStateFlow.value += action
     }
 }
 

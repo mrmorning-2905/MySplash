@@ -67,7 +67,6 @@ class PhotoPagingAdapter(
                 coverTitle.text = item.photoDescription
                 coverDetail.text = "${item.numberLikes} Likes"
                 favoriteBtn.visibility = View.VISIBLE
-                Logger.d("sangpd", "onBindView: photoId: ${photoItem.photoId} - isFavorite: ${photoItem.isFavorite}")
                 val favoriteIcon = if (photoItem.isFavorite) R.drawable.favorite_selected_icon else R.drawable.favorite_icon
                 favoriteBtn.setImageDrawable(ContextCompat.getDrawable(parent.context, favoriteIcon))
             }

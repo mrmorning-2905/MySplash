@@ -59,7 +59,11 @@ class CollectionDetailsViewModel @Inject constructor(
 
     fun addOrRemoveFavoriteFromCollectionDetails(currentState: Boolean, photoItem: PhotoItem) {
         viewModelScope.launch {
-            FavoritePhotoHelper.executeAddOrRemoveFavorite(photosLocalRepository, photoItem, currentState, favoriteActionStateFlow)
+            FavoritePhotoHelper.executeAddOrRemoveFavorite(photosLocalRepository, photoItem, currentState)
         }
+    }
+
+    fun onFavoriteAction( action: FavoriteAction) {
+        favoriteActionStateFlow.value += action
     }
 }

@@ -141,8 +141,12 @@ open class PagingSearchViewModel @Inject constructor(
 
     fun addOrRemoveFavoriteFromSearch(currentState: Boolean, photoItem: PhotoItem) {
         viewModelScope.launch {
-            FavoritePhotoHelper.executeAddOrRemoveFavorite(photosLocalRepository, photoItem, currentState, favoriteActionStateFlow)
+            FavoritePhotoHelper.executeAddOrRemoveFavorite(photosLocalRepository, photoItem, currentState)
         }
+    }
+
+    fun onFavoriteAction( action: FavoriteAction) {
+        favoriteActionStateFlow.value += action
     }
 }
 
