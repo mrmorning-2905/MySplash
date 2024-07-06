@@ -1,6 +1,5 @@
 package com.psd.learn.mysplash.ui.feed.collections.details
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -59,7 +58,6 @@ class CollectionDetailsViewModel @Inject constructor(
         .asLiveData()
 
     fun addOrRemoveFavoriteFromCollectionDetails(currentState: Boolean, photoItem: PhotoItem) {
-        Log.d("sangpd", "addOrRemoveFavorite-isFavorite: ${photoItem.isFavorite}")
         viewModelScope.launch {
             FavoritePhotoHelper.executeAddOrRemoveFavorite(photosLocalRepository, photoItem, currentState, favoriteActionStateFlow)
         }

@@ -2,7 +2,6 @@ package com.psd.learn.mysplash.ui.feed.photos.details
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -107,15 +106,12 @@ class PhotoDetailsFragment :
                         photoDetailsViewModel.setIsFavoritePhotoState(!currentState)
                         when (previousDestination) {
                             R.id.feed_fragment_dest -> {
-                                Log.d("sangpd", "bindFavoriteBtn--------: ")
                                 photoFeedViewModel.addOrRemoveFavoriteFromFeed(currentState, photoItem)
                             }
                             R.id.search_fragment_dest -> {
-                                Log.d("sangpd", "bindFavoriteBtn=========: ")
                                 photoSearchViewModel.addOrRemoveFavoriteFromSearch(currentState, photoItem)
                             }
                             R.id.collection_details_fragment_dest -> {
-                                Log.d("sangpd", "bindFavoriteBtn______: ")
                                 collectionDetailViewModel.addOrRemoveFavoriteFromCollectionDetails(currentState, photoItem)
                             }
                         }

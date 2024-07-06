@@ -1,6 +1,5 @@
 package com.psd.learn.mysplash.ui.search
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -141,7 +140,6 @@ open class PagingSearchViewModel @Inject constructor(
         .cachedIn(viewModelScope)
 
     fun addOrRemoveFavoriteFromSearch(currentState: Boolean, photoItem: PhotoItem) {
-        Log.d("sangpd", "addOrRemoveFavorite-isFavorite: ${photoItem.isFavorite}")
         viewModelScope.launch {
             FavoritePhotoHelper.executeAddOrRemoveFavorite(photosLocalRepository, photoItem, currentState, favoriteActionStateFlow)
         }

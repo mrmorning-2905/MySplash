@@ -1,6 +1,5 @@
 package com.psd.learn.mysplash.ui.feed
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -53,7 +52,6 @@ class PagingFeedViewModel @Inject constructor(
         .asLiveData()
 
     fun addOrRemoveFavoriteFromFeed(currentState: Boolean, photoItem: PhotoItem) {
-        Log.d("sangpd", "addOrRemoveFavorite-isFavorite: ${photoItem.isFavorite}")
         viewModelScope.launch {
             FavoritePhotoHelper.executeAddOrRemoveFavorite(photosLocalRepo, photoItem, currentState, favoriteActionStateFlow)
         }
