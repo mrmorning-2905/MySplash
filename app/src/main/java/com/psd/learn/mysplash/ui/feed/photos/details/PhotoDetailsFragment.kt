@@ -33,8 +33,6 @@ class PhotoDetailsFragment :
     BaseFragment<PhotoDetailsFragmentLayoutBinding>(inflate = PhotoDetailsFragmentLayoutBinding::inflate) {
 
     private val photoDetailsViewModel by viewModels<PhotoDetailsViewModel>()
-    private val previousDestination : Int?
-        get() = findNavController().previousBackStackEntry?.destination?.id
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -185,9 +183,5 @@ class PhotoDetailsFragment :
         binding.imageInfoGridview.adapter = null
         binding.cameraInfoGridview.adapter = null
         super.onDestroyView()
-    }
-
-    companion object {
-        fun newInstance() = PhotoDetailsFragment()
     }
 }
