@@ -1,13 +1,11 @@
 package com.psd.learn.mysplash.ui.widget
 
 import android.content.Context
-import android.graphics.fonts.FontStyle
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
-import androidx.core.widget.TextViewCompat
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.databinding.TabLayoutCustomBinding
 
@@ -46,9 +44,4 @@ class CustomTabViewHolder @JvmOverloads constructor(
                 )
             }
         }
-
-    fun bind(block: CustomTabViewHolder.() -> Unit) {
-        block(this)
-    }
-
 }

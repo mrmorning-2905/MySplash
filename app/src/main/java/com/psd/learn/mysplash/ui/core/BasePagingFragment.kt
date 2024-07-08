@@ -28,7 +28,6 @@ import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import com.psd.learn.mysplash.ui.search.SearchAction
-import com.psd.learn.mysplash.utils.log.Logger
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -131,7 +130,6 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     }
 
     private fun handleLoadState() {
-        Logger.d(TAG, "-----handleLoadState()-----")
         initLoadState()
         lifecycleScope.launch {
             pagingAdapter.loadStateFlow
@@ -156,14 +154,12 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
 
     @SuppressLint("SetTextI18n")
     protected fun binSearchResult(searchResultFlow: SharedFlow<Int>, searchType: Int, resultTv: TextView) {
-        Logger.d(TAG, "binSearchResult() - searchType: $searchType")
         lifecycleScope.launch {
             searchResultFlow
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .distinctUntilChanged()
                 .collectLatest { totalResult ->
                     val searchTypeDes = getSearchTypeString(searchType)
-                    Logger.d(TAG, "binSearchResult() - totalResult of $searchTypeDes: $totalResult")
                     resultTv.text = "Result: $totalResult $searchTypeDes"
                 }
         }

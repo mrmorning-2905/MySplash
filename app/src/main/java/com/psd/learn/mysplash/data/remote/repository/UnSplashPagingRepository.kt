@@ -10,7 +10,6 @@ import com.psd.learn.mysplash.data.remote.datasource.CollectionDetailsDataSource
 import com.psd.learn.mysplash.data.remote.datasource.FeedCollectionsDataSource
 import com.psd.learn.mysplash.data.remote.datasource.FeedPhotosDataSource
 import com.psd.learn.mysplash.data.remote.datasource.SearchDataSourceFactory
-import com.psd.learn.mysplash.utils.log.Logger
 import kotlinx.coroutines.flow.Flow
 
 class UnSplashPagingRepository(
@@ -28,7 +27,6 @@ class UnSplashPagingRepository(
         searchType: Int,
         onTotalResult: (Int) -> Unit
     ): Flow<PagingData<T>> {
-        Logger.d(TAG, "getSearchResultStream() - query: $query - searchType: $searchType")
         val dataSource = SearchDataSourceFactory.getSearchDataSource<T>(
             unSplashApiService,
             searchType,

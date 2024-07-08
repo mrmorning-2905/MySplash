@@ -18,7 +18,6 @@ import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotosListFragment
 import com.psd.learn.mysplash.ui.feed.photos.PhotosListFragment
 import com.psd.learn.mysplash.ui.widget.CustomTabViewHolder
 import com.psd.learn.mysplash.ui.widget.TabItem
-import com.psd.learn.mysplash.utils.log.Logger
 
 class FeedFragment :
     BaseFragment<FeedFragmentLayoutBinding>(inflate = FeedFragmentLayoutBinding::inflate) {
@@ -39,14 +38,13 @@ class FeedFragment :
             with(binding.tabLayout) {
                 addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                     override fun onTabSelected(tab: TabLayout.Tab?) {
-                        Logger.d(TAG, "setupViewPager() - selectedTab: ${tab?.position}")
                         (tab?.customView as? CustomTabViewHolder)
-                            ?.bind { tabItemStatus = tabItemStatus.copy(isSelected = true) }
+                            ?.run { tabItemStatus = tabItemStatus.copy(isSelected = true) }
                     }
 
                     override fun onTabUnselected(tab: TabLayout.Tab?) {
                         (tab?.customView as? CustomTabViewHolder)
-                            ?.bind { tabItemStatus = tabItemStatus.copy(isSelected = false) }
+                            ?.run { tabItemStatus = tabItemStatus.copy(isSelected = false) }
                     }
 
                     override fun onTabReselected(tab: TabLayout.Tab?) {

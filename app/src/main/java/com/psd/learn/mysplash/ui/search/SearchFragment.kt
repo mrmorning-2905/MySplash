@@ -21,7 +21,6 @@ import com.psd.learn.mysplash.ui.search.users.SearchUserListFragment
 import com.psd.learn.mysplash.SEARCH_TAB_TITLES
 import com.psd.learn.mysplash.ui.widget.CustomTabViewHolder
 import com.psd.learn.mysplash.ui.widget.TabItem
-import com.psd.learn.mysplash.utils.log.Logger
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,11 +33,6 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
         get() = arguments?.getString("KEY_WORD") ?: ""
 
     private val viewModel by activityViewModels<PagingSearchViewModel>()
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        Logger.d(TAG, "searchText from tag: $searchText")
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,14 +47,13 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
             with(binding.tabLayout) {
                 addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                     override fun onTabSelected(tab: TabLayout.Tab?) {
-                        Logger.d(TAG, "setupViewPager() - selectedTab: ${tab?.position}")
                         (tab?.customView as? CustomTabViewHolder)
-                            ?.bind { tabItemStatus = tabItemStatus.copy(isSelected = true) }
+                            ?.run { tabItemStatus = tabItemStatus.copy(isSelected = true) }
                     }
 
                     override fun onTabUnselected(tab: TabLayout.Tab?) {
                         (tab?.customView as? CustomTabViewHolder)
-                            ?.bind { tabItemStatus = tabItemStatus.copy(isSelected = false) }
+                            ?.run { tabItemStatus = tabItemStatus.copy(isSelected = false) }
                     }
 
                     override fun onTabReselected(tab: TabLayout.Tab?) {

@@ -4,7 +4,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.psd.learn.mysplash.PAGING_SIZE
 import com.psd.learn.mysplash.START_PAGE_INDEX
-import com.psd.learn.mysplash.utils.log.Logger
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -43,10 +42,8 @@ abstract class AbsPagingDataSource<T : Any>(
                 nextKey = nextKey
             )
         } catch (e: IOException) {
-            Logger.e(TAG, "load() - IOException error: $e")
             LoadResult.Error(e)
         } catch (e: HttpException) {
-            Logger.e(TAG, "load() - HttpException error: $e")
             LoadResult.Error(e)
         }
     }

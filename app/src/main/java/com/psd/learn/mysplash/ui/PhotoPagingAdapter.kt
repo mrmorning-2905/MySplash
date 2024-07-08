@@ -15,7 +15,6 @@ import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.OnItemClickListener
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
-import com.psd.learn.mysplash.utils.log.Logger
 
 class PhotoPagingAdapter(
     private val requestManager: RequestManager,
