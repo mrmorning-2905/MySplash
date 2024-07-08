@@ -8,9 +8,10 @@ import com.psd.learn.mysplash.data.local.dao.PhotosDao
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 
-class PhotosLocalRepository (
+class PhotosLocalRepository(
     private val photosDao: PhotosDao,
     private val dispatcher: CoroutineDispatcher
 ) {
@@ -18,7 +19,7 @@ class PhotosLocalRepository (
     fun getFavoritePhotosStream(): Flow<PagingData<PhotoItem>> {
         return Pager(
             config = PagingConfig(pageSize = PAGING_SIZE, enablePlaceholders = false),
-            pagingSourceFactory = { photosDao.getAllPhotosPagingSource()}
+            pagingSourceFactory = { photosDao.getAllPhotosPagingSource() }
         ).flow
     }
 
@@ -41,5 +42,7 @@ class PhotosLocalRepository (
         return photoItem != null
     }
 
-    fun getPhotoIdsStream(): Flow<List<String>> = photosDao.getAllPhotoIds()
+    fun getPhotoIdsStream(): Flow<List<String>> = photosDao
+        .getAllPhotoIds()
+        .flowOn(dispatcher)
 }

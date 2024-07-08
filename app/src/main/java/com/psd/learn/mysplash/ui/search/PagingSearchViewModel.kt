@@ -1,10 +1,12 @@
 package com.psd.learn.mysplash.ui.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.psd.learn.mysplash.SEARCH_COLLECTIONS_TYPE
 import com.psd.learn.mysplash.SEARCH_PHOTOS_TYPE
 import com.psd.learn.mysplash.SEARCH_USERS_TYPE
@@ -13,10 +15,8 @@ import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashPagingRepository
-import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoriteAction
 import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
@@ -44,8 +43,6 @@ open class PagingSearchViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val TAG = PagingSearchViewModel::class.java.simpleName
-
-    private val favoriteActionStateFlow = MutableStateFlow<List<FavoriteAction>>(emptyList())
 
     private val actionSharedFlow = MutableSharedFlow<SearchAction>(replay = 1)
 
@@ -81,17 +78,14 @@ open class PagingSearchViewModel @Inject constructor(
         }
     }
 
-    val uiState: StateFlow<SearchUiState>
-        get() {
-            return combine(searchAction, scrollAction, ::Pair)
-                .map { (search, scroll) ->
-                    SearchUiState(query = search.query, hasNotScrolledForCurrentSearch = search.query != scroll.currentQuery)
-                }.stateIn(
-                    scope = viewModelScope,
-                    started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
-                    initialValue = SearchUiState()
-                )
-        }
+    val uiState: StateFlow<SearchUiState> = combine(searchAction, scrollAction, ::Pair)
+        .map { (search, scroll) ->
+            SearchUiState(query = search.query, hasNotScrolledForCurrentSearch = search.query != scroll.currentQuery)
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
+            initialValue = SearchUiState()
+        )
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val searchPhotoPagingData = searchAction
@@ -101,16 +95,15 @@ open class PagingSearchViewModel @Inject constructor(
                 viewModelScope.launch {
                     _searchPhotoTotal.emit(totalPhotos)
                 }
+                //Log.d("sangpd", "searchUiState_totalPhotos: $totalPhotos")
             }
         }
-        .map { pagingData: PagingData<PhotoItem> ->
-            FavoritePhotoHelper.mappingFavoriteFromLocal(photosLocalRepository, pagingData)
-        }
-        .flowOn(Dispatchers.IO)
         .cachedIn(viewModelScope)
-        .combine(favoriteActionStateFlow) { pagingData, actions ->
-            actions.fold(pagingData) { acc, event ->
-                FavoritePhotoHelper.applyEvent(acc, event)
+        .combine(photosLocalRepository.getPhotoIdsStream()) { pagingData, localIdList ->
+            Log.d("sangpd", "localIdList: $localIdList")
+            pagingData.map { photoItem ->
+                val isFavorite = localIdList.contains(photoItem.photoId)
+                photoItem.copy(isFavorite = isFavorite)
             }
         }
         .asLiveData()
@@ -144,10 +137,6 @@ open class PagingSearchViewModel @Inject constructor(
             FavoritePhotoHelper.executeAddOrRemoveFavorite(photosLocalRepository, photoItem, currentState)
         }
     }
-
-    fun onFavoriteAction( action: FavoriteAction) {
-        favoriteActionStateFlow.value += action
-    }
 }
 
 sealed class SearchAction {
@@ -157,5 +146,6 @@ sealed class SearchAction {
 
 data class SearchUiState(
     val query: String? = "",
-    val hasNotScrolledForCurrentSearch: Boolean = false
+    val hasNotScrolledForCurrentSearch: Boolean = false,
+    val totalSearchResult: HashMap<Int, Int> = HashMap()
 )

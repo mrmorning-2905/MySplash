@@ -17,7 +17,7 @@ import com.psd.learn.mysplash.ui.core.BasePagingFragment
 import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
 
 class FavoritePhotosListFragment :
-    BasePagingFragment<PhotoItem, PhotoCollectionFragmentLayoutBinding>(inflate = PhotoCollectionFragmentLayoutBinding::inflate), AddOrRemoveFavoriteResult {
+    BasePagingFragment<PhotoItem, PhotoCollectionFragmentLayoutBinding>(inflate = PhotoCollectionFragmentLayoutBinding::inflate){
 
     private val viewModel by activityViewModels<PagingFeedViewModel>()
 
@@ -56,18 +56,5 @@ class FavoritePhotosListFragment :
 
     companion object {
         fun newInstance() = FavoritePhotosListFragment()
-    }
-
-    override fun updateFavorite(currentState: Boolean, photoItem: PhotoItem) {
-        if (currentState) {
-            viewModel.onFavoriteAction(FavoriteAction.AddFavorite(photoItem))
-        } else {
-            viewModel.onFavoriteAction(FavoriteAction.RemoveFavorite(photoItem))
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        FavoritePhotoHelper.removeResultListener(this)
     }
 }

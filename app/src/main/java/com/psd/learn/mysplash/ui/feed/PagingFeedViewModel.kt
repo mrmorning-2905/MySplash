@@ -1,23 +1,20 @@
 package com.psd.learn.mysplash.ui.feed
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import com.psd.learn.mysplash.data.local.datasource.PhotosLocalRepository
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashPagingRepository
-import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoriteAction
 import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -27,8 +24,6 @@ class PagingFeedViewModel @Inject constructor(
     private val photosLocalRepo: PhotosLocalRepository
 ) : ViewModel() {
 
-    private val favoriteActionStateFlow = MutableStateFlow<List<FavoriteAction>>(emptyList())
-
     val collectionPagingDataFlow: Flow<PagingData<CollectionItem>> = pagingRepository
         .getFeedCollectionsStream()
         .cachedIn(viewModelScope)
@@ -37,28 +32,23 @@ class PagingFeedViewModel @Inject constructor(
         .getFavoritePhotosStream()
         .cachedIn(viewModelScope)
 
-    val photoPagingDataFlow = pagingRepository
+    val photoPagingFlow = pagingRepository
         .getFeedPhotosStream()
-        .map { pagingData: PagingData<PhotoItem> ->
-            FavoritePhotoHelper.mappingFavoriteFromLocal(photosLocalRepo, pagingData)
-        }
-        .flowOn(Dispatchers.IO)
         .cachedIn(viewModelScope)
-        .combine(favoriteActionStateFlow) { pagingData, actions ->
-            actions.fold(pagingData) { acc, event ->
-                FavoritePhotoHelper.applyEvent(acc, event)
+        .combine(photosLocalRepo.getPhotoIdsStream()) { pagingData, localIdList ->
+            Log.d("sangpd", "localIdList: $localIdList")
+            pagingData.map { photoItem ->
+                val isFavorite = localIdList.contains(photoItem.photoId)
+                photoItem.copy(isFavorite = isFavorite)
             }
         }
         .asLiveData()
+
 
     fun addOrRemoveFavoriteFromFeed(currentState: Boolean, photoItem: PhotoItem) {
         viewModelScope.launch {
             FavoritePhotoHelper.executeAddOrRemoveFavorite(photosLocalRepo, photoItem, currentState)
         }
-    }
-
-    fun onFavoriteAction( action: FavoriteAction) {
-        favoriteActionStateFlow.value += action
     }
 }
 

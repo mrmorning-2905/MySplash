@@ -74,7 +74,6 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     protected fun handleScroll(
         viewModel: PagingSearchViewModel,
     ) {
-
         val uiState = viewModel.uiState
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
