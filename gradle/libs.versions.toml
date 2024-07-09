@@ -13,6 +13,7 @@ preferenceKtx = "1.2.1"
 androidx-room = "2.6.1"
 dagger = "2.51"
 paging3 = "3.3.0"
+androidx-navigation = "2.7.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -21,6 +22,8 @@ androidx-preference-ktx = { module = "androidx.preference:preference-ktx", versi
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidx-room" }
+androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
+androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidx-navigation" }
 
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -38,9 +41,15 @@ dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", ve
 paging-common-android = { group = "androidx.paging", name = "paging-common-android", version.ref = "paging3"}
 paging-runtime-ktx = { group = "androidx.paging", name = "paging-runtime-ktx", version.ref = "paging3"}
 
-
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 daggerHiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "dagger" }
+androidx-navigation-safeargs-kotlin = { id = "androidx.navigation.safeargs.kotlin", version.ref = "androidx-navigation" }
+
+[bundles]
+androidx-navigation = [
+    "androidx-navigation-fragment-ktx",
+    "androidx-navigation-ui-ktx"
+]
 

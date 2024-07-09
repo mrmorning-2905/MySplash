@@ -12,6 +12,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.R
@@ -33,12 +34,7 @@ class PhotoDetailsFragment :
     BaseFragment<PhotoDetailsFragmentLayoutBinding>(inflate = PhotoDetailsFragmentLayoutBinding::inflate) {
 
     private val photoDetailsViewModel by viewModels<PhotoDetailsViewModel>()
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        val photoId = arguments?.getString("PHOTO_ID") ?: ""
-        photoDetailsViewModel.emitPhotoId(photoId)
-    }
+    private val args by lazy(LazyThreadSafetyMode.NONE) { navArgs<PhotoDetailsFragmentArgs>().value.photoId }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -90,18 +86,26 @@ class PhotoDetailsFragment :
         binding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(requireContext(), favoriteIcon))
     }
 
+    //    private fun bindFavoriteBtn(photoItem: PhotoItem) {
+//        lifecycleScope.launch {
+//            photoDetailsViewModel.currentFavoriteStateFlow
+//                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+//                .distinctUntilChanged()
+//                .collect { currentState ->
+//                    updateFavoriteBtn(currentState)
+//                    binding.favoriteBtn.setOnClickListener {
+//                        photoDetailsViewModel.setIsFavoritePhotoState(!currentState)
+//                        executeFavorite(currentState, photoItem)
+//                    }
+//                }
+//        }
+//    }
     private fun bindFavoriteBtn(photoItem: PhotoItem) {
-        lifecycleScope.launch {
-            photoDetailsViewModel.currentFavoriteStateFlow
-                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                .distinctUntilChanged()
-                .collect { currentState ->
-                    updateFavoriteBtn(currentState)
-                    binding.favoriteBtn.setOnClickListener {
-                        photoDetailsViewModel.setIsFavoritePhotoState(!currentState)
-                        photoDetailsViewModel.addOrRemoveFavorite(currentState, photoItem)
-                    }
-                }
+        val currentStatus = photoItem.isFavorite
+        updateFavoriteBtn(currentStatus)
+        binding.favoriteBtn.setOnClickListener {
+            executeFavorite(currentStatus, photoItem)
+            updateFavoriteBtn(photoItem.isFavorite)
         }
     }
 

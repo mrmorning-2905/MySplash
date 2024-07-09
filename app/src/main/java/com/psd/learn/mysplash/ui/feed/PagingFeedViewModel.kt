@@ -13,8 +13,10 @@ import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashPagingRepository
 import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,19 +38,19 @@ class PagingFeedViewModel @Inject constructor(
         .getFeedPhotosStream()
         .cachedIn(viewModelScope)
         .combine(photosLocalRepo.getPhotoIdsStream()) { pagingData, localIdList ->
-            Log.d("sangpd", "localIdList: $localIdList")
             pagingData.map { photoItem ->
                 val isFavorite = localIdList.contains(photoItem.photoId)
                 photoItem.copy(isFavorite = isFavorite)
             }
         }
-        .asLiveData()
+        .flowOn(Dispatchers.IO)
+        .asLiveData(Dispatchers.Main)
 
 
-    fun addOrRemoveFavoriteFromFeed(currentState: Boolean, photoItem: PhotoItem) {
-        viewModelScope.launch {
-            FavoritePhotoHelper.executeAddOrRemoveFavorite(photosLocalRepo, photoItem, currentState)
-        }
-    }
+//    fun addOrRemoveFavoriteFromFeed(currentState: Boolean, photoItem: PhotoItem) {
+//        viewModelScope.launch {
+//            FavoritePhotoHelper.executeAddOrRemoveFavorite(photosLocalRepo, photoItem, currentState)
+//        }
+//    }
 }
 

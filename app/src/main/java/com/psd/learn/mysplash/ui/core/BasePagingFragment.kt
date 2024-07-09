@@ -14,6 +14,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -26,8 +27,13 @@ import com.psd.learn.mysplash.SEARCH_PHOTOS_TYPE
 import com.psd.learn.mysplash.SEARCH_USERS_TYPE
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
+import com.psd.learn.mysplash.ui.feed.FeedFragmentDirections
+import com.psd.learn.mysplash.ui.feed.collections.details.CollectionDetailsFragmentDirections
+import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import com.psd.learn.mysplash.ui.search.SearchAction
+import com.psd.learn.mysplash.ui.search.SearchFragmentDirections
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -36,6 +42,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     inflate: (LayoutInflater, ViewGroup?, Boolean) -> VB
@@ -219,19 +226,15 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     open fun handleCoverPhotoClicked(item: T) {}
     open fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {}
 
-
     protected fun openPhotoDetails(photoItem: PhotoItem) {
-        val bundle = Bundle().apply {
-            putString("PHOTO_ID", photoItem.photoId)
-        }
         val navHost = findNavController()
-        val actionId = when (val currentDestId = navHost.currentDestination?.id) {
-            R.id.feed_fragment_dest -> R.id.action_feedFragment_to_detailsPhotoFragment
-            R.id.search_fragment_dest -> R.id.action_searchFragment_to_detailsPhotoFragment
-            R.id.collection_details_fragment_dest -> R.id.action_collectionDetails_to_detailsPhotoFragment
+        val action = when (val currentDestId = navHost.currentDestination?.id) {
+            R.id.feed_fragment_dest -> FeedFragmentDirections.actionFeedFragmentToDetailsPhotoFragment(photoId = photoItem.photoId)
+            R.id.search_fragment_dest -> SearchFragmentDirections.actionSearchFragmentToDetailsPhotoFragment(photoId = photoItem.photoId)
+            R.id.collection_details_fragment_dest -> CollectionDetailsFragmentDirections.actionCollectionDetailsToDetailsPhotoFragment(photoId = photoItem.photoId)
             else -> error("openPhotoDetails() - doesn't support action at this fragment_currentDestId: $currentDestId")
         }
-        navHost.navigate(actionId, bundle)
+        navHost.navigate(action)
 
     }
 

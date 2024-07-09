@@ -1,76 +1,48 @@
 package com.psd.learn.mysplash.ui.feed.photos.details
 
+import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.psd.learn.mysplash.data.local.datasource.PhotosLocalRepository
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.remote.datasource.PhotoDetailsDataSource
-import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import com.psd.learn.mysplash.ui.utils.ResultState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PhotoDetailsViewModel @Inject constructor(
     private val photoDetailsDataSource: PhotoDetailsDataSource,
-    private val photoLocalRepo: PhotosLocalRepository
+    private val photoLocalRepo: PhotosLocalRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val TAG = PhotoDetailsDataSource::class.java.simpleName
+    val photoId = PhotoDetailsFragmentArgs.fromSavedStateHandle(savedStateHandle).photoId
 
-    private val photoIdSharedFlow = MutableSharedFlow<String>(replay = 1)
-    private val _currentFavoriteStateFlow = MutableStateFlow(false)
-    val currentFavoriteStateFlow = _currentFavoriteStateFlow.asStateFlow()
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val photoDetailsResult: StateFlow<ResultState> = photoIdSharedFlow
-        .distinctUntilChanged()
-        .flatMapLatest { id ->
-            flow {
-                try {
-                    val photoItem = photoDetailsDataSource.getPhoto(id)
-                    val isFavorite = photoLocalRepo.checkFavoritePhotoById(id)
-                    _currentFavoriteStateFlow.value = isFavorite
-                    emit(ResultState.Success(data = photoItem))
-                } catch (e: CancellationException) {
-                    throw e
-                } catch (e: Exception) {
-                    emit(ResultState.Error(e))
-                }
-
+    val photoDetailsResult: StateFlow<ResultState> =
+        flow {
+            try {
+                val photoItem = photoDetailsDataSource.getPhoto(photoId)
+                val localId = photoLocalRepo.observerPhotoId(photoId).first()
+                Log.d("sangpd", "localId first: $localId")
+                emit(ResultState.Success(data = photoItem.copy(isFavorite = localId != null)))
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                emit(ResultState.Error(e))
             }
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = ResultState.Loading
-        )
-
-
-    fun emitPhotoId(id: String) {
-        viewModelScope.launch {
-            photoIdSharedFlow.emit(id)
         }
-    }
-
-    fun setIsFavoritePhotoState(state: Boolean) {
-        _currentFavoriteStateFlow.value = state
-    }
-
-    fun addOrRemoveFavorite(currentState: Boolean, photoItem: PhotoItem) {
-        viewModelScope.launch {
-            FavoritePhotoHelper.executeAddOrRemoveFavorite(photoLocalRepo, photoItem, currentState)
-        }
-    }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Lazily,
+                initialValue = ResultState.Loading
+            )
 }

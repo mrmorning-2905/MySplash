@@ -45,4 +45,8 @@ class PhotosLocalRepository(
     fun getPhotoIdsStream(): Flow<List<String>> = photosDao
         .getAllPhotoIds()
         .flowOn(dispatcher)
+
+    fun observerPhotoId(id: String): Flow<String?> = photosDao
+        .getPhotoIdFlow(id)
+        .flowOn(dispatcher)
 }

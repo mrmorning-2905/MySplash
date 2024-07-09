@@ -32,6 +32,9 @@ interface PhotosDao {
     @Query("SELECT photo_id FROM PHOTO_TABLE")
     fun getAllPhotoIds(): Flow<List<String>>
 
+    @Query("SELECT photo_id FROM PHOTO_TABLE WHERE photo_id = :id")
+    fun getPhotoIdFlow(id: String): Flow<String?>
+
     @Query("SELECT * FROM PHOTO_TABLE")
     fun getAllPhotosPagingSource(): PagingSource<Int, PhotoItem>
 }

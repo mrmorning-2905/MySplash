@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.daggerHiltAndroid)
     kotlin("kapt")
-    id("androidx.navigation.safeargs.kotlin")
+    alias(libs.plugins.androidx.navigation.safeargs.kotlin)
     id("kotlin-parcelize")
 }
 
@@ -138,8 +138,7 @@ dependencies {
     kapt("com.github.bumptech.glide:compiler:$glideVersion")
 
     // navigation
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+    implementation(libs.bundles.androidx.navigation)
 
     //room - paging
     implementation("androidx.room:room-paging:2.5.0")

@@ -65,7 +65,7 @@ class SearchPhotoListFragment :
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
         val currentState = photoItem.isFavorite
-        searchViewModel.addOrRemoveFavoriteFromSearch(currentState, photoItem)
+        executeFavorite(currentState, photoItem)
     }
 
     companion object {

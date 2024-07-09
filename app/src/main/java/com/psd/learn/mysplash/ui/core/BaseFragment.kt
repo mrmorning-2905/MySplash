@@ -7,8 +7,14 @@ import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.psd.learn.mysplash.R
+import com.psd.learn.mysplash.data.local.entity.PhotoItem
+import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 abstract class BaseFragment<VB: ViewBinding>(
     private val inflate: (LayoutInflater, ViewGroup?, Boolean) -> VB
@@ -33,7 +39,7 @@ abstract class BaseFragment<VB: ViewBinding>(
         super.onDestroyView()
     }
 
-    fun setupToolbar(needShowActionBar: Boolean, title: String, needHomeAsUp: Boolean) {
+    protected fun setupToolbar(needShowActionBar: Boolean, title: String, needHomeAsUp: Boolean) {
         val actionbar = (activity as? AppCompatActivity)?.supportActionBar
         if (!needShowActionBar) {
             actionbar?.hide()
@@ -50,6 +56,14 @@ abstract class BaseFragment<VB: ViewBinding>(
             setBackgroundDrawable(null)
             setHomeAsUpIndicator(R.drawable.navigation_back_icon)
 
+        }
+    }
+
+    protected fun executeFavorite(currentState: Boolean, photoItem: PhotoItem) {
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                FavoritePhotoHelper.executeAddOrRemoveFavorite(requireContext(), photoItem, currentState)
+            }
         }
     }
 }

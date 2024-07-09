@@ -75,6 +75,6 @@ class CollectionDetailsFragment  :
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
         val currentState = photoItem.isFavorite
-        collectionDetailsViewModel.addOrRemoveFavoriteFromCollectionDetails(currentState, photoItem)
+        executeFavorite(currentState, photoItem)
     }
 }

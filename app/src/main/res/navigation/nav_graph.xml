@@ -47,6 +47,10 @@
         android:name="com.psd.learn.mysplash.ui.feed.photos.details.PhotoDetailsFragment"
         android:label="Photo Details" >
 
+        <argument
+            android:name="photoId"
+            app:argType="string" />
+
         <action
             android:id="@+id/action_photoDetails_to_searchFragment"
             app:destination="@id/search_fragment_dest" />

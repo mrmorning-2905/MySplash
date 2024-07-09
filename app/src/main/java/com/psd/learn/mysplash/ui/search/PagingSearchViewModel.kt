@@ -15,13 +15,12 @@ import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashPagingRepository
-import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -30,6 +29,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
@@ -95,7 +95,6 @@ open class PagingSearchViewModel @Inject constructor(
                 viewModelScope.launch {
                     _searchPhotoTotal.emit(totalPhotos)
                 }
-                //Log.d("sangpd", "searchUiState_totalPhotos: $totalPhotos")
             }
         }
         .cachedIn(viewModelScope)
@@ -106,7 +105,8 @@ open class PagingSearchViewModel @Inject constructor(
                 photoItem.copy(isFavorite = isFavorite)
             }
         }
-        .asLiveData()
+        .flowOn(Dispatchers.IO)
+        .asLiveData(Dispatchers.Main)
 
     @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
     val searchCollectionPagingData: Flow<PagingData<CollectionItem>> = searchAction
@@ -131,12 +131,6 @@ open class PagingSearchViewModel @Inject constructor(
             }
         }
         .cachedIn(viewModelScope)
-
-    fun addOrRemoveFavoriteFromSearch(currentState: Boolean, photoItem: PhotoItem) {
-        viewModelScope.launch {
-            FavoritePhotoHelper.executeAddOrRemoveFavorite(photosLocalRepository, photoItem, currentState)
-        }
-    }
 }
 
 sealed class SearchAction {

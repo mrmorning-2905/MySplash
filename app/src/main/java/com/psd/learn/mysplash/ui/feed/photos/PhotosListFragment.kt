@@ -45,7 +45,6 @@ class PhotosListFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindPagingListWithLiveData(viewModel.photoPagingFlow)
-        //initPagingData(viewModel.photoPagingFlow)
     }
 
     override fun handleCoverPhotoClicked(item: PhotoItem) {
@@ -54,7 +53,7 @@ class PhotosListFragment :
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
         val currentState = photoItem.isFavorite
-        viewModel.addOrRemoveFavoriteFromFeed(currentState, photoItem)
+        executeFavorite(currentState, photoItem)
     }
 
     companion object {
