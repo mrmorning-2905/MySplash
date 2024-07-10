@@ -3,7 +3,9 @@ package com.psd.learn.mysplash.ui.search
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -33,6 +35,15 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
 
     private val viewModel by activityViewModels<PagingSearchViewModel>()
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        val root = super.onCreateView(inflater, container, savedInstanceState)
+        setupToolbar(false, "", false)
+        return root
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViewPager()

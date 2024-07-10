@@ -1,5 +1,6 @@
 package com.psd.learn.mysplash.ui.feed.collections.details
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -55,11 +56,17 @@ class CollectionDetailsFragment  :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val collectionDescription = "${collectionInfoArgs.numberImages} Images - Created by: ${collectionInfoArgs.userName}"
-        binding.collectionDescriptionHeader.text = collectionDescription
+        bindHeader()
         bindPagingListWithLiveData(collectionDetailsViewModel.collectionPhotos)
     }
 
+    @SuppressLint("SetTextI18n")
+    private fun bindHeader() {
+        binding.run {
+            totalImage.text = "Total: ${collectionInfoArgs.numberImages} Images"
+            userCreate.text = "Created by: ${collectionInfoArgs.userName}"
+        }
+    }
     override fun handleCoverPhotoClicked(item: PhotoItem) {
         openPhotoDetails(item)
     }

@@ -5,12 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="10dp"
-    android:layout_marginBottom="40dp">
+    android:layout_marginBottom="10dp">
 
     <include
         android:id="@+id/profile_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         layout="@layout/user_profile_layout"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="7dp"
         app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -19,7 +22,7 @@
         android:id="@+id/cover_photo_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="4dp"
         app:cardPreventCornerOverlap="true"
