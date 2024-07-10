@@ -47,7 +47,7 @@ class SearchCollectionListFragment :
         super.onViewCreated(view, savedInstanceState)
         handleScroll(searchViewModel)
         initPagingData(searchViewModel.searchCollectionPagingData)
-        binSearchResult(searchViewModel.searchCollectionTotal, SEARCH_COLLECTIONS_TYPE, binding.searchResult)
+        binSearchResult(searchViewModel.resultStateFlow, SEARCH_COLLECTIONS_TYPE, binding.searchResult)
     }
 
     override fun handleCoverPhotoClicked(item: CollectionItem) {

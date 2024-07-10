@@ -84,7 +84,7 @@ class FeedFragment :
     }
 
     private fun gotoSearchFragment() {
-        val action = FeedFragmentDirections.actionFeedFragmentToSearchFragment()
+        val action = FeedFragmentDirections.actionFeedFragmentToSearchFragment(null)
         findNavController().navigate(action)
     }
 

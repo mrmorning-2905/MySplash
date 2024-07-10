@@ -1,6 +1,7 @@
 package com.psd.learn.mysplash.ui.feed.photos.favorite
 
 import android.content.Context
+import android.util.Log
 import com.psd.learn.mysplash.data.local.datasource.PhotosLocalRepository
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import dagger.hilt.EntryPoint
@@ -11,12 +12,12 @@ import dagger.hilt.components.SingletonComponent
 object FavoritePhotoHelper {
     suspend fun executeAddOrRemoveFavorite(
         context: Context,
-        photoItem: PhotoItem,
-        currentState: Boolean
+        photoItem: PhotoItem
     ) {
         val entryPoint: FavoriteEntryPoint = EntryPointAccessors.fromApplication<FavoriteEntryPoint>(context)
         val localRepo = entryPoint.localRepo
-        if (currentState) {
+        Log.d("sangpd", "executeAddOrRemoveFavorite_isFavorite: ${photoItem.isFavorite}")
+        if (photoItem.isFavorite) {
             localRepo.removeFavoritePhoto(photoItem)
         } else {
             localRepo.addFavoritePhoto(photoItem.copy(isFavorite = true))

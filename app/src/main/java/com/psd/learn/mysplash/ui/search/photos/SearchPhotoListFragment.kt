@@ -48,15 +48,7 @@ class SearchPhotoListFragment :
         super.onViewCreated(view, savedInstanceState)
         handleScroll(searchViewModel)
         bindPagingListWithLiveData(searchViewModel.searchPhotoPagingData)
-        binSearchResult(searchViewModel.searchPhotoTotal, SEARCH_PHOTOS_TYPE, binding.searchResult)
-//        lifecycleScope.launch {
-//            searchViewModel.uiState
-//                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-//                .collectLatest { state ->
-//                    Log.d("sangpd", "SearchPhotoListFragment_onViewCreated_state: $state")
-//                    binding.searchResult.text = state.totalSearchResult.toString()
-//                }
-//        }
+        binSearchResult(searchViewModel.resultStateFlow, SEARCH_PHOTOS_TYPE, binding.searchResult)
     }
 
     override fun handleCoverPhotoClicked(item: PhotoItem) {
@@ -64,8 +56,7 @@ class SearchPhotoListFragment :
     }
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
-        val currentState = photoItem.isFavorite
-        executeFavorite(currentState, photoItem)
+        executeFavorite(photoItem)
     }
 
     companion object {

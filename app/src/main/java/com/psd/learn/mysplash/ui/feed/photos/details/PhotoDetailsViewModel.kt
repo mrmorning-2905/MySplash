@@ -1,6 +1,5 @@
 package com.psd.learn.mysplash.ui.feed.photos.details
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,8 +11,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -25,15 +22,13 @@ class PhotoDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val photoId = PhotoDetailsFragmentArgs.fromSavedStateHandle(savedStateHandle).photoId
+    private val photoId = PhotoDetailsFragmentArgs.fromSavedStateHandle(savedStateHandle).photoId
 
-    val photoDetailsResult: StateFlow<ResultState> =
+    val photoDetailsResult: StateFlow<ResultState<PhotoItem>> =
         flow {
             try {
                 val photoItem = photoDetailsDataSource.getPhoto(photoId)
-                val localId = photoLocalRepo.observerPhotoId(photoId).first()
-                Log.d("sangpd", "localId first: $localId")
-                emit(ResultState.Success(data = photoItem.copy(isFavorite = localId != null)))
+                emit(ResultState.Success(data = photoItem))
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -45,4 +40,6 @@ class PhotoDetailsViewModel @Inject constructor(
                 started = SharingStarted.Lazily,
                 initialValue = ResultState.Loading
             )
+
+    fun observerLocalPhotoById() = photoLocalRepo.observerPhotoId(photoId)
 }

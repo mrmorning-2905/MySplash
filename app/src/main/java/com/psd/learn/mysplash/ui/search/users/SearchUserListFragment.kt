@@ -47,7 +47,7 @@ class SearchUserListFragment :
         super.onViewCreated(view, savedInstanceState)
         handleScroll(searchViewModel)
         initPagingData(searchViewModel.searchUserPagingData)
-        binSearchResult(searchViewModel.searchUserTotal, SEARCH_USERS_TYPE, binding.searchResult)
+        binSearchResult(searchViewModel.resultStateFlow, SEARCH_USERS_TYPE, binding.searchResult)
     }
 
     companion object {

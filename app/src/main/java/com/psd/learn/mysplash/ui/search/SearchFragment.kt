@@ -1,6 +1,5 @@
 package com.psd.learn.mysplash.ui.search
 
-import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,6 +9,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -29,8 +29,7 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
     override val TAG: String
         get() = SearchFragment::class.java.simpleName
 
-    private val searchText: String
-        get() = arguments?.getString("KEY_WORD") ?: ""
+    private val tagName by lazy(LazyThreadSafetyMode.NONE) { navArgs<SearchFragmentArgs>().value.queryText }
 
     private val viewModel by activityViewModels<PagingSearchViewModel>()
 
@@ -58,7 +57,6 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
 
                     override fun onTabReselected(tab: TabLayout.Tab?) {
                     }
-
                 })
             }
 
@@ -67,7 +65,8 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
                     customView = CustomTabViewHolder(context).apply {
                         tabItemStatus = TabItem(
                             text = SEARCH_TAB_TITLES[position],
-                            isSelected = position == 0)
+                            isSelected = position == 0
+                        )
                     }
                 }
             }.attach()
@@ -75,9 +74,9 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
     }
 
     private fun setupSearchChange() {
-        if (searchText.isNotEmpty()) {
-            binding.searchEditText.setText(searchText)
-            viewModel.onApplyUserAction(SearchAction.Search(searchText))
+        if (tagName != null) {
+            binding.searchEditText.setText(tagName)
+            viewModel.onApplyUserAction(SearchAction.Search(tagName))
         }
 
         binding.searchEditText.addTextChangedListener(object : TextWatcher {
@@ -101,7 +100,8 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
         }
     }
 
-    private class SearchViewPagerAdapter(fragment: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragment, lifecycle) {
+    private class SearchViewPagerAdapter(fragment: FragmentManager, lifecycle: Lifecycle) :
+        FragmentStateAdapter(fragment, lifecycle) {
         override fun getItemCount(): Int {
             return 3
         }

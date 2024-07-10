@@ -1,31 +1,26 @@
 package com.psd.learn.mysplash.ui.feed.photos.details
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.PhotoDetailsFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
-import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
-import com.psd.learn.mysplash.ui.feed.collections.details.CollectionDetailsViewModel
-import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import com.psd.learn.mysplash.ui.utils.ResultState
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
@@ -34,7 +29,6 @@ class PhotoDetailsFragment :
     BaseFragment<PhotoDetailsFragmentLayoutBinding>(inflate = PhotoDetailsFragmentLayoutBinding::inflate) {
 
     private val photoDetailsViewModel by viewModels<PhotoDetailsViewModel>()
-    private val args by lazy(LazyThreadSafetyMode.NONE) { navArgs<PhotoDetailsFragmentArgs>().value.photoId }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,16 +52,16 @@ class PhotoDetailsFragment :
         }
     }
 
-    private fun renderUiState(state: ResultState) {
+    private fun renderUiState(state: ResultState<PhotoItem>) {
         setVisibleView(state is ResultState.Loading)
         when (state) {
             is ResultState.Loading -> {
                 binding.progressBar.visibility = View.VISIBLE
             }
 
-            is ResultState.Success<*> -> {
+            is ResultState.Success -> {
                 binding.progressBar.visibility = View.GONE
-                val photoItem = state.data as PhotoItem
+                val photoItem = state.data
                 bindImageView(photoItem)
                 bindCameraInfo(photoItem)
                 bindPhotoInfo(photoItem)
@@ -86,26 +80,16 @@ class PhotoDetailsFragment :
         binding.favoriteBtn.setImageDrawable(ContextCompat.getDrawable(requireContext(), favoriteIcon))
     }
 
-    //    private fun bindFavoriteBtn(photoItem: PhotoItem) {
-//        lifecycleScope.launch {
-//            photoDetailsViewModel.currentFavoriteStateFlow
-//                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-//                .distinctUntilChanged()
-//                .collect { currentState ->
-//                    updateFavoriteBtn(currentState)
-//                    binding.favoriteBtn.setOnClickListener {
-//                        photoDetailsViewModel.setIsFavoritePhotoState(!currentState)
-//                        executeFavorite(currentState, photoItem)
-//                    }
-//                }
-//        }
-//    }
     private fun bindFavoriteBtn(photoItem: PhotoItem) {
-        val currentStatus = photoItem.isFavorite
-        updateFavoriteBtn(currentStatus)
-        binding.favoriteBtn.setOnClickListener {
-            executeFavorite(currentStatus, photoItem)
-            updateFavoriteBtn(photoItem.isFavorite)
+        lifecycleScope.launch {
+            photoDetailsViewModel.observerLocalPhotoById()
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collectLatest { localId ->
+                    updateFavoriteBtn(localId != null)
+                    binding.favoriteBtn.setOnClickListener {
+                        executeFavorite(photoItem.copy(isFavorite = localId != null))
+                    }
+                }
         }
     }
 
@@ -153,13 +137,10 @@ class PhotoDetailsFragment :
         }
     }
 
-    private fun gotoSearchFragment(searchText: String) {
+    private fun gotoSearchFragment(tagName: String) {
         val navController = findNavController()
-        val actionId = R.id.action_photoDetails_to_searchFragment
-        val bundle = Bundle().apply {
-            putString("KEY_WORD", searchText)
-        }
-        navController.navigate(actionId, bundle)
+        val action = PhotoDetailsFragmentDirections.actionPhotoDetailsToSearchFragment(queryText = tagName)
+        navController.navigate(action)
     }
 
     private fun bindImageView(photoItem: PhotoItem) {

@@ -59,10 +59,10 @@ abstract class BaseFragment<VB: ViewBinding>(
         }
     }
 
-    protected fun executeFavorite(currentState: Boolean, photoItem: PhotoItem) {
+    protected fun executeFavorite(photoItem: PhotoItem) {
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
-                FavoritePhotoHelper.executeAddOrRemoveFavorite(requireContext(), photoItem, currentState)
+                FavoritePhotoHelper.executeAddOrRemoveFavorite(requireContext(), photoItem)
             }
         }
     }

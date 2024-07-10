@@ -52,8 +52,7 @@ class PhotosListFragment :
     }
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
-        val currentState = photoItem.isFavorite
-        executeFavorite(currentState, photoItem)
+        executeFavorite(photoItem)
     }
 
     companion object {

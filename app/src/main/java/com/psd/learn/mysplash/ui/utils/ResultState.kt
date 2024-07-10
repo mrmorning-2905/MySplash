@@ -2,10 +2,10 @@ package com.psd.learn.mysplash.ui.utils
 
 import java.lang.Exception
 
-sealed class ResultState {
-    data object Loading : ResultState()
-    data class Success<T>(val data: T) : ResultState()
-    data class Error(val exception: Exception) : ResultState()
+sealed class ResultState<out T> {
+    data object Loading : ResultState<Nothing>()
+    data class Success<T>(val data: T) : ResultState<T>()
+    data class Error(val exception: Exception) : ResultState<Nothing>()
 
     override fun toString(): String {
         return when(this) {

@@ -3,6 +3,7 @@ package com.psd.learn.mysplash.ui.core
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,11 +32,13 @@ import com.psd.learn.mysplash.ui.feed.FeedFragmentDirections
 import com.psd.learn.mysplash.ui.feed.collections.details.CollectionDetailsFragmentDirections
 import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
+import com.psd.learn.mysplash.ui.search.ResultSearchState
 import com.psd.learn.mysplash.ui.search.SearchAction
 import com.psd.learn.mysplash.ui.search.SearchFragmentDirections
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -160,14 +163,15 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     }
 
     @SuppressLint("SetTextI18n")
-    protected fun binSearchResult(searchResultFlow: SharedFlow<Int>, searchType: Int, resultTv: TextView) {
+    protected fun binSearchResult(resultStateFlow: StateFlow<ResultSearchState>, searchType: Int, resultTv: TextView) {
         lifecycleScope.launch {
-            searchResultFlow
+            resultStateFlow
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .distinctUntilChanged()
-                .collectLatest { totalResult ->
+                .collectLatest { resultState ->
+                    Log.d("sangpd", "binSearchResult_searchType: $searchType - resultState: $resultState")
                     val searchTypeDes = getSearchTypeString(searchType)
-                    resultTv.text = "Result: $totalResult $searchTypeDes"
+                    resultTv.text = "Result: ${resultState.resultMap[searchType]} $searchTypeDes"
                 }
         }
     }
@@ -239,16 +243,13 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     }
 
     protected fun openCollectionDetails(collectionItem: CollectionItem) {
-        val bundle = Bundle().apply {
-            putParcelable("COLLECTION_INFO", collectionItem)
-        }
         val navHost = findNavController()
-        val actionId = when (val currentDestId = navHost.currentDestination?.id) {
-            R.id.feed_fragment_dest -> R.id.action_feedFragment_to_collectionDetailsFragment
-            R.id.search_fragment_dest -> R.id.action_searchFragment_to_collectionDetailsFragment
+        val action = when (val currentDestId = navHost.currentDestination?.id) {
+            R.id.feed_fragment_dest -> FeedFragmentDirections.actionFeedFragmentToCollectionDetailsFragment(collectionItem)
+            R.id.search_fragment_dest -> SearchFragmentDirections.actionSearchFragmentToCollectionDetailsFragment(collectionItem)
             else -> error("openCollectionDetails() - doesn't support action at this fragment_currentDestId: $currentDestId")
         }
-        navHost.navigate(actionId, bundle)
+        navHost.navigate(action)
 
     }
 
