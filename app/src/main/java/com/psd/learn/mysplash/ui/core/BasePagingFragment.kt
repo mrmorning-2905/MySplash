@@ -30,6 +30,7 @@ import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.ui.feed.FeedFragmentDirections
 import com.psd.learn.mysplash.ui.feed.collections.details.CollectionDetailsFragmentDirections
+import com.psd.learn.mysplash.ui.feed.photos.details.PhotoDetailsFragmentDirections
 import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import com.psd.learn.mysplash.ui.search.ResultSearchState
@@ -217,8 +218,8 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
             handleCoverPhotoClicked(item)
         }
 
-        override fun profileClicked(userId: String?) {
-            handleProfileClicked(userId)
+        override fun profileClicked(userInfo: UserArgs) {
+            handleProfileClicked(userInfo)
         }
 
         override fun addOrRemoveFavorite(photoItem: PhotoItem) {
@@ -226,7 +227,7 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
         }
     }
 
-    open fun handleProfileClicked(userId: String?) {}
+    open fun handleProfileClicked(userInfo: UserArgs) {}
     open fun handleCoverPhotoClicked(item: T) {}
     open fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {}
 
@@ -239,7 +240,18 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
             else -> error("openPhotoDetails() - doesn't support action at this fragment_currentDestId: $currentDestId")
         }
         navHost.navigate(action)
+    }
 
+    protected fun openUserDetails(userInfo: UserArgs) {
+        Log.d("sangpd", "openUserDetails_userInfo: $userInfo")
+        val navHost = findNavController()
+        val action = when (val currentDestId = navHost.currentDestination?.id) {
+            R.id.feed_fragment_dest -> FeedFragmentDirections.actionFeedFragmentToUserDetailsFragment(userInfoArgs = userInfo)
+            R.id.search_fragment_dest -> SearchFragmentDirections.actionSearchFragmentToUserDetailsFragment(userInfoArgs = userInfo)
+            R.id.collection_details_fragment_dest -> CollectionDetailsFragmentDirections.actionCollectionDetailsFragmentToUserDetailsFragment(userInfoArgs = userInfo)
+            else -> error("openUserDetails() - doesn't support action at this fragment_currentDestId: $currentDestId")
+        }
+        navHost.navigate(action)
     }
 
     protected fun openCollectionDetails(collectionItem: CollectionItem) {

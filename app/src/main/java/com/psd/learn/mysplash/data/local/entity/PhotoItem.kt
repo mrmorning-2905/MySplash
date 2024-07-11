@@ -15,7 +15,10 @@ data class PhotoItem (
     val userId: String,
 
     @ColumnInfo(name = "user_name")
-    val userName: String,
+    val userNameAccount: String,
+
+    @ColumnInfo(name = "user_display_name")
+    val userNameDisplay: String,
 
     @ColumnInfo(name = "profile_url")
     val userProfileUrl: String,
@@ -74,25 +77,12 @@ data class PhotoItem (
     val isFavorite: Boolean = false
 )
 
-data class ExifInfo(
-    val cameraName: String? = "Unknown",
-    val iso: String? = "Unknown",
-    val exposureTime: String? = "Unknown",
-    val aperture: String? = "Unknown",
-    val focalLength: String? = "Unknown",
-    val dimension: String? = "Unknown"
-)
-
-data class ViewInfo(
-    val numberView: Int? = 0,
-    val numberLikes: Int? = 0,
-    val numberDownload: Int? = 0
-)
 
 fun PhotoResponseItem.toPhotoItem(): PhotoItem {
     return PhotoItem(
         photoId = id,
-        userName = userResponse?.name ?: "Unknown",
+        userNameAccount = userResponse?.username ?: "Unknown",
+        userNameDisplay = userResponse?.name ?: "Unknown",
         userProfileUrl = userResponse?.profileImage?.medium ?: "",
         coverPhotoUrl = urls.regular,
         photoDescription = altDescription ?: "",

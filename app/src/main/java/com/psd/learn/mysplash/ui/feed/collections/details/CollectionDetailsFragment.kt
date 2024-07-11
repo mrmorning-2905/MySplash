@@ -1,7 +1,6 @@
 package com.psd.learn.mysplash.ui.feed.collections.details
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +18,7 @@ import com.psd.learn.mysplash.databinding.CollectionDetailsFragmentBinding
 import com.psd.learn.mysplash.ui.PhotoPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
+import com.psd.learn.mysplash.ui.core.UserArgs
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -64,11 +64,15 @@ class CollectionDetailsFragment  :
     private fun bindHeader() {
         binding.run {
             totalImage.text = "Total: ${collectionInfoArgs.numberImages} Images"
-            userCreate.text = "Created by: ${collectionInfoArgs.userName}"
+            userCreate.text = "Created by: ${collectionInfoArgs.userNameAccount}"
         }
     }
     override fun handleCoverPhotoClicked(item: PhotoItem) {
         openPhotoDetails(item)
+    }
+
+    override fun handleProfileClicked(userInfo: UserArgs) {
+        openUserDetails(userInfo)
     }
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {

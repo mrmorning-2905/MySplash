@@ -14,6 +14,7 @@ import com.psd.learn.mysplash.databinding.PhotoCollectionFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.PhotoPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
+import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -53,6 +54,10 @@ class PhotosListFragment :
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
         executeFavorite(photoItem)
+    }
+
+    override fun handleProfileClicked(userInfo: UserArgs) {
+        openUserDetails(userInfo)
     }
 
     companion object {

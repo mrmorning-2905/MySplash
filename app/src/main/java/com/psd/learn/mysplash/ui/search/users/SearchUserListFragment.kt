@@ -14,6 +14,7 @@ import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.databinding.SearchUserFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
+import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -41,6 +42,10 @@ class SearchUserListFragment :
             requestManager = Glide.with(this@SearchUserListFragment),
             itemClickListener = mItemClickListener
         )
+    }
+
+    override fun handleProfileClicked(userInfo: UserArgs) {
+        openUserDetails(userInfo)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

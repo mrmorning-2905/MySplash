@@ -10,12 +10,13 @@ import com.psd.learn.mysplash.data.remote.datasource.CollectionDetailsDataSource
 import com.psd.learn.mysplash.data.remote.datasource.FeedCollectionsDataSource
 import com.psd.learn.mysplash.data.remote.datasource.FeedPhotosDataSource
 import com.psd.learn.mysplash.data.remote.datasource.SearchDataSourceFactory
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
 class UnSplashPagingRepository(
-    private val unSplashApiService: UnSplashApiService
+    private val unSplashApiService: UnSplashApiService,
+    private val coroutineDispatcher: CoroutineDispatcher
 ) {
-    private val TAG = UnSplashPagingRepository::class.java.simpleName
 
     private val pageConfig = PagingConfig(
         pageSize = PAGING_SIZE,
@@ -29,6 +30,7 @@ class UnSplashPagingRepository(
     ): Flow<PagingData<T>> {
         val dataSource = SearchDataSourceFactory.getSearchDataSource<T>(
             unSplashApiService,
+            coroutineDispatcher,
             searchType,
             query
         ) { total -> onTotalResult(total) }
@@ -41,21 +43,21 @@ class UnSplashPagingRepository(
     fun getFeedPhotosStream(): Flow<PagingData<PhotoItem>> {
         return Pager(
             config = pageConfig,
-            pagingSourceFactory = { FeedPhotosDataSource(unSplashApiService) }
+            pagingSourceFactory = { FeedPhotosDataSource(unSplashApiService, coroutineDispatcher) }
         ).flow
     }
 
     fun getFeedCollectionsStream(): Flow<PagingData<CollectionItem>> {
         return Pager(
             config = pageConfig,
-            pagingSourceFactory = { FeedCollectionsDataSource(unSplashApiService) }
+            pagingSourceFactory = { FeedCollectionsDataSource(unSplashApiService, coroutineDispatcher) }
         ).flow
     }
 
     fun getCollectionPhotosStream(query: String?): Flow<PagingData<PhotoItem>> {
         return Pager(
             config = pageConfig,
-            pagingSourceFactory = { CollectionDetailsDataSource(unSplashApiService, query) }
+            pagingSourceFactory = { CollectionDetailsDataSource(unSplashApiService, coroutineDispatcher, query) }
         ).flow
     }
 }

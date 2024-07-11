@@ -1,6 +1,8 @@
 package com.psd.learn.mysplash.di
 
 import com.psd.learn.mysplash.BuildConfig
+import com.psd.learn.mysplash.data.remote.datasource.PhotoDetailsDataSource
+import com.psd.learn.mysplash.data.remote.datasource.UserDetailsDataSource
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
 import com.psd.learn.mysplash.data.remote.repository.UnSplashPagingRepository
 import com.psd.learn.mysplash.network.AuthorizationInterceptor
@@ -10,6 +12,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -87,8 +90,29 @@ interface NetworkModule {
 
         @Provides
         @Singleton
-        fun providePagingRepository(unSplashApiService: UnSplashApiService) : UnSplashPagingRepository {
-            return UnSplashPagingRepository(unSplashApiService)
+        fun providePagingRepository(
+            unSplashApiService: UnSplashApiService,
+            @IoDispatcher coroutineDispatcher: CoroutineDispatcher
+        ) : UnSplashPagingRepository {
+            return UnSplashPagingRepository(unSplashApiService, coroutineDispatcher)
+        }
+
+        @Provides
+        @Singleton
+        fun providePhotoDetailsDataSource(
+            apiService: UnSplashApiService,
+            @IoDispatcher dispatcher: CoroutineDispatcher
+        ) : PhotoDetailsDataSource {
+            return PhotoDetailsDataSource(apiService, dispatcher)
+        }
+
+        @Provides
+        @Singleton
+        fun provideUserDetailsDataSource(
+            apiService: UnSplashApiService,
+            @IoDispatcher dispatcher: CoroutineDispatcher
+        ) : UserDetailsDataSource {
+            return UserDetailsDataSource(apiService, dispatcher)
         }
     }
 }

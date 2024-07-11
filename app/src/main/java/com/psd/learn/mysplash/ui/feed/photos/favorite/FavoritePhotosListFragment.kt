@@ -14,6 +14,7 @@ import com.psd.learn.mysplash.databinding.PhotoCollectionFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.PhotoPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
+import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
 
 class FavoritePhotosListFragment :
@@ -47,6 +48,10 @@ class FavoritePhotosListFragment :
 
     override fun handleCoverPhotoClicked(item: PhotoItem) {
         openPhotoDetails(item)
+    }
+
+    override fun handleProfileClicked(userInfo: UserArgs) {
+        openUserDetails(userInfo)
     }
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {

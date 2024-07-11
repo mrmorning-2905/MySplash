@@ -3,11 +3,12 @@ package com.psd.learn.mysplash.data.remote.datasource
 import com.psd.learn.mysplash.data.local.entity.toCollectionItem
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
 class SearchCollectionDataSource (
     private val unSplashApiService: UnSplashApiService,
+    private val coroutineDispatcher: CoroutineDispatcher,
     queryText: String?,
     override val totalResult: (Int) -> Unit
 ) : AbsPagingDataSource<CollectionItem>(queryText) {
@@ -23,7 +24,7 @@ class SearchCollectionDataSource (
 
         if (query == null) return emptyList()
 
-        val response = withContext(Dispatchers.IO) {
+        val response = withContext(coroutineDispatcher) {
             unSplashApiService.getSearchCollectionResult(
                 query = query,
                 page = page,

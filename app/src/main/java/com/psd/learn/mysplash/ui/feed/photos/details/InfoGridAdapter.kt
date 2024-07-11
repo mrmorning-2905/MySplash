@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import com.psd.learn.mysplash.databinding.InfoGridItemBinding
 
-class PhotoInfoGridAdapter(context: Context, infoList: ArrayList<InfoModel>) : ArrayAdapter<InfoModel>(context, 0, infoList) {
+class InfoGridAdapter(context: Context, infoList: ArrayList<InfoModel>) : ArrayAdapter<InfoModel>(context, 0, infoList) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val binding = if (convertView != null) InfoGridItemBinding.bind(convertView)

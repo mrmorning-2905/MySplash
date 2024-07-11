@@ -12,6 +12,7 @@ import com.psd.learn.mysplash.databinding.CoverPhotoItemBinding
 import com.psd.learn.mysplash.ui.core.BaseListViewHolder
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.OnItemClickListener
+import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 
@@ -36,7 +37,15 @@ class CollectionPagingAdapter(
         init {
             viewBinding.run {
                 coverPhoto.setOnClickListener { itemClickListener.coverPhotoClicked(collectionItem) }
-                profileLayout.userOwnerContainer.setOnClickListener { itemClickListener.profileClicked(collectionItem.userId) }
+                profileLayout.userOwnerContainer.setOnClickListener {
+                    itemClickListener.profileClicked(
+                        UserArgs(
+                            collectionItem.userId,
+                            collectionItem.userNameAccount,
+                            collectionItem.userNameDisplay
+                        )
+                    )
+                }
             }
         }
 
@@ -45,7 +54,7 @@ class CollectionPagingAdapter(
             collectionItem = item
             viewBinding.run {
                 profileLayout.userProfile.loadProfilePicture(requestManager, item.userProfileUrl)
-                profileLayout.userName.text = item.userName
+                profileLayout.userName.text = item.userNameDisplay
                 coverPhoto.loadCoverThumbnail(requestManager, item.coverPhotoUrl, item.coverThumbnailUrl, item.coverColor, true)
                 coverTitle.text = item.coverDescription
                 coverDetail.text = "${item.numberImages} Images"

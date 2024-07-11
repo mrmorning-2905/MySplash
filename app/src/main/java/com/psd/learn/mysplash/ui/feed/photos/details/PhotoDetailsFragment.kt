@@ -1,6 +1,7 @@
 package com.psd.learn.mysplash.ui.feed.photos.details
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.PhotoDetailsFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
+import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.utils.ResultState
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
@@ -113,7 +115,7 @@ class PhotoDetailsFragment :
             InfoModel("Exposure Time", photoItem.exposureTime),
             InfoModel("Dimensions", "${photoItem.width} x ${photoItem.height}"),
         )
-        val infoGridViewAdapter = PhotoInfoGridAdapter(requireContext(), detailsInfoList)
+        val infoGridViewAdapter = InfoGridAdapter(requireContext(), detailsInfoList)
         binding.cameraInfoGridview.adapter = infoGridViewAdapter
     }
 
@@ -123,7 +125,7 @@ class PhotoDetailsFragment :
             InfoModel("Downloads", photoItem.numberDownload.toString()),
             InfoModel("Likes", photoItem.numberLikes.toString()),
         )
-        val infoGridViewAdapter = PhotoInfoGridAdapter(requireContext(), photoInfoList)
+        val infoGridViewAdapter = InfoGridAdapter(requireContext(), photoInfoList)
         binding.imageInfoGridview.adapter = infoGridViewAdapter
     }
 
@@ -143,6 +145,13 @@ class PhotoDetailsFragment :
         navController.navigate(action)
     }
 
+    private fun gotoUserDetailsFragment(userInfo: UserArgs) {
+        val navController = findNavController()
+        val action = PhotoDetailsFragmentDirections.actionPhotoDetailsFragmentToUserDetailsFragment(userInfoArgs = userInfo)
+        Log.d("sangpd", "gotoUserDetailsFragment_action: $action - userInfo: $userInfo")
+        navController.navigate(action)
+    }
+
     private fun bindImageView(photoItem: PhotoItem) {
         val requestManager = Glide.with(this@PhotoDetailsFragment)
         binding.coverImage.loadCoverThumbnail(
@@ -158,7 +167,16 @@ class PhotoDetailsFragment :
                 requestManager,
                 photoItem.userProfileUrl
             )
-            userName.text = photoItem.userName
+            userName.text = photoItem.userNameDisplay
+            userOwnerContainer.setOnClickListener {
+                gotoUserDetailsFragment(
+                    UserArgs(
+                        photoItem.userId,
+                        photoItem.userNameAccount,
+                        photoItem.userNameDisplay
+                    )
+                )
+            }
         }
         binding.address.text = photoItem.location
     }

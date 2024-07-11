@@ -13,6 +13,7 @@ import com.psd.learn.mysplash.databinding.CoverPhotoItemBinding
 import com.psd.learn.mysplash.ui.core.BaseListViewHolder
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.OnItemClickListener
+import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 
@@ -48,7 +49,15 @@ class PhotoPagingAdapter(
         init {
             viewBinding.run {
                 coverPhoto.setOnClickListener { itemClickListener.coverPhotoClicked(photoItem) }
-                profileLayout.userOwnerContainer.setOnClickListener { itemClickListener.profileClicked(photoItem.userId) }
+                profileLayout.userOwnerContainer.setOnClickListener {
+                    itemClickListener.profileClicked(
+                        UserArgs(
+                            photoItem.userId,
+                            photoItem.userNameAccount,
+                            photoItem.userNameDisplay
+                        )
+                    )
+                }
                 favoriteBtn.setOnClickListener {
                     itemClickListener.addOrRemoveFavorite(photoItem)
                     notifyItemChanged(adapterPosition)
@@ -61,7 +70,7 @@ class PhotoPagingAdapter(
             photoItem = item
             viewBinding.run {
                 profileLayout.userProfile.loadProfilePicture(requestManager, item.userProfileUrl)
-                profileLayout.userName.text = item.userName
+                profileLayout.userName.text = item.userNameDisplay
                 coverPhoto.loadCoverThumbnail(requestManager, item.coverPhotoUrl, item.coverThumbnailUrl, item.coverColor, true)
                 coverTitle.text = item.photoDescription
                 coverDetail.text = "${item.numberLikes} Likes"

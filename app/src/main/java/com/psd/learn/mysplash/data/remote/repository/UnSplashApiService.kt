@@ -5,6 +5,7 @@ import com.psd.learn.mysplash.data.remote.entity.PhotoResponseItem
 import com.psd.learn.mysplash.data.remote.entity.SearchCollectionResponseItem
 import com.psd.learn.mysplash.data.remote.entity.SearchPhotoResponseItem
 import com.psd.learn.mysplash.data.remote.entity.SearchUserResponseItem
+import com.psd.learn.mysplash.data.remote.entity.UserResponseItem
 import retrofit2.Retrofit
 import retrofit2.create
 import retrofit2.http.GET
@@ -58,6 +59,11 @@ interface UnSplashApiService {
         @Query("page") page: Int,
         @Query("per_page") perPage: Int
     ): SearchUserResponseItem
+
+    @GET("users/{username}")
+    suspend fun getUserDetails(
+        @Path("username") userNameAccount: String
+    ): UserResponseItem
 
     companion object {
         operator fun invoke(retrofit: Retrofit): UnSplashApiService = retrofit.create()

@@ -7,7 +7,8 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class CollectionItem(
     val collectionId: String,
-    val userName: String,
+    val userNameAccount: String,
+    val userNameDisplay: String,
     val userProfileUrl: String,
     val coverPhotoUrl: String,
     val coverThumbnailUrl: String,
@@ -20,7 +21,8 @@ data class CollectionItem(
 fun CollectionResponseItem.toCollectionItem(): CollectionItem {
     return CollectionItem(
         collectionId = id,
-        userName = user.name,
+        userNameAccount = user.username,
+        userNameDisplay = user.name,
         userProfileUrl = user.profileImage.medium,
         coverPhotoUrl = coverPhoto.urls.regular,
         coverDescription = title,

@@ -89,7 +89,5 @@ data class UserResponseItem(
         val portfolioUrl: String?, // http://jakenackos.com
         @Json(name = "twitter_username")
         val twitterUsername: String?, // JakeNackos
-        @Json(name = "paypal_email")
-        val paypalEmail: Any? // null
     )
 }

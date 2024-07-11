@@ -9,17 +9,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.psd.learn.mysplash.FEED_TAB_TITLES
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.databinding.FeedFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.feed.collections.CollectionsListFragment
-import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotosListFragment
 import com.psd.learn.mysplash.ui.feed.photos.PhotosListFragment
-import com.psd.learn.mysplash.ui.widget.CustomTabViewHolder
-import com.psd.learn.mysplash.ui.widget.TabItem
+import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotosListFragment
 
 class FeedFragment :
     BaseFragment<FeedFragmentLayoutBinding>(inflate = FeedFragmentLayoutBinding::inflate) {
@@ -40,42 +36,14 @@ class FeedFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViewPager()
+        val viewPagerAdapter = FeedViewPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
+        setupViewPager(
+            viewPager = binding.viewPager,
+            tabLayout = binding.tabLayout,
+            pagerAdapter = viewPagerAdapter,
+            tabTitleArr = FEED_TAB_TITLES
+        )
         setupMenuBottomBar()
-    }
-
-    private fun setupViewPager() {
-        binding.viewPager.run {
-            adapter = FeedViewPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
-
-            with(binding.tabLayout) {
-                addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                    override fun onTabSelected(tab: TabLayout.Tab?) {
-                        (tab?.customView as? CustomTabViewHolder)
-                            ?.run { tabItemStatus = tabItemStatus.copy(isSelected = true) }
-                    }
-
-                    override fun onTabUnselected(tab: TabLayout.Tab?) {
-                        (tab?.customView as? CustomTabViewHolder)
-                            ?.run { tabItemStatus = tabItemStatus.copy(isSelected = false) }
-                    }
-
-                    override fun onTabReselected(tab: TabLayout.Tab?) {
-                    }
-
-                })
-            }
-
-            TabLayoutMediator(binding.tabLayout, this) { tab, position ->
-                tab.apply {
-                    customView = CustomTabViewHolder(context).apply {
-                        tabItemStatus = TabItem(
-                            text = FEED_TAB_TITLES[position],
-                            isSelected = position == 0)
-                    }
-                }
-            }.attach()
-        }
     }
 
     private fun setupMenuBottomBar() {

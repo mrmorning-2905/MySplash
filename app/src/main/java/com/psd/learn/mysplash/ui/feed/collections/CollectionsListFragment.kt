@@ -14,6 +14,7 @@ import com.psd.learn.mysplash.databinding.PhotoCollectionFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.CollectionPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
+import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -48,6 +49,10 @@ class CollectionsListFragment: BasePagingFragment<CollectionItem, PhotoCollectio
 
     override fun handleCoverPhotoClicked(item: CollectionItem) {
         openCollectionDetails(item)
+    }
+
+    override fun handleProfileClicked(userInfo: UserArgs) {
+        openUserDetails(userInfo)
     }
 
     companion object {

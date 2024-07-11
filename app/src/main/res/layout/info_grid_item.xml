@@ -9,13 +9,17 @@
         android:gravity="center"
         android:id="@+id/info_title"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent" />
+        android:layout_width="match_parent"
+        android:maxLines="1"
+        android:ellipsize="end"/>
 
     <TextView
         style="@style/SubTitle.Regular"
         android:gravity="center"
         android:id="@+id/info_description"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent" />
+        android:layout_width="match_parent"
+        android:maxLines="1"
+        android:ellipsize="end"/>
 
 </LinearLayout>

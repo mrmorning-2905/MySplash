@@ -13,16 +13,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
+import com.psd.learn.mysplash.SEARCH_TAB_TITLES
 import com.psd.learn.mysplash.databinding.SearchFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.search.collections.SearchCollectionListFragment
 import com.psd.learn.mysplash.ui.search.photos.SearchPhotoListFragment
 import com.psd.learn.mysplash.ui.search.users.SearchUserListFragment
-import com.psd.learn.mysplash.SEARCH_TAB_TITLES
-import com.psd.learn.mysplash.ui.widget.CustomTabViewHolder
-import com.psd.learn.mysplash.ui.widget.TabItem
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -46,42 +42,15 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViewPager()
+        val viewPagerAdapter = SearchViewPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
+        setupViewPager(
+            viewPager = binding.viewPager,
+            tabLayout = binding.tabLayout,
+            pagerAdapter = viewPagerAdapter,
+            tabTitleArr = SEARCH_TAB_TITLES
+        )
         setupSearchChange()
         setUpNavigation()
-    }
-
-    private fun setupViewPager() {
-        binding.viewPager.run {
-            adapter = SearchViewPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
-            with(binding.tabLayout) {
-                addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                    override fun onTabSelected(tab: TabLayout.Tab?) {
-                        (tab?.customView as? CustomTabViewHolder)
-                            ?.run { tabItemStatus = tabItemStatus.copy(isSelected = true) }
-                    }
-
-                    override fun onTabUnselected(tab: TabLayout.Tab?) {
-                        (tab?.customView as? CustomTabViewHolder)
-                            ?.run { tabItemStatus = tabItemStatus.copy(isSelected = false) }
-                    }
-
-                    override fun onTabReselected(tab: TabLayout.Tab?) {
-                    }
-                })
-            }
-
-            TabLayoutMediator(binding.tabLayout, this) { tab, position ->
-                tab.apply {
-                    customView = CustomTabViewHolder(context).apply {
-                        tabItemStatus = TabItem(
-                            text = SEARCH_TAB_TITLES[position],
-                            isSelected = position == 0
-                        )
-                    }
-                }
-            }.attach()
-        }
     }
 
     private fun setupSearchChange() {
@@ -113,9 +82,7 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
 
     private class SearchViewPagerAdapter(fragment: FragmentManager, lifecycle: Lifecycle) :
         FragmentStateAdapter(fragment, lifecycle) {
-        override fun getItemCount(): Int {
-            return 3
-        }
+        override fun getItemCount(): Int = 3
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
@@ -125,6 +92,5 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
                 else -> error("Invalid position: $position")
             }
         }
-
     }
 }

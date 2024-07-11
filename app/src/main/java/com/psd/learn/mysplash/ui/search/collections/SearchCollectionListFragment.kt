@@ -15,6 +15,7 @@ import com.psd.learn.mysplash.databinding.SearchPhotoCollectionFragmentLayoutBin
 import com.psd.learn.mysplash.ui.CollectionPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
+import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -52,6 +53,10 @@ class SearchCollectionListFragment :
 
     override fun handleCoverPhotoClicked(item: CollectionItem) {
         openCollectionDetails(item)
+    }
+
+    override fun handleProfileClicked(userInfo: UserArgs) {
+        openUserDetails(userInfo)
     }
 
     companion object {

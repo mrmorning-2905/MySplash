@@ -3,11 +3,13 @@ package com.psd.learn.mysplash.data.remote.datasource
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.toCollectionItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class FeedCollectionsDataSource(
     private val unSplashApiService: UnSplashApiService,
+    private val coroutineDispatcher: CoroutineDispatcher
 ) : AbsPagingDataSource<CollectionItem>() {
 
     override val TAG: String
@@ -18,7 +20,7 @@ class FeedCollectionsDataSource(
         page: Int,
         perPage: Int
     ): List<CollectionItem> {
-        val response = withContext(Dispatchers.IO) {
+        val response = withContext(coroutineDispatcher) {
             unSplashApiService.getCollectionListOnFeed(page, perPage)
         }
         return response.map { it.toCollectionItem() }

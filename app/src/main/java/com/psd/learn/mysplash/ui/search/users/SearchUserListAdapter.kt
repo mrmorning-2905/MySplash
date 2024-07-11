@@ -10,6 +10,7 @@ import com.psd.learn.mysplash.databinding.SearchUserItemBinding
 import com.psd.learn.mysplash.ui.core.BaseListViewHolder
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.OnItemClickListener
+import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 
 
@@ -33,7 +34,13 @@ class SearchUserListAdapter(
 
         init {
             viewBinding.root.setOnClickListener {
-                itemClickListener.profileClicked(userItem.userId)
+                itemClickListener.profileClicked(
+                    UserArgs(
+                        userItem.userId,
+                        userItem.userNameAccount,
+                        userItem.userNameDisplay
+                    )
+                )
             }
         }
 
@@ -41,8 +48,8 @@ class SearchUserListAdapter(
             userItem = item
             viewBinding.run {
                 profileImage.loadProfilePicture(requestManager, item.profileUrl)
-                userName.text = item.userName
-                userDescription.text = item.userInfo
+                userName.text = item.userNameDisplay
+                userDescription.text = item.userSocialNetWorkName
             }
         }
     }

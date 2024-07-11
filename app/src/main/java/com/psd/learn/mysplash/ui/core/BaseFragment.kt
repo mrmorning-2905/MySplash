@@ -9,14 +9,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
+import com.psd.learn.mysplash.FEED_TAB_TITLES
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
+import com.psd.learn.mysplash.ui.feed.FeedFragment
 import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
+import com.psd.learn.mysplash.ui.widget.CustomTabViewHolder
+import com.psd.learn.mysplash.ui.widget.TabItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-abstract class BaseFragment<VB: ViewBinding>(
+abstract class BaseFragment<VB : ViewBinding>(
     private val inflate: (LayoutInflater, ViewGroup?, Boolean) -> VB
 ) : Fragment() {
 
@@ -64,6 +72,46 @@ abstract class BaseFragment<VB: ViewBinding>(
             withContext(Dispatchers.IO) {
                 FavoritePhotoHelper.executeAddOrRemoveFavorite(requireContext(), photoItem)
             }
+        }
+    }
+
+    protected fun setupViewPager(
+        viewPager: ViewPager2,
+        tabLayout: TabLayout,
+        pagerAdapter: FragmentStateAdapter,
+        tabTitleArr: Array<String>
+    ) {
+        viewPager.run {
+            adapter = pagerAdapter
+
+            with(tabLayout) {
+                addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                    override fun onTabSelected(tab: TabLayout.Tab?) {
+                        (tab?.customView as? CustomTabViewHolder)
+                            ?.run { tabItemStatus = tabItemStatus.copy(isSelected = true) }
+                    }
+
+                    override fun onTabUnselected(tab: TabLayout.Tab?) {
+                        (tab?.customView as? CustomTabViewHolder)
+                            ?.run { tabItemStatus = tabItemStatus.copy(isSelected = false) }
+                    }
+
+                    override fun onTabReselected(tab: TabLayout.Tab?) {
+                    }
+
+                })
+            }
+
+            TabLayoutMediator(tabLayout, this) { tab, position ->
+                tab.apply {
+                    customView = CustomTabViewHolder(context).apply {
+                        tabItemStatus = TabItem(
+                            text = tabTitleArr[position],
+                            isSelected = position == 0
+                        )
+                    }
+                }
+            }.attach()
         }
     }
 }
