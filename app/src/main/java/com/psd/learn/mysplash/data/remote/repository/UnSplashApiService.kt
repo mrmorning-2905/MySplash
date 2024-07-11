@@ -65,6 +65,27 @@ interface UnSplashApiService {
         @Path("username") userNameAccount: String
     ): UserResponseItem
 
+    @GET("users/{username}/photos")
+    suspend fun getUserPhotos(
+        @Path("username") userNameAccount: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int
+    ): List<PhotoResponseItem>
+
+    @GET("users/{username}/collections")
+    suspend fun getUserCollections(
+        @Path("username") userNameAccount: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int
+    ): List<CollectionResponseItem>
+
+    @GET("users/{username}/likes")
+    suspend fun getUserLikedPhotos(
+        @Path("username") userNameAccount: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int
+    ): List<PhotoResponseItem>
+
     companion object {
         operator fun invoke(retrofit: Retrofit): UnSplashApiService = retrofit.create()
     }

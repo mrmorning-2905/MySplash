@@ -15,7 +15,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
@@ -30,15 +29,11 @@ import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.ui.feed.FeedFragmentDirections
 import com.psd.learn.mysplash.ui.feed.collections.details.CollectionDetailsFragmentDirections
-import com.psd.learn.mysplash.ui.feed.photos.details.PhotoDetailsFragmentDirections
-import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import com.psd.learn.mysplash.ui.search.ResultSearchState
 import com.psd.learn.mysplash.ui.search.SearchAction
 import com.psd.learn.mysplash.ui.search.SearchFragmentDirections
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
@@ -46,7 +41,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     inflate: (LayoutInflater, ViewGroup?, Boolean) -> VB
@@ -65,16 +59,6 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     abstract val progressBar: ProgressBar
 
     abstract val retryBtn: Button
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val rootView = super.onCreateView(inflater, container, savedInstanceState)
-        setupToolbar(false, "", false)
-        return rootView
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

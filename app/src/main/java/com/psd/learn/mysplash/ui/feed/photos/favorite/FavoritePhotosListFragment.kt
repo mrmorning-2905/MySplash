@@ -25,7 +25,8 @@ class FavoritePhotosListFragment :
     override val pagingAdapter: BasePagingAdapter<PhotoItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
         PhotoPagingAdapter(
             requestManager = Glide.with(this@FavoritePhotosListFragment),
-            itemClickListener = mItemClickListener
+            itemClickListener = mItemClickListener,
+            needShowProfile = true
         )
     }
 

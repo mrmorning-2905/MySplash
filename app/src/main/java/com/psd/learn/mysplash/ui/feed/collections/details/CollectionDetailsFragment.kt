@@ -30,7 +30,8 @@ class CollectionDetailsFragment  :
     override val pagingAdapter: BasePagingAdapter<PhotoItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
         PhotoPagingAdapter(
             requestManager = Glide.with(this@CollectionDetailsFragment),
-            itemClickListener = mItemClickListener
+            itemClickListener = mItemClickListener,
+            needShowProfile = true
         )
     }
 

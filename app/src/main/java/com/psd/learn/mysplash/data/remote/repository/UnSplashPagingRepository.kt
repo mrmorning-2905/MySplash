@@ -10,6 +10,7 @@ import com.psd.learn.mysplash.data.remote.datasource.CollectionDetailsDataSource
 import com.psd.learn.mysplash.data.remote.datasource.FeedCollectionsDataSource
 import com.psd.learn.mysplash.data.remote.datasource.FeedPhotosDataSource
 import com.psd.learn.mysplash.data.remote.datasource.SearchDataSourceFactory
+import com.psd.learn.mysplash.data.remote.datasource.UserDetailsPagingSourceFactory
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
@@ -58,6 +59,22 @@ class UnSplashPagingRepository(
         return Pager(
             config = pageConfig,
             pagingSourceFactory = { CollectionDetailsDataSource(unSplashApiService, coroutineDispatcher, query) }
+        ).flow
+    }
+
+    fun <T : Any> getUserDetailsPagingDataStream(
+        userName: String,
+        detailType: Int,
+    ): Flow<PagingData<T>> {
+        val dataSource = UserDetailsPagingSourceFactory.getUserDetailsPagingDataSource<T>(
+            unSplashApiService,
+            coroutineDispatcher,
+            detailType,
+            userName
+        )
+        return Pager(
+            config = pageConfig,
+            pagingSourceFactory = { dataSource }
         ).flow
     }
 }

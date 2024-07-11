@@ -1,11 +1,13 @@
-package com.psd.learn.mysplash.ui.user
+package com.psd.learn.mysplash.ui.userdetails
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -17,11 +19,9 @@ import com.psd.learn.mysplash.USER_DETAILS_TAB_TITLES
 import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.databinding.UserDetailsLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
-import com.psd.learn.mysplash.ui.feed.collections.CollectionsListFragment
-import com.psd.learn.mysplash.ui.feed.photos.PhotosListFragment
 import com.psd.learn.mysplash.ui.feed.photos.details.InfoGridAdapter
 import com.psd.learn.mysplash.ui.feed.photos.details.InfoModel
-import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotosListFragment
+import com.psd.learn.mysplash.ui.userdetails.photos.UserDetailPhotoFragment
 import com.psd.learn.mysplash.ui.utils.ResultState
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,6 +38,7 @@ class UserDetailsFragment : BaseFragment<UserDetailsLayoutBinding>(inflate = Use
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val rootView = super.onCreateView(inflater, container, savedInstanceState)
+        Log.d("sangpd", "onCreateView_args: $args")
         setupToolbar(true, args.userNameDisplay, true)
         return rootView
     }
@@ -101,9 +102,9 @@ class UserDetailsFragment : BaseFragment<UserDetailsLayoutBinding>(inflate = Use
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
-                0 -> PhotosListFragment.newInstance()
-                1 -> CollectionsListFragment.newInstance()
-                2 -> FavoritePhotosListFragment.newInstance()
+                0 -> UserDetailPhotoFragment.newInstance()
+                1 -> UserDetailPhotoFragment.newInstance()
+                2 -> UserDetailPhotoFragment.newInstance()
                 else -> error("Invalid position: $position")
             }
         }

@@ -18,7 +18,8 @@ import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 
 class CollectionPagingAdapter(
     private val requestManager: RequestManager,
-    private val itemClickListener: OnItemClickListener<CollectionItem>
+    private val itemClickListener: OnItemClickListener<CollectionItem>,
+    private val needShowProfile: Boolean
 ) : BasePagingAdapter<CollectionItem, CoverPhotoItemBinding>(
     R.layout.cover_photo_item, DIFF_COLLECTION_ITEM_CALLBACK
 ) {
@@ -53,8 +54,13 @@ class CollectionPagingAdapter(
         override fun onBindView(item: CollectionItem) {
             collectionItem = item
             viewBinding.run {
-                profileLayout.userProfile.loadProfilePicture(requestManager, item.userProfileUrl)
-                profileLayout.userName.text = item.userNameDisplay
+                if (needShowProfile) {
+                    profileLayout.root.visibility = View.VISIBLE
+                    profileLayout.userProfile.loadProfilePicture(requestManager, item.userProfileUrl)
+                    profileLayout.userName.text = item.userNameDisplay
+                } else {
+                    profileLayout.root.visibility = View.GONE
+                }
                 coverPhoto.loadCoverThumbnail(requestManager, item.coverPhotoUrl, item.coverThumbnailUrl, item.coverColor, true)
                 coverTitle.text = item.coverDescription
                 coverDetail.text = "${item.numberImages} Images"

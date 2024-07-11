@@ -1,10 +1,15 @@
-package com.psd.learn.mysplash.ui.user
+package com.psd.learn.mysplash.ui.userdetails
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
+import com.psd.learn.mysplash.USER_DETAILS_PHOTOS_TYPE
+import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.data.remote.datasource.UserDetailsDataSource
+import com.psd.learn.mysplash.data.remote.repository.UnSplashPagingRepository
 import com.psd.learn.mysplash.ui.utils.ResultState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
@@ -16,6 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserDetailsViewModel @Inject constructor(
+    pagingRepository: UnSplashPagingRepository,
     private val userDetailsDataSource: UserDetailsDataSource,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -25,6 +31,7 @@ class UserDetailsViewModel @Inject constructor(
     val userDetailsStateFlow: StateFlow<ResultState<UserItem>> =
         flow {
             try {
+                Log.d("sangpd", "UserDetailsViewModel_userNameAccount: $userNameAccount")
                 val userDetails = userDetailsDataSource.getUserDetailsInfo(userNameAccount)
                 emit(ResultState.Success(userDetails))
             } catch (e: CancellationException) {
@@ -38,4 +45,8 @@ class UserDetailsViewModel @Inject constructor(
                 started = SharingStarted.Lazily,
                 initialValue = ResultState.Loading
             )
+
+    val userDetailsPhotosPagingData = pagingRepository
+        .getUserDetailsPagingDataStream<PhotoItem>(userNameAccount, USER_DETAILS_PHOTOS_TYPE)
+        .cachedIn(viewModelScope)
 }

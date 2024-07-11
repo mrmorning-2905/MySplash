@@ -40,7 +40,8 @@ class SearchCollectionListFragment :
     override val pagingAdapter: BasePagingAdapter<CollectionItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
         CollectionPagingAdapter(
             requestManager = Glide.with(this@SearchCollectionListFragment),
-            itemClickListener = mItemClickListener
+            itemClickListener = mItemClickListener,
+            needShowProfile = true
         )
     }
 

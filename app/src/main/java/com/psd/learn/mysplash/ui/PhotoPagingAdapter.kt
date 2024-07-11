@@ -19,10 +19,17 @@ import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 
 class PhotoPagingAdapter(
     private val requestManager: RequestManager,
-    private val itemClickListener: OnItemClickListener<PhotoItem>
-) : BasePagingAdapter<PhotoItem, CoverPhotoItemBinding>(R.layout.cover_photo_item, DIFF_PHOTO_ITEM_CALLBACK) {
+    private val itemClickListener: OnItemClickListener<PhotoItem>,
+    private val needShowProfile: Boolean
+) : BasePagingAdapter<PhotoItem, CoverPhotoItemBinding>(
+    R.layout.cover_photo_item,
+    DIFF_PHOTO_ITEM_CALLBACK
+) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseListViewHolder<PhotoItem, CoverPhotoItemBinding> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): BaseListViewHolder<PhotoItem, CoverPhotoItemBinding> {
         return PhotoItemListViewHolder(parent, viewType)
     }
 
@@ -69,14 +76,34 @@ class PhotoPagingAdapter(
         override fun onBindView(item: PhotoItem) {
             photoItem = item
             viewBinding.run {
-                profileLayout.userProfile.loadProfilePicture(requestManager, item.userProfileUrl)
-                profileLayout.userName.text = item.userNameDisplay
-                coverPhoto.loadCoverThumbnail(requestManager, item.coverPhotoUrl, item.coverThumbnailUrl, item.coverColor, true)
+                if (needShowProfile) {
+                    profileLayout.root.visibility = View.VISIBLE
+                    profileLayout.userProfile.loadProfilePicture(
+                        requestManager,
+                        item.userProfileUrl
+                    )
+                    profileLayout.userName.text = item.userNameDisplay
+                } else {
+                    profileLayout.root.visibility = View.GONE
+                }
+                coverPhoto.loadCoverThumbnail(
+                    requestManager,
+                    item.coverPhotoUrl,
+                    item.coverThumbnailUrl,
+                    item.coverColor,
+                    true
+                )
                 coverTitle.text = item.photoDescription
                 coverDetail.text = "${item.numberLikes} Likes"
                 favoriteBtn.visibility = View.VISIBLE
-                val favoriteIcon = if (photoItem.isFavorite) R.drawable.favorite_selected_icon else R.drawable.favorite_icon
-                favoriteBtn.setImageDrawable(ContextCompat.getDrawable(parent.context, favoriteIcon))
+                val favoriteIcon =
+                    if (photoItem.isFavorite) R.drawable.favorite_selected_icon else R.drawable.favorite_icon
+                favoriteBtn.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        parent.context,
+                        favoriteIcon
+                    )
+                )
             }
         }
     }

@@ -41,7 +41,8 @@ class SearchPhotoListFragment :
     override val pagingAdapter: BasePagingAdapter<PhotoItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
         PhotoPagingAdapter(
             requestManager = Glide.with(this@SearchPhotoListFragment),
-            itemClickListener = mItemClickListener
+            itemClickListener = mItemClickListener,
+            needShowProfile = true
         )
     }
 

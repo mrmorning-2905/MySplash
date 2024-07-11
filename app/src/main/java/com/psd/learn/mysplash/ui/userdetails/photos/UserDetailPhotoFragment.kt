@@ -1,4 +1,4 @@
-package com.psd.learn.mysplash.ui.feed.collections
+package com.psd.learn.mysplash.ui.userdetails.photos
 
 import android.os.Bundle
 import android.view.View
@@ -6,29 +6,30 @@ import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
-import com.psd.learn.mysplash.data.local.entity.CollectionItem
+import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.PhotoCollectionFragmentLayoutBinding
-import com.psd.learn.mysplash.ui.CollectionPagingAdapter
+import com.psd.learn.mysplash.ui.PhotoPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
-import com.psd.learn.mysplash.ui.core.UserArgs
-import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
+import com.psd.learn.mysplash.ui.userdetails.UserDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CollectionsListFragment: BasePagingFragment<CollectionItem, PhotoCollectionFragmentLayoutBinding>(inflate = PhotoCollectionFragmentLayoutBinding::inflate) {
+class UserDetailPhotoFragment : BasePagingFragment<PhotoItem, PhotoCollectionFragmentLayoutBinding>(inflate = PhotoCollectionFragmentLayoutBinding::inflate) {
 
-    override val pagingAdapter: BasePagingAdapter<CollectionItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
-        CollectionPagingAdapter(
-            requestManager = Glide.with(this@CollectionsListFragment),
+    private val viewModel by viewModels<UserDetailsViewModel>()
+
+    override val pagingAdapter: BasePagingAdapter<PhotoItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
+        PhotoPagingAdapter(
+            requestManager = Glide.with(this@UserDetailPhotoFragment),
             itemClickListener = mItemClickListener,
-            needShowProfile = true
+            needShowProfile = false
         )
     }
-
     override val recyclerView: RecyclerView
         get() = binding.recyclerView
 
@@ -41,22 +42,20 @@ class CollectionsListFragment: BasePagingFragment<CollectionItem, PhotoCollectio
     override val retryBtn: Button
         get() = binding.loadingContainer.retryButton
 
-    private val viewModel by activityViewModels<PagingFeedViewModel>()
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initPagingData(viewModel.collectionPagingDataFlow)
+        initPagingData(viewModel.userDetailsPhotosPagingData)
     }
 
-    override fun handleCoverPhotoClicked(item: CollectionItem) {
-        openCollectionDetails(item)
+    override fun handleCoverPhotoClicked(item: PhotoItem) {
+        openPhotoDetails(item)
     }
 
-    override fun handleProfileClicked(userInfo: UserArgs) {
-        openUserDetails(userInfo)
+    override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
+        executeFavorite(photoItem)
     }
 
     companion object {
-        fun newInstance() = CollectionsListFragment()
+        fun newInstance() = UserDetailPhotoFragment()
     }
 }
