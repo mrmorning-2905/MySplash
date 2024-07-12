@@ -18,7 +18,9 @@ fun ImageView.loadCoverThumbnail(
     centerCrop: Boolean = false,
     requestListener: RequestListener<Drawable>? = null
 ) {
-    coverColor?.let { background = ColorDrawable(Color.parseColor(it)) }
+    if (!coverColor.isNullOrEmpty()) {
+        background = ColorDrawable(Color.parseColor(coverColor))
+    }
     requestManager
         .load(coverUrl)
         .thumbnail(
@@ -27,7 +29,7 @@ fun ImageView.loadCoverThumbnail(
             } else {
                 requestManager.load(thumbnailUrl)
             }
-        ). transition(DrawableTransitionOptions.withCrossFade(CROSS_FADE_DURATION))
+        ).transition(DrawableTransitionOptions.withCrossFade(CROSS_FADE_DURATION))
         .addListener(requestListener)
         .into(this)
         .clearOnDetach()

@@ -13,10 +13,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.psd.learn.mysplash.FEED_TAB_TITLES
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
-import com.psd.learn.mysplash.ui.feed.FeedFragment
 import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import com.psd.learn.mysplash.ui.widget.CustomTabViewHolder
 import com.psd.learn.mysplash.ui.widget.TabItem
@@ -79,7 +77,7 @@ abstract class BaseFragment<VB : ViewBinding>(
         viewPager: ViewPager2,
         tabLayout: TabLayout,
         pagerAdapter: FragmentStateAdapter,
-        tabTitleArr: Array<String>
+        tabTitleArr: ArrayList<String>
     ) {
         viewPager.run {
             adapter = pagerAdapter

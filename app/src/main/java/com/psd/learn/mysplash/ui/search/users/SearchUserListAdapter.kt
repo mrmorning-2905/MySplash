@@ -3,6 +3,8 @@ package com.psd.learn.mysplash.ui.search.users
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.bumptech.glide.RequestManager
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.data.local.entity.UserItem
@@ -18,6 +20,8 @@ class SearchUserListAdapter(
     private val requestManager: RequestManager,
     private val itemClickListener: OnItemClickListener<UserItem>
 ) : BasePagingAdapter<UserItem, SearchUserItemBinding>(R.layout.search_user_item, DIFF_USER_ITEM_CALLBACK) {
+
+    private val viewPool = RecycledViewPool()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseListViewHolder<UserItem, SearchUserItemBinding> {
         return UserItemViewHolder(parent, viewType)
@@ -50,19 +54,21 @@ class SearchUserListAdapter(
                 profileImage.loadProfilePicture(requestManager, item.profileUrl)
                 userName.text = item.userNameDisplay
                 userDescription.text = item.userSocialNetWorkName
+                childRecyclerView.apply {
+                    layoutManager = LinearLayoutManager(childRecyclerView.context, LinearLayoutManager.HORIZONTAL, false)
+                    adapter = ChildPhotoAdapter(requestManager).apply {
+                        submitList(item.photoList)
+                    }
+                    setRecycledViewPool(viewPool)
+                }
             }
         }
     }
 
     companion object {
         private val DIFF_USER_ITEM_CALLBACK = object : DiffUtil.ItemCallback<UserItem>() {
-            override fun areItemsTheSame(oldItem: UserItem, newItem: UserItem): Boolean {
-                return oldItem.userId == newItem.userId
-            }
-
-            override fun areContentsTheSame(oldItem: UserItem, newItem: UserItem): Boolean {
-                return oldItem == newItem
-            }
+            override fun areItemsTheSame(oldItem: UserItem, newItem: UserItem): Boolean = oldItem.userId == newItem.userId
+            override fun areContentsTheSame(oldItem: UserItem, newItem: UserItem): Boolean = oldItem == newItem
         }
     }
 }

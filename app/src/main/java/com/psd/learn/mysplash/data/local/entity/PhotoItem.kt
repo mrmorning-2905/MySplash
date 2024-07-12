@@ -84,7 +84,7 @@ fun PhotoResponseItem.toPhotoItem(): PhotoItem {
         userNameAccount = userResponse?.username ?: "Unknown",
         userNameDisplay = userResponse?.name ?: "Unknown",
         userProfileUrl = userResponse?.profileImage?.medium ?: "",
-        coverPhotoUrl = urls.regular,
+        coverPhotoUrl = urls.full,
         photoDescription = altDescription ?: "",
         numberLikes = likes ?: 0,
         numberView = views ?: 0,

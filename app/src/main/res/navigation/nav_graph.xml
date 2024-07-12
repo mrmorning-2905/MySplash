@@ -103,6 +103,15 @@
         <argument
             android:name="userInfoArgs"
             app:argType="com.psd.learn.mysplash.ui.core.UserArgs" />
+        <action
+            android:id="@+id/action_userDetails_to_photoDetails"
+            app:destination="@id/photo_details_fragment_dest"/>
+        <action
+            android:id="@+id/action_userDetails_to_collectionDetails"
+            app:destination="@id/collection_details_fragment_dest"/>
+        <action
+            android:id="@+id/action_userDetails_to_userDetails"
+            app:destination="@id/user_details_fragment_dest"/>
     </fragment>
 
 </navigation>

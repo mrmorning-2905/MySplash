@@ -24,7 +24,7 @@ fun CollectionResponseItem.toCollectionItem(): CollectionItem {
         userNameAccount = user.username,
         userNameDisplay = user.name,
         userProfileUrl = user.profileImage.medium,
-        coverPhotoUrl = coverPhoto.urls.regular,
+        coverPhotoUrl = coverPhoto.urls.full,
         coverDescription = title,
         numberImages = totalPhotos,
         userId = user.id,

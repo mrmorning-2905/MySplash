@@ -1,5 +1,6 @@
 package com.psd.learn.mysplash.data.remote.repository
 
+import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -66,6 +67,7 @@ class UnSplashPagingRepository(
         userName: String,
         detailType: Int,
     ): Flow<PagingData<T>> {
+        Log.d("sangpd", "getUserDetailsPagingDataStream_userName: $userName")
         val dataSource = UserDetailsPagingSourceFactory.getUserDetailsPagingDataSource<T>(
             unSplashApiService,
             coroutineDispatcher,

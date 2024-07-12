@@ -33,6 +33,7 @@ import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import com.psd.learn.mysplash.ui.search.ResultSearchState
 import com.psd.learn.mysplash.ui.search.SearchAction
 import com.psd.learn.mysplash.ui.search.SearchFragmentDirections
+import com.psd.learn.mysplash.ui.userdetails.UserDetailsFragmentDirections
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -221,18 +222,19 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
             R.id.feed_fragment_dest -> FeedFragmentDirections.actionFeedFragmentToDetailsPhotoFragment(photoId = photoItem.photoId)
             R.id.search_fragment_dest -> SearchFragmentDirections.actionSearchFragmentToDetailsPhotoFragment(photoId = photoItem.photoId)
             R.id.collection_details_fragment_dest -> CollectionDetailsFragmentDirections.actionCollectionDetailsToDetailsPhotoFragment(photoId = photoItem.photoId)
+            R.id.user_details_fragment_dest -> UserDetailsFragmentDirections.actionUserDetailsToPhotoDetails(photoId = photoItem.photoId)
             else -> error("openPhotoDetails() - doesn't support action at this fragment_currentDestId: $currentDestId")
         }
         navHost.navigate(action)
     }
 
     protected fun openUserDetails(userInfo: UserArgs) {
-        Log.d("sangpd", "openUserDetails_userInfo: $userInfo")
         val navHost = findNavController()
         val action = when (val currentDestId = navHost.currentDestination?.id) {
             R.id.feed_fragment_dest -> FeedFragmentDirections.actionFeedFragmentToUserDetailsFragment(userInfoArgs = userInfo)
             R.id.search_fragment_dest -> SearchFragmentDirections.actionSearchFragmentToUserDetailsFragment(userInfoArgs = userInfo)
             R.id.collection_details_fragment_dest -> CollectionDetailsFragmentDirections.actionCollectionDetailsFragmentToUserDetailsFragment(userInfoArgs = userInfo)
+            R.id.user_details_fragment_dest -> UserDetailsFragmentDirections.actionUserDetailsToUserDetails(userInfoArgs = userInfo)
             else -> error("openUserDetails() - doesn't support action at this fragment_currentDestId: $currentDestId")
         }
         navHost.navigate(action)
@@ -243,6 +245,7 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
         val action = when (val currentDestId = navHost.currentDestination?.id) {
             R.id.feed_fragment_dest -> FeedFragmentDirections.actionFeedFragmentToCollectionDetailsFragment(collectionItem)
             R.id.search_fragment_dest -> SearchFragmentDirections.actionSearchFragmentToCollectionDetailsFragment(collectionItem)
+            R.id.user_details_fragment_dest -> UserDetailsFragmentDirections.actionUserDetailsToCollectionDetails(collectionItem)
             else -> error("openCollectionDetails() - doesn't support action at this fragment_currentDestId: $currentDestId")
         }
         navHost.navigate(action)

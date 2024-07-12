@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.psd.learn.mysplash.FEED_TAB_TITLES
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.databinding.FeedFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
@@ -19,10 +18,6 @@ import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotosListFragment
 
 class FeedFragment :
     BaseFragment<FeedFragmentLayoutBinding>(inflate = FeedFragmentLayoutBinding::inflate) {
-
-    override val TAG: String
-        get() = FeedFragment::class.java.simpleName
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,5 +75,9 @@ class FeedFragment :
                 else -> error("Invalid position: $position")
             }
         }
+    }
+
+    companion object {
+        private val FEED_TAB_TITLES = arrayListOf("Photos", "Collections", "Favorites")
     }
 }

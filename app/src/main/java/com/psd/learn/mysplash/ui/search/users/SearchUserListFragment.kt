@@ -18,7 +18,6 @@ import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class SearchUserListFragment :
     BasePagingFragment<UserItem, SearchUserFragmentLayoutBinding>(inflate = SearchUserFragmentLayoutBinding::inflate) {

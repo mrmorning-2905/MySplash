@@ -1,10 +1,7 @@
 package com.psd.learn.mysplash.data.local.entity
 
-import android.os.Parcelable
 import com.psd.learn.mysplash.data.remote.entity.UserResponseItem
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class UserItem(
     val userId: String,
     val profileUrl: String,
@@ -16,7 +13,8 @@ data class UserItem(
     val userSocialNetWorkName: String,
     val bio: String,
     val location: String,
-) : Parcelable
+    val photoList: List<PhotoItem>
+)
 
 fun UserResponseItem.toUserItem(): UserItem {
     return UserItem(
@@ -28,8 +26,9 @@ fun UserResponseItem.toUserItem(): UserItem {
         totalPhotos = totalPhotos,
         totalCollections = totalCollections,
         totalLikes = totalLikes,
-        bio = bio ?: "",
-        location = location ?: "Unknown"
+        bio = bio ?: "Unknown",
+        location = location ?: "Unknown",
+        photoList = photos?.take(10)?.map { it.toPhotoItem() } ?: emptyList()
     )
 }
 
@@ -39,6 +38,6 @@ private fun getSocialNWName(responseItem: UserResponseItem): String {
     } else if (responseItem.twitterUsername != null) {
         "Twitter: ${responseItem.twitterUsername}"
     } else {
-        responseItem.portfolioUrl ?: "Unkown social"
+        responseItem.portfolioUrl ?: "Unknown social"
     }
 }

@@ -13,7 +13,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.psd.learn.mysplash.SEARCH_TAB_TITLES
 import com.psd.learn.mysplash.databinding.SearchFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.search.collections.SearchCollectionListFragment
@@ -23,9 +22,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentLayoutBinding::inflate) {
-
-    override val TAG: String
-        get() = SearchFragment::class.java.simpleName
 
     private val tagName by lazy(LazyThreadSafetyMode.NONE) { navArgs<SearchFragmentArgs>().value.queryText }
 
@@ -92,5 +88,9 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
                 else -> error("Invalid position: $position")
             }
         }
+    }
+
+    companion object {
+        private val SEARCH_TAB_TITLES = arrayListOf("Photos", "Collections", "Users")
     }
 }
