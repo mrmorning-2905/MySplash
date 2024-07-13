@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import com.bumptech.glide.RequestManager
 import com.psd.learn.mysplash.R
+import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.databinding.SearchUserItemBinding
 import com.psd.learn.mysplash.ui.core.BaseListViewHolder
@@ -18,7 +19,8 @@ import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 
 class SearchUserListAdapter(
     private val requestManager: RequestManager,
-    private val itemClickListener: OnItemClickListener<UserItem>
+    private val itemClickListener: OnItemClickListener<UserItem>,
+    private val childItemClickListener: (PhotoItem) -> Unit
 ) : BasePagingAdapter<UserItem, SearchUserItemBinding>(R.layout.search_user_item, DIFF_USER_ITEM_CALLBACK) {
 
     private val viewPool = RecycledViewPool()
@@ -37,7 +39,7 @@ class SearchUserListAdapter(
         private lateinit var userItem: UserItem
 
         init {
-            viewBinding.root.setOnClickListener {
+            viewBinding.userInfoContainer.setOnClickListener {
                 itemClickListener.profileClicked(
                     UserArgs(
                         userItem.userId,
@@ -56,7 +58,7 @@ class SearchUserListAdapter(
                 userDescription.text = item.userSocialNetWorkName
                 childRecyclerView.apply {
                     layoutManager = LinearLayoutManager(childRecyclerView.context, LinearLayoutManager.HORIZONTAL, false)
-                    adapter = ChildPhotoAdapter(requestManager).apply {
+                    adapter = ChildPhotoAdapter(requestManager, childItemClickListener).apply {
                         submitList(item.photoList)
                     }
                     setRecycledViewPool(viewPool)

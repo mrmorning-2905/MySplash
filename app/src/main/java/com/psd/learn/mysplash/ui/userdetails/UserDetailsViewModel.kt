@@ -42,7 +42,6 @@ class UserDetailsViewModel @Inject constructor(
     val userDetailsStateFlow: StateFlow<ResultState<UserItem>> =
         flow {
             try {
-                Log.d("sangpd", "UserDetailsViewModel_userNameAccount: $userNameAccount")
                 val userDetails = userDetailsDataSource.getUserDetailsInfo(userNameAccount)
                 emit(ResultState.Success(userDetails))
             } catch (e: CancellationException) {

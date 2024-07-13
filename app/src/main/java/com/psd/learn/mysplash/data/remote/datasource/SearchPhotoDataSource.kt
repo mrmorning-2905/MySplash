@@ -4,7 +4,6 @@ import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.local.entity.toPhotoItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class SearchPhotoDataSource(
@@ -25,14 +24,14 @@ class SearchPhotoDataSource(
 
         if (query == null) return emptyList()
 
-        val response = withContext(coroutineDispatcher) {
-            unSplashApiService.getSearchPhotoResult(
+        return withContext(coroutineDispatcher) {
+            val response = unSplashApiService.getSearchPhotoResult(
                 query = query,
                 page = page,
                 perPage = perPage
             )
+            totalResult(response.total)
+            response.results.map { it.toPhotoItem() }
         }
-        totalResult(response.total)
-        return response.results.map { it.toPhotoItem() }
     }
 }

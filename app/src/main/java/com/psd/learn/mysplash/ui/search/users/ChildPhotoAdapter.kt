@@ -13,7 +13,7 @@ import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 
 class ChildPhotoAdapter(
     private val requestManager: RequestManager,
-    /*private val onItemClicked: (String) -> Unit*/
+    private val onItemClicked: (PhotoItem) -> Unit
 ) : BaseListAdapter<PhotoItem, ChildItemBinding>(R.layout.child_item, CHILD_ITEM_DIFF) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseListViewHolder<PhotoItem, ChildItemBinding> {
@@ -31,11 +31,11 @@ class ChildPhotoAdapter(
 
         private lateinit var photoItem: PhotoItem
 
-//        init {
-//            viewBinding.childCoverPhotoContainer.setOnClickListener {
-//                onItemClicked(photoItem.photoId)
-//            }
-//        }
+        init {
+            viewBinding.childCoverPhotoContainer.setOnClickListener {
+                onItemClicked(photoItem)
+            }
+        }
 
         override fun onBindView(item: PhotoItem) {
             photoItem = item

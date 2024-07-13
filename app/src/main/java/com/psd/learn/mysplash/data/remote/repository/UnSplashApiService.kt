@@ -69,7 +69,8 @@ interface UnSplashApiService {
     suspend fun getUserPhotos(
         @Path("username") userNameAccount: String,
         @Query("page") page: Int,
-        @Query("per_page") perPage: Int
+        @Query("per_page") perPage: Int,
+        @Query("order_by") orderBy: String = "latest"
     ): List<PhotoResponseItem>
 
     @GET("users/{username}/collections")

@@ -28,7 +28,7 @@ fun UserResponseItem.toUserItem(): UserItem {
         totalLikes = totalLikes,
         bio = bio ?: "Unknown",
         location = location ?: "Unknown",
-        photoList = photos?.take(10)?.map { it.toPhotoItem() } ?: emptyList()
+        photoList = photos?.map { it.toPhotoItem() } ?: emptyList()
     )
 }
 

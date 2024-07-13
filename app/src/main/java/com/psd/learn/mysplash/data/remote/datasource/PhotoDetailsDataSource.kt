@@ -12,9 +12,8 @@ class PhotoDetailsDataSource (
 ) {
 
     suspend fun getPhoto(photoId: String): PhotoItem {
-        val response = withContext(coroutineDispatcher) {
-            unSplashApiService.getPhotoItem(photoId)
+        return withContext(coroutineDispatcher) {
+            unSplashApiService.getPhotoItem(photoId).toPhotoItem()
         }
-        return response.toPhotoItem()
     }
 }

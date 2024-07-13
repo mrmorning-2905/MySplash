@@ -4,7 +4,6 @@ import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.toCollectionItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class FeedCollectionsDataSource(
@@ -20,9 +19,10 @@ class FeedCollectionsDataSource(
         page: Int,
         perPage: Int
     ): List<CollectionItem> {
-        val response = withContext(coroutineDispatcher) {
+
+        return withContext(coroutineDispatcher) {
             unSplashApiService.getCollectionListOnFeed(page, perPage)
+                .map { it.toCollectionItem() }
         }
-        return response.map { it.toCollectionItem() }
     }
 }

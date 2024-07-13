@@ -1,8 +1,10 @@
 package com.psd.learn.mysplash.data.remote.datasource
 
+import android.util.Log
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.local.entity.toPhotoItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashApiService
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -20,9 +22,8 @@ class FeedPhotosDataSource(
         page: Int,
         perPage: Int
     ): List<PhotoItem> {
-        val response = withContext(coroutineDispatcher) {
-            unSplashApiService.getPhotoListOnFeed(page, perPage)
+        return withContext(coroutineDispatcher) {
+            unSplashApiService.getPhotoListOnFeed(page, perPage).map { it.toPhotoItem() }
         }
-        return response.map { it.toPhotoItem() }
     }
 }

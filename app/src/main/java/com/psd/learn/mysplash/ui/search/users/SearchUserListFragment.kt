@@ -39,7 +39,8 @@ class SearchUserListFragment :
     override val pagingAdapter: BasePagingAdapter<UserItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE){
         SearchUserListAdapter(
             requestManager = Glide.with(this@SearchUserListFragment),
-            itemClickListener = mItemClickListener
+            itemClickListener = mItemClickListener,
+            childItemClickListener = {photoItem -> openPhotoDetails(photoItem)}
         )
     }
 

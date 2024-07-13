@@ -67,7 +67,6 @@ class UnSplashPagingRepository(
         userName: String,
         detailType: Int,
     ): Flow<PagingData<T>> {
-        Log.d("sangpd", "getUserDetailsPagingDataStream_userName: $userName")
         val dataSource = UserDetailsPagingSourceFactory.getUserDetailsPagingDataSource<T>(
             unSplashApiService,
             coroutineDispatcher,

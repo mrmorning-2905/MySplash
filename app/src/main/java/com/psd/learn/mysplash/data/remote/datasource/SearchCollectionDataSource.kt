@@ -24,14 +24,14 @@ class SearchCollectionDataSource (
 
         if (query == null) return emptyList()
 
-        val response = withContext(coroutineDispatcher) {
-            unSplashApiService.getSearchCollectionResult(
+        return withContext(coroutineDispatcher) {
+            val response = unSplashApiService.getSearchCollectionResult(
                 query = query,
                 page = page,
                 perPage = perPage
             )
+            totalResult(response.total)
+            response.results.map { it.toCollectionItem() }
         }
-        totalResult(response.total)
-        return response.results.map { it.toCollectionItem() }
     }
 }
