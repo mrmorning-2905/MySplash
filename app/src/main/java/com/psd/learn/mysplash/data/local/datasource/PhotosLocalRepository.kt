@@ -6,10 +6,10 @@ import androidx.paging.PagingData
 import com.psd.learn.mysplash.PAGING_SIZE
 import com.psd.learn.mysplash.data.local.dao.PhotosDao
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
+import com.psd.learn.mysplash.runSuspendCatching
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 
 class PhotosLocalRepository(
     private val photosDao: PhotosDao,
@@ -23,24 +23,20 @@ class PhotosLocalRepository(
         ).flow
     }
 
-    suspend fun addFavoritePhoto(photoItem: PhotoItem) {
-        withContext(dispatcher) {
+    suspend fun addFavoritePhoto(photoItem: PhotoItem): Result<Unit> =
+        runSuspendCatching(dispatcher) {
             photosDao.insertPhoto(photoItem)
         }
-    }
 
-    suspend fun removeFavoritePhoto(photoItem: PhotoItem) {
-        withContext(dispatcher) {
+    suspend fun removeFavoritePhoto(photoItem: PhotoItem): Result<Unit> =
+        runSuspendCatching(dispatcher) {
             photosDao.deletePhoto(photoItem)
         }
-    }
 
-    suspend fun checkFavoritePhotoById(photoId: String): Boolean {
-        val photoItem = withContext(dispatcher) {
-            photosDao.getPhotoById(photoId)
+    suspend fun checkFavoritePhotoById(photoId: String): Result<Boolean> =
+        runSuspendCatching(dispatcher) {
+            photosDao.getPhotoById(photoId) != null
         }
-        return photoItem != null
-    }
 
     fun getPhotoIdsStream(): Flow<List<String>> = photosDao
         .getAllPhotoIds()

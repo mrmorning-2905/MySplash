@@ -41,14 +41,12 @@ class UserDetailsViewModel @Inject constructor(
 
     val userDetailsStateFlow: StateFlow<ResultState<UserItem>> =
         flow {
-            try {
-                val userDetails = userDetailsDataSource.getUserDetailsInfo(userNameAccount)
-                emit(ResultState.Success(userDetails))
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                emit(ResultState.Error(e))
-            }
+            userDetailsDataSource.getResultUserDetailsInfo(userNameAccount)
+                .onFailure { exception -> Log.d("sangpd", "UserDetailsViewModel_getResultUserDetailsInfo() failed: $exception")}
+                .fold(
+                    onSuccess = {userItem -> emit(ResultState.Success(userItem))},
+                    onFailure = {exception ->  emit(ResultState.Error(exception))}
+                )
         }
             .stateIn(
                 scope = viewModelScope,
