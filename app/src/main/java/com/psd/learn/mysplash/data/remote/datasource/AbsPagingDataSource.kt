@@ -14,11 +14,11 @@ abstract class AbsPagingDataSource<T : Any>(
 
     protected open val TAG = AbsPagingDataSource::class.java.simpleName
 
-    abstract suspend fun getListDataPaging(
+    abstract suspend fun getResultPagingData(
         query: String?,
         page: Int,
         perPage: Int
-    ): List<T>
+    ): Result<List<T>>
 
     override fun getRefreshKey(state: PagingState<Int, T>): Int? {
         return state.anchorPosition?.let { anchorPos ->
@@ -30,21 +30,20 @@ abstract class AbsPagingDataSource<T : Any>(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
         val position = params.key ?: START_PAGE_INDEX
-        return try {
-            val listDataInfo =
-                getListDataPaging(query = query, page = position, perPage = params.loadSize)
-            val nextKey =
-                if (listDataInfo.isEmpty()) null else (position + (params.loadSize / PAGING_SIZE))
-
-            LoadResult.Page(
-                data = listDataInfo,
-                prevKey = if (position == START_PAGE_INDEX) null else position - 1,
-                nextKey = nextKey
+        return getResultPagingData(query, position, params.loadSize)
+            .fold(
+                onSuccess = { listDataInfo ->
+                    val nextKey =
+                        if (listDataInfo.isEmpty()) null else (position + (params.loadSize / PAGING_SIZE))
+                    LoadResult.Page(
+                        data = listDataInfo,
+                        prevKey = if (position == START_PAGE_INDEX) null else position - 1,
+                        nextKey = nextKey
+                    )
+                },
+                onFailure = {
+                    LoadResult.Error(it)
+                }
             )
-        } catch (e: IOException) {
-            LoadResult.Error(e)
-        } catch (e: HttpException) {
-            LoadResult.Error(e)
-        }
     }
 }

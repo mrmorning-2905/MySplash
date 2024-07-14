@@ -1,7 +1,6 @@
 package com.psd.learn.mysplash.ui.feed.photos.details
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -148,7 +147,6 @@ class PhotoDetailsFragment :
     private fun gotoUserDetailsFragment(userInfo: UserArgs) {
         val navController = findNavController()
         val action = PhotoDetailsFragmentDirections.actionPhotoDetailsFragmentToUserDetailsFragment(userInfoArgs = userInfo)
-        Log.d("sangpd", "gotoUserDetailsFragment_action: $action - userInfo: $userInfo")
         navController.navigate(action)
     }
 
