@@ -1,5 +1,6 @@
 package com.psd.learn.mysplash.ui.feed.collections.details
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -26,10 +27,17 @@ class CollectionDetailsViewModel @Inject constructor(
     val collectionPhotos = pagingRepository
         .getCollectionPhotosStream(collectionId)
         .cachedIn(viewModelScope)
-        .combine(photosLocalRepository.getPhotoIdsStream()) { pagingData, localIdList ->
+        .combine(photosLocalRepository.observerLocalPhotoIdsStream()) { pagingData, localIdList ->
             pagingData.map { photoItem ->
-                val isFavorite = localIdList.contains(photoItem.photoId)
-                photoItem.copy(isFavorite = isFavorite)
+                localIdList
+                    .onFailure { error -> Log.d("sangpd", "CollectionDetailsViewModel_observerLocalPhotoIds failed error: $error") }
+                    .fold(
+                        onSuccess = { idList ->
+                            val isFavorite = idList.contains(photoItem.photoId)
+                            photoItem.copy(isFavorite = isFavorite)
+                        },
+                        onFailure = { photoItem }
+                    )
             }
         }
         .flowOn(Dispatchers.IO)

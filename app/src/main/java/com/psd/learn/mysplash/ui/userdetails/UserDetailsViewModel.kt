@@ -18,7 +18,6 @@ import com.psd.learn.mysplash.data.remote.datasource.UserDetailsDataSource
 import com.psd.learn.mysplash.data.remote.repository.UnSplashPagingRepository
 import com.psd.learn.mysplash.ui.utils.ResultState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -37,15 +36,15 @@ class UserDetailsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val userNameAccount = UserDetailsFragmentArgs.fromSavedStateHandle(savedStateHandle).userInfoArgs.userNameAccount
-    private val localPhotoIdStream by lazy { localRepository.getPhotoIdsStream() }
+    private val localPhotoIdStream by lazy { localRepository.observerLocalPhotoIdsStream() }
 
     val userDetailsStateFlow: StateFlow<ResultState<UserItem>> =
         flow {
             userDetailsDataSource.getResultUserDetailsInfo(userNameAccount)
-                .onFailure { exception -> Log.d("sangpd", "UserDetailsViewModel_getResultUserDetailsInfo() failed: $exception")}
+                .onFailure { exception -> Log.d("sangpd", "UserDetailsViewModel_getResultUserDetailsInfo() failed: $exception") }
                 .fold(
-                    onSuccess = {userItem -> emit(ResultState.Success(userItem))},
-                    onFailure = {exception ->  emit(ResultState.Error(exception))}
+                    onSuccess = { userItem -> emit(ResultState.Success(userItem)) },
+                    onFailure = { exception -> emit(ResultState.Error(exception)) }
                 )
         }
             .stateIn(
@@ -59,8 +58,20 @@ class UserDetailsViewModel @Inject constructor(
         .cachedIn(viewModelScope)
         .combine(localPhotoIdStream) { pagingData, localIdList ->
             pagingData.map { photoItem ->
-                val isFavorite = localIdList.contains(photoItem.photoId)
-                photoItem.copy(isFavorite = isFavorite)
+                localIdList
+                    .onFailure { error ->
+                        Log.d(
+                            "sangpd",
+                            "UserDetailsViewModel_PhotosPagingData_observerLocalPhotoIds failed error: $error"
+                        )
+                    }
+                    .fold(
+                        onSuccess = { idList ->
+                            val isFavorite = idList.contains(photoItem.photoId)
+                            photoItem.copy(isFavorite = isFavorite)
+                        },
+                        onFailure = { photoItem }
+                    )
             }
         }
         .flowOn(Dispatchers.IO)
@@ -75,8 +86,20 @@ class UserDetailsViewModel @Inject constructor(
         .cachedIn(viewModelScope)
         .combine(localPhotoIdStream) { pagingData, localIdList ->
             pagingData.map { photoItem ->
-                val isFavorite = localIdList.contains(photoItem.photoId)
-                photoItem.copy(isFavorite = isFavorite)
+                localIdList
+                    .onFailure { error ->
+                        Log.d(
+                            "sangpd",
+                            "UserDetailsViewModel_LikedPagingData_observerLocalPhotoIds failed error: $error"
+                        )
+                    }
+                    .fold(
+                        onSuccess = { idList ->
+                            val isFavorite = idList.contains(photoItem.photoId)
+                            photoItem.copy(isFavorite = isFavorite)
+                        },
+                        onFailure = { photoItem }
+                    )
             }
         }
         .flowOn(Dispatchers.IO)

@@ -1,5 +1,6 @@
 package com.psd.learn.mysplash.ui.search
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -91,10 +92,17 @@ open class PagingSearchViewModel @Inject constructor(
             }
         }
         .cachedIn(viewModelScope)
-        .combine(photosLocalRepository.getPhotoIdsStream()) { pagingData, localIdList ->
+        .combine(photosLocalRepository.observerLocalPhotoIdsStream()) { pagingData, localIdList ->
             pagingData.map { photoItem ->
-                val isFavorite = localIdList.contains(photoItem.photoId)
-                photoItem.copy(isFavorite = isFavorite)
+                localIdList
+                    .onFailure { error -> Log.d("sangpd", "PagingSearchViewModel_observerLocalPhotoIds failed error: $error") }
+                    .fold(
+                        onSuccess = { idList ->
+                            val isFavorite = idList.contains(photoItem.photoId)
+                            photoItem.copy(isFavorite = isFavorite)
+                        },
+                        onFailure = { photoItem }
+                    )
             }
         }
         .flowOn(Dispatchers.IO)

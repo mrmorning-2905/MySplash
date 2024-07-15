@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -27,10 +28,17 @@ class PhotoDetailsViewModel @Inject constructor(
     val photoDetailsResult: StateFlow<ResultState<PhotoItem>> =
         flow {
             photoDetailsDataSource.getResultPhoto(photoId)
-                .onFailure { error -> Log.d("sangpd", "PhotoDetailsViewModel_getResultPhoto() failed: $error") }
+                .onFailure { error ->
+                    Log.d(
+                        "sangpd",
+                        "PhotoDetailsViewModel_getResultPhoto() failed: $error"
+                    )
+                }
                 .fold(
-                    onSuccess = {photoItem -> emit(ResultState.Success(data = photoItem))},
-                    onFailure = {error -> emit(ResultState.Error(error))}
+                    onSuccess = { photoItem ->
+                        emit(ResultState.Success(data = photoItem))
+                    },
+                    onFailure = { error -> emit(ResultState.Error(error)) }
                 )
         }
             .stateIn(
@@ -39,5 +47,24 @@ class PhotoDetailsViewModel @Inject constructor(
                 initialValue = ResultState.Loading
             )
 
-    fun observerLocalPhotoById() = photoLocalRepo.observerPhotoId(photoId)
+
+    //todo handle retry click listener
+//    private val _loadFlow = MutableSharedFlow<Boolean>(
+//        extraBufferCapacity = 1,
+//        onBufferOverflow = BufferOverflow.DROP_OLDEST
+//    )
+
+    val observerLocalPhotoById: StateFlow<ResultState<String?>> =
+        photoLocalRepo.observerPhotoId(photoId)
+            .map { result ->
+                result.fold(
+                    onSuccess = { localId -> ResultState.Success(localId) },
+                    onFailure = { error -> ResultState.Error(error) }
+                )
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Lazily,
+                initialValue = ResultState.Loading
+            )
 }

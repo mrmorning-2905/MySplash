@@ -1,5 +1,6 @@
 package com.psd.learn.mysplash.ui.feed
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -34,10 +35,17 @@ class PagingFeedViewModel @Inject constructor(
     val photoPagingFlow = pagingRepository
         .getFeedPhotosStream()
         .cachedIn(viewModelScope)
-        .combine(photosLocalRepo.getPhotoIdsStream()) { pagingData, localIdList ->
+        .combine(photosLocalRepo.observerLocalPhotoIdsStream()) { pagingData, localIdList: Result<List<String>> ->
             pagingData.map { photoItem ->
-                val isFavorite = localIdList.contains(photoItem.photoId)
-                photoItem.copy(isFavorite = isFavorite)
+                localIdList
+                    .onFailure { error -> Log.d("sangpd", "PagingFeedViewModel_observerLocalPhotoIds failed error: $error") }
+                    .fold(
+                        onSuccess = { idList ->
+                            val isFavorite = idList.contains(photoItem.photoId)
+                            photoItem.copy(isFavorite = isFavorite)
+                        },
+                        onFailure = { photoItem }
+                    )
             }
         }
         .flowOn(Dispatchers.IO)

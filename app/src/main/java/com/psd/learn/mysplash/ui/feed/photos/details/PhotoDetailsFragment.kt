@@ -1,6 +1,7 @@
 package com.psd.learn.mysplash.ui.feed.photos.details
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,8 @@ import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -83,12 +86,14 @@ class PhotoDetailsFragment :
 
     private fun bindFavoriteBtn(photoItem: PhotoItem) {
         lifecycleScope.launch {
-            photoDetailsViewModel.observerLocalPhotoById()
+            photoDetailsViewModel.observerLocalPhotoById
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                .collectLatest { localId ->
-                    updateFavoriteBtn(localId != null)
+                .filterIsInstance<ResultState.Success<String?>>()
+                .collectLatest { resultState ->
+                    Log.d("sangpd", "bindFavoriteBtn_resultState: $resultState")
+                    updateFavoriteBtn(resultState.data != null)
                     binding.favoriteBtn.setOnClickListener {
-                        executeFavorite(photoItem.copy(isFavorite = localId != null))
+                        executeFavorite(photoItem.copy(isFavorite = resultState.data != null))
                     }
                 }
         }

@@ -6,6 +6,7 @@ import androidx.paging.PagingData
 import com.psd.learn.mysplash.PAGING_SIZE
 import com.psd.learn.mysplash.data.local.dao.PhotosDao
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
+import com.psd.learn.mysplash.mapToResult
 import com.psd.learn.mysplash.runSuspendCatching
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
@@ -38,11 +39,17 @@ class PhotosLocalRepository(
             photosDao.getPhotoById(photoId) != null
         }
 
-    fun getPhotoIdsStream(): Flow<List<String>> = photosDao
+    fun observerLocalPhotoIdsStream(): Flow<Result<List<String>>> = photosDao
         .getAllPhotoIds()
         .flowOn(dispatcher)
+        .mapToResult()
 
-    fun observerPhotoId(id: String): Flow<String?> = photosDao
+    fun observerPhotoId(id: String): Flow<Result<String?>> = photosDao
         .getPhotoIdFlow(id)
         .flowOn(dispatcher)
+        .mapToResult()
+
+//    fun observerPhotoId(id: String): Flow<String?> = photosDao
+//        .getPhotoIdFlow(id)
+//        .flowOn(dispatcher)
 }
