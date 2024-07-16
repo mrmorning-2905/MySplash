@@ -120,6 +120,10 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
         }
     }
 
+//    private fun initSwipeToRefresh() {
+//        binding.swipeRefresh.setOnRefreshListener { adapter.refresh() }
+//    }
+
     private fun initAdapter() {
         recyclerView.run {
             setHasFixedSize(true)

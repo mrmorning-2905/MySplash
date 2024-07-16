@@ -141,5 +141,7 @@ dependencies {
     implementation(libs.bundles.androidx.navigation)
 
     //room - paging
-    implementation("androidx.room:room-paging:2.5.0")
+    implementation("androidx.room:room-paging:2.6.1")
+
+    implementation(libs.androidx.swiperefreshlayout)
 }
