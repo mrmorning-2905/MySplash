@@ -16,6 +16,7 @@ import com.psd.learn.mysplash.ui.core.OnItemClickListener
 import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
+import com.psd.learn.mysplash.ui.utils.setRealRatio
 
 class PhotoPagingAdapter(
     private val requestManager: RequestManager,
@@ -86,13 +87,18 @@ class PhotoPagingAdapter(
                 } else {
                     profileLayout.root.visibility = View.GONE
                 }
-                coverPhoto.loadCoverThumbnail(
-                    requestManager,
-                    item.coverPhotoUrl,
-                    item.coverThumbnailUrl,
-                    item.coverColor,
-                    true
-                )
+
+                coverPhoto.run {
+                    setRealRatio(item.width, item.height)
+                    loadCoverThumbnail(
+                        requestManager,
+                        item.coverPhotoUrl,
+                        item.coverThumbnailUrl,
+                        item.coverColor,
+                        false
+                    )
+                }
+
                 coverTitle.text = item.photoDescription
                 coverDetail.text = "${item.numberLikes} Likes"
                 favoriteBtn.visibility = View.VISIBLE

@@ -15,7 +15,9 @@ data class CollectionItem(
     val coverColor: String,
     val coverDescription: String,
     val numberImages: Int,
-    val userId: String
+    val userId: String,
+    val coverWidth: Int?,
+    val coverHeight: Int?
 ) : Parcelable
 
 fun CollectionResponseItem.toCollectionItem(): CollectionItem {
@@ -29,6 +31,8 @@ fun CollectionResponseItem.toCollectionItem(): CollectionItem {
         numberImages = totalPhotos,
         userId = user.id,
         coverThumbnailUrl = coverPhoto.urls.thumb,
-        coverColor = coverPhoto.color ?: ""
+        coverColor = coverPhoto.color ?: "",
+        coverWidth = coverPhoto.width,
+        coverHeight = coverPhoto.height
     )
 }

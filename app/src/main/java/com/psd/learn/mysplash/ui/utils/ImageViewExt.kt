@@ -7,6 +7,7 @@ import android.widget.ImageView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
+import com.psd.learn.mysplash.ui.widget.RealRatioImageView
 
 const val CROSS_FADE_DURATION = 350
 
@@ -46,4 +47,10 @@ fun ImageView.loadProfilePicture(
         .transition(DrawableTransitionOptions.withCrossFade(CROSS_FADE_DURATION))
         .into(this)
         .clearOnDetach()
+}
+
+fun RealRatioImageView.setRealRatio(width: Int?, height: Int?) {
+    if (width != null && height != null) {
+        realRatio = height.toDouble() / width.toDouble()
+    }
 }

@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PhotoDetailsViewModel @Inject constructor(
     private val photoDetailsDataSource: PhotoDetailsDataSource,
-    private val photoLocalRepo: PhotosLocalRepository,
+    photoLocalRepo: PhotosLocalRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 

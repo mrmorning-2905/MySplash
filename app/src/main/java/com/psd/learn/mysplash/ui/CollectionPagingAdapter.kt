@@ -15,6 +15,7 @@ import com.psd.learn.mysplash.ui.core.OnItemClickListener
 import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
+import com.psd.learn.mysplash.ui.utils.setRealRatio
 
 class CollectionPagingAdapter(
     private val requestManager: RequestManager,
@@ -33,6 +34,7 @@ class CollectionPagingAdapter(
     ) : BaseListViewHolder<CollectionItem, CoverPhotoItemBinding>(parent, layoutRes) {
 
         override val viewBinding: CoverPhotoItemBinding = CoverPhotoItemBinding.bind(itemView)
+
         private lateinit var collectionItem: CollectionItem
 
         init {
@@ -61,7 +63,17 @@ class CollectionPagingAdapter(
                 } else {
                     profileLayout.root.visibility = View.GONE
                 }
-                coverPhoto.loadCoverThumbnail(requestManager, item.coverPhotoUrl, item.coverThumbnailUrl, item.coverColor, true)
+
+                coverPhoto.run {
+                    setRealRatio(item.coverWidth, item.coverHeight)
+                    loadCoverThumbnail(
+                        requestManager,
+                        item.coverPhotoUrl,
+                        item.coverThumbnailUrl,
+                        item.coverColor,
+                        false
+                    )
+                }
                 coverTitle.text = item.coverDescription
                 coverDetail.text = "${item.numberImages} Images"
                 favoriteBtn.visibility = View.GONE

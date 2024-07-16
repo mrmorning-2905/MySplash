@@ -18,8 +18,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.paging.PagingData
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.SEARCH_COLLECTIONS_TYPE
@@ -49,7 +49,7 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     override val TAG: String
         get() = BasePagingFragment::class.java.simpleName
 
-    private var gridLayoutManager: GridLayoutManager? = null
+    private var staggeredLayoutManager: StaggeredGridLayoutManager? = null
 
     abstract val pagingAdapter: BasePagingAdapter<T, out ViewBinding>
 
@@ -60,6 +60,21 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     abstract val progressBar: ProgressBar
 
     abstract val retryBtn: Button
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        staggeredLayoutManager =
+            StaggeredGridLayoutManager(
+                resources.getInteger(R.integer.grid_column_count),
+                StaggeredGridLayoutManager.VERTICAL
+            )
+        staggeredLayoutManager?.gapStrategy =
+            StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -106,10 +121,9 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     }
 
     private fun initAdapter() {
-        gridLayoutManager = GridLayoutManager(context, resources.getInteger(R.integer.grid_column_count))
         recyclerView.run {
             setHasFixedSize(true)
-            layoutManager = gridLayoutManager
+            layoutManager = staggeredLayoutManager
             adapter = pagingAdapter.withLoadStateHeaderAndFooter(
                 header = PagingLoadStateAdapter { pagingAdapter.retry() },
                 footer = PagingLoadStateAdapter { pagingAdapter.retry() }
@@ -131,7 +145,8 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
             pagingAdapter.loadStateFlow
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .collect { loadState ->
-                    val isListEmpty = loadState.refresh is LoadState.NotLoading && pagingAdapter.itemCount == 0
+                    val isListEmpty =
+                        loadState.refresh is LoadState.NotLoading && pagingAdapter.itemCount == 0
                     emptyTv.isVisible = isListEmpty
                     recyclerView.isVisible = !isListEmpty
                     progressBar.isVisible = loadState.source.refresh is LoadState.Loading
@@ -149,15 +164,24 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     }
 
     @SuppressLint("SetTextI18n")
-    protected fun binSearchResult(resultStateFlow: StateFlow<ResultSearchState>, searchType: Int, resultTv: TextView) {
+    protected fun binSearchResult(
+        resultStateFlow: StateFlow<ResultSearchState>,
+        searchType: Int,
+        resultTv: TextView
+    ) {
+        resultTv.visibility = View.GONE
         lifecycleScope.launch {
             resultStateFlow
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
                 .distinctUntilChanged()
                 .collectLatest { resultState ->
-                    Log.d("sangpd", "binSearchResult_searchType: $searchType - resultState: $resultState")
                     val searchTypeDes = getSearchTypeString(searchType)
-                    resultTv.text = "Result: ${resultState.resultMap[searchType]} $searchTypeDes"
+                    val totalSearch = resultState.resultMap[searchType]
+                    if (totalSearch != null) {
+                        resultTv.visibility = View.VISIBLE
+                        resultTv.text =
+                            "Result: ${resultState.resultMap[searchType]} $searchTypeDes"
+                    }
                 }
         }
     }
@@ -193,9 +217,7 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        gridLayoutManager?.let {
-            it.spanCount = resources.getInteger(R.integer.grid_column_count)
-        }
+        staggeredLayoutManager?.spanCount = resources.getInteger(R.integer.grid_column_count)
     }
 
     protected open val mItemClickListener = object : OnItemClickListener<T> {
@@ -219,10 +241,22 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     protected fun openPhotoDetails(photoItem: PhotoItem) {
         val navHost = findNavController()
         val action = when (val currentDestId = navHost.currentDestination?.id) {
-            R.id.feed_fragment_dest -> FeedFragmentDirections.actionFeedFragmentToDetailsPhotoFragment(photoId = photoItem.photoId)
-            R.id.search_fragment_dest -> SearchFragmentDirections.actionSearchFragmentToDetailsPhotoFragment(photoId = photoItem.photoId)
-            R.id.collection_details_fragment_dest -> CollectionDetailsFragmentDirections.actionCollectionDetailsToDetailsPhotoFragment(photoId = photoItem.photoId)
-            R.id.user_details_fragment_dest -> UserDetailsFragmentDirections.actionUserDetailsToPhotoDetails(photoId = photoItem.photoId)
+            R.id.feed_fragment_dest -> FeedFragmentDirections.actionFeedFragmentToDetailsPhotoFragment(
+                photoId = photoItem.photoId
+            )
+
+            R.id.search_fragment_dest -> SearchFragmentDirections.actionSearchFragmentToDetailsPhotoFragment(
+                photoId = photoItem.photoId
+            )
+
+            R.id.collection_details_fragment_dest -> CollectionDetailsFragmentDirections.actionCollectionDetailsToDetailsPhotoFragment(
+                photoId = photoItem.photoId
+            )
+
+            R.id.user_details_fragment_dest -> UserDetailsFragmentDirections.actionUserDetailsToPhotoDetails(
+                photoId = photoItem.photoId
+            )
+
             else -> error("openPhotoDetails() - doesn't support action at this fragment_currentDestId: $currentDestId")
         }
         navHost.navigate(action)
@@ -231,10 +265,22 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     protected fun openUserDetails(userInfo: UserArgs) {
         val navHost = findNavController()
         val action = when (val currentDestId = navHost.currentDestination?.id) {
-            R.id.feed_fragment_dest -> FeedFragmentDirections.actionFeedFragmentToUserDetailsFragment(userInfoArgs = userInfo)
-            R.id.search_fragment_dest -> SearchFragmentDirections.actionSearchFragmentToUserDetailsFragment(userInfoArgs = userInfo)
-            R.id.collection_details_fragment_dest -> CollectionDetailsFragmentDirections.actionCollectionDetailsFragmentToUserDetailsFragment(userInfoArgs = userInfo)
-            R.id.user_details_fragment_dest -> UserDetailsFragmentDirections.actionUserDetailsToUserDetails(userInfoArgs = userInfo)
+            R.id.feed_fragment_dest -> FeedFragmentDirections.actionFeedFragmentToUserDetailsFragment(
+                userInfoArgs = userInfo
+            )
+
+            R.id.search_fragment_dest -> SearchFragmentDirections.actionSearchFragmentToUserDetailsFragment(
+                userInfoArgs = userInfo
+            )
+
+            R.id.collection_details_fragment_dest -> CollectionDetailsFragmentDirections.actionCollectionDetailsFragmentToUserDetailsFragment(
+                userInfoArgs = userInfo
+            )
+
+            R.id.user_details_fragment_dest -> UserDetailsFragmentDirections.actionUserDetailsToUserDetails(
+                userInfoArgs = userInfo
+            )
+
             else -> error("openUserDetails() - doesn't support action at this fragment_currentDestId: $currentDestId")
         }
         navHost.navigate(action)
@@ -243,9 +289,18 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     protected fun openCollectionDetails(collectionItem: CollectionItem) {
         val navHost = findNavController()
         val action = when (val currentDestId = navHost.currentDestination?.id) {
-            R.id.feed_fragment_dest -> FeedFragmentDirections.actionFeedFragmentToCollectionDetailsFragment(collectionItem)
-            R.id.search_fragment_dest -> SearchFragmentDirections.actionSearchFragmentToCollectionDetailsFragment(collectionItem)
-            R.id.user_details_fragment_dest -> UserDetailsFragmentDirections.actionUserDetailsToCollectionDetails(collectionItem)
+            R.id.feed_fragment_dest -> FeedFragmentDirections.actionFeedFragmentToCollectionDetailsFragment(
+                collectionItem
+            )
+
+            R.id.search_fragment_dest -> SearchFragmentDirections.actionSearchFragmentToCollectionDetailsFragment(
+                collectionItem
+            )
+
+            R.id.user_details_fragment_dest -> UserDetailsFragmentDirections.actionUserDetailsToCollectionDetails(
+                collectionItem
+            )
+
             else -> error("openCollectionDetails() - doesn't support action at this fragment_currentDestId: $currentDestId")
         }
         navHost.navigate(action)

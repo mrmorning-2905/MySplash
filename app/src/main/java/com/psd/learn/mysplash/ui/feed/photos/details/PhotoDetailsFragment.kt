@@ -170,7 +170,10 @@ class PhotoDetailsFragment :
                 requestManager,
                 photoItem.userProfileUrl
             )
-            userName.text = photoItem.userNameDisplay
+            userName.run {
+                setTextColor(resources.getColor(R.color.md_theme_onPrimaryContainer))
+                text = photoItem.userNameDisplay
+            }
             userOwnerContainer.setOnClickListener {
                 gotoUserDetailsFragment(
                     UserArgs(
