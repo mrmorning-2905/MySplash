@@ -10,9 +10,9 @@ In this project, I have used:
 6. Navigation component
 
 Next task:
-[ ] handle safe call api with catch exception
+[x] handle safe call api with catch exception
 [ ] implement download image function
 [ ] implement set wallpaper for one or many image
 [ ] implement login 
 [ ] implement selection mode(optional)
-[ ] implement sortby menu
+[ ] implement sort by menu
