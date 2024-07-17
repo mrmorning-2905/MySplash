@@ -21,6 +21,7 @@ import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.utils.ResultState
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
+import com.psd.learn.mysplash.ui.utils.setRealRatio
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -157,13 +158,16 @@ class PhotoDetailsFragment :
 
     private fun bindImageView(photoItem: PhotoItem) {
         val requestManager = Glide.with(this@PhotoDetailsFragment)
-        binding.coverImage.loadCoverThumbnail(
-            requestManager = requestManager,
-            coverUrl = photoItem.coverPhotoUrl,
-            thumbnailUrl = photoItem.coverThumbnailUrl,
-            coverColor = photoItem.coverColor,
-            centerCrop = true
-        )
+        binding.coverImage.run {
+            setRealRatio(photoItem.width, photoItem.height)
+            loadCoverThumbnail(
+                requestManager = requestManager,
+                coverUrl = photoItem.coverPhotoUrl,
+                thumbnailUrl = photoItem.coverThumbnailUrl,
+                coverColor = photoItem.coverColor,
+                centerCrop = false
+            )
+        }
 
         binding.profileLayout.run {
             userProfile.loadProfilePicture(

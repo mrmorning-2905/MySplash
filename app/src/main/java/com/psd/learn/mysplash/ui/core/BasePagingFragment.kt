@@ -145,6 +145,11 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
 
     private fun handleLoadState() {
         initLoadState()
+
+        retryBtn.setOnClickListener {
+            pagingAdapter.retry()
+        }
+
         lifecycleScope.launch {
             pagingAdapter.loadStateFlow
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
@@ -156,14 +161,6 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
                     progressBar.isVisible = loadState.source.refresh is LoadState.Loading
                     retryBtn.isVisible = loadState.source.refresh is LoadState.Error
                 }
-        }
-
-        retryBtn.apply {
-            if (isVisible) {
-                setOnClickListener {
-                    pagingAdapter.retry()
-                }
-            }
         }
     }
 
