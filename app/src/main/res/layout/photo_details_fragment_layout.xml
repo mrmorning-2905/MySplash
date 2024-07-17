@@ -32,10 +32,10 @@
                 <LinearLayout
                     android:id="@+id/location_container"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
+                    android:layout_height="40dp"
                     android:orientation="horizontal"
                     android:layout_margin="10dp"
+                    android:background="@drawable/highlight_background"
                     app:layout_constraintBottom_toBottomOf="@id/cover_image"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0"
@@ -46,6 +46,7 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_gravity="center"
+                        android:layout_marginStart="10dp"
                         android:src="@drawable/location_icon" />
 
                     <TextView
@@ -54,8 +55,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:paddingEnd="10dp"
                         android:ellipsize="end"
-                        android:gravity="center"
+                        android:layout_gravity="center"
                         android:maxLines="1" />
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
