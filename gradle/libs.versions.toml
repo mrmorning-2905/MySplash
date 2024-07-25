@@ -15,6 +15,8 @@ dagger = "2.51"
 paging3 = "3.3.0"
 androidx-navigation = "2.7.7"
 swiperefreshlayout = "1.1.0"
+workVersion = "2.9.0"
+hiltWorkVersion = "1.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -22,6 +24,7 @@ androidx-preference-ktx = { module = "androidx.preference:preference-ktx", versi
 
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "androidx-room" }
+androidx-room-paging = { module = "androidx.room:room-paging", version.ref = "androidx-room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidx-room" }
 androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "androidx-navigation" }
 androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "androidx-navigation" }
@@ -42,6 +45,9 @@ dagger-hilt = { group = "com.google.dagger", name = "hilt-android", version.ref 
 dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "dagger"}
 paging-common-android = { group = "androidx.paging", name = "paging-common-android", version.ref = "paging3"}
 paging-runtime-ktx = { group = "androidx.paging", name = "paging-runtime-ktx", version.ref = "paging3"}
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version.ref = "workVersion" }
+hilt-androidx-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltWorkVersion" }
+hilt-androidx-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWorkVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

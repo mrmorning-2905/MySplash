@@ -108,7 +108,9 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
     implementation(libs.dagger.hilt)
+    implementation(libs.hilt.androidx.work)
     kapt(libs.dagger.hilt.compiler)
+    kapt(libs.hilt.androidx.compiler)
     implementation(libs.paging.common.android)
     implementation(libs.paging.runtime.ktx)
     // Moshi
@@ -141,7 +143,9 @@ dependencies {
     implementation(libs.bundles.androidx.navigation)
 
     //room - paging
-    implementation("androidx.room:room-paging:2.6.1")
+    implementation(libs.androidx.room.paging)
 
     implementation(libs.androidx.swiperefreshlayout)
+
+    implementation(libs.androidx.work.runtime.ktx)
 }

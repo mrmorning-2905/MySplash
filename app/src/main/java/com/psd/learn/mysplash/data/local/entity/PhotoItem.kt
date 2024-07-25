@@ -11,6 +11,9 @@ data class PhotoItem (
     @ColumnInfo(name = "photo_id")
     val photoId: String,
 
+    @ColumnInfo(name = "photo_name")
+    val photoName: String,
+
     @ColumnInfo(name = "user_id")
     val userId: String,
 
@@ -81,6 +84,7 @@ data class PhotoItem (
 fun PhotoResponseItem.toPhotoItem(): PhotoItem {
     return PhotoItem(
         photoId = id,
+        photoName = altDescription ?: "Picture_$id",
         userNameAccount = userResponse?.username ?: "Unknown",
         userNameDisplay = userResponse?.name ?: "Unknown",
         userProfileUrl = userResponse?.profileImage?.medium ?: "",

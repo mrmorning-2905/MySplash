@@ -18,7 +18,7 @@
 
     <style name="HeadLine.H5" parent="@style/TextAppearance.Material3.HeadlineLarge">
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textColor">#303030</item>
         <item name="lineHeight">29.71dp</item>
         <item name="font">@font/poppins_bold</item>
@@ -26,7 +26,7 @@
 
     <style name="HeadLine.H6" parent="@style/TextAppearance.Material3.HeadlineMedium">
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">18dp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="lineHeight">24.76dp</item>
         <item name="font">@font/poppins_bold</item>
@@ -34,28 +34,28 @@
 
     <style name="TitleStyle">
         <item name="font">@font/poppins_bold</item>
-        <item name="android:textSize">18dp</item>
+        <item name="android:textSize">14sp</item>
         <item name="lineHeight">24dp</item>
         <item name="android:textColor">#000000</item>
     </style>
 
     <style name="SubTitle.Medium" parent="SubTitle.Regular">
         <item name="font">@font/poppins_bold</item>
-        <item name="android:textSize">16dp</item>
+        <item name="android:textSize">13sp</item>
         <item name="lineHeight">24dp</item>
         <item name="android:textColor">#A14F4F4F</item>
     </style>
 
 
     <style name="SubTitle.Regular" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
-        <item name="android:textSize">16dp</item>
+        <item name="android:textSize">13sp</item>
         <item name="lineHeight">24dp</item>
         <item name="android:textColor">#A14F4F4F</item>
         <item name="font">@font/poppins</item>
     </style>
 
     <style name="SubTitle.Regular.White" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
-        <item name="android:textSize">16dp</item>
+        <item name="android:textSize">13sp</item>
         <item name="lineHeight">24dp</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="font">@font/poppins</item>

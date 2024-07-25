@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.PhotoDetailsFragmentLayoutBinding
@@ -22,11 +23,13 @@ import com.psd.learn.mysplash.ui.utils.ResultState
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 import com.psd.learn.mysplash.ui.utils.setRealRatio
+import com.psd.learn.mysplash.worker.DownloadItem
+import com.psd.learn.mysplash.worker.DownloadWorker
+import com.psd.learn.mysplash.worker.RequestInfo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -72,6 +75,7 @@ class PhotoDetailsFragment :
                 bindPhotoInfo(photoItem)
                 bindTagList(photoItem)
                 bindFavoriteBtn(photoItem)
+                bindDownloadBtn(photoItem)
             }
 
             else -> {
@@ -97,6 +101,15 @@ class PhotoDetailsFragment :
                         executeFavorite(photoItem.copy(isFavorite = resultState.data != null))
                     }
                 }
+        }
+    }
+
+    private fun bindDownloadBtn(photoItem: PhotoItem) {
+        binding.downloadBtn.setOnClickListener {
+            val downloadInfo = DownloadItem(photoItem.coverPhotoUrl, photoItem.photoName, photoItem.photoId)
+            val requestInfo = RequestInfo(totalFiles = 10, listItem = (1..10).map { downloadInfo })
+            //val requestInfo = RequestInfo(totalFiles = 1, listItem = listOf(downloadInfo))
+            DownloadWorker.enQueueDownload(requireContext(), Gson(), requestInfo)
         }
     }
 

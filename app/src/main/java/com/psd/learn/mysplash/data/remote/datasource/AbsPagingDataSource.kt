@@ -1,5 +1,6 @@
 package com.psd.learn.mysplash.data.remote.datasource
 
+import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.psd.learn.mysplash.PAGING_SIZE
@@ -31,6 +32,7 @@ abstract class AbsPagingDataSource<T : Any>(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, T> {
         val position = params.key ?: START_PAGE_INDEX
         return getResultPagingData(query, position, params.loadSize)
+            .onFailure { Log.d("sangpd", "load_error: $it") }
             .fold(
                 onSuccess = { listDataInfo ->
                     val nextKey =

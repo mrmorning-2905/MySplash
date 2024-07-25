@@ -1,6 +1,7 @@
 package com.psd.learn.mysplash.ui
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -73,7 +74,7 @@ class PhotoPagingAdapter(
             }
         }
 
-        @SuppressLint("SetTextI18n")
+        @SuppressLint("SetTextI18n", "ResourceType")
         override fun onBindView(item: PhotoItem) {
             photoItem = item
             viewBinding.run {
@@ -85,6 +86,7 @@ class PhotoPagingAdapter(
                     )
                     profileLayout.userName.text = item.userNameDisplay
                 } else {
+                    headerContainer.setBackgroundColor(Color.TRANSPARENT)
                     profileLayout.root.visibility = View.GONE
                 }
 

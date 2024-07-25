@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MySplash</string>
+    <string name="download_progress">Downloading</string>
 </resources>

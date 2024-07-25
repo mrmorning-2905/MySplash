@@ -1,5 +1,7 @@
 package com.psd.learn.mysplash.di
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.psd.learn.mysplash.BuildConfig
 import com.psd.learn.mysplash.data.remote.datasource.PhotoDetailsDataSource
 import com.psd.learn.mysplash.data.remote.datasource.UserDetailsDataSource
@@ -47,6 +49,14 @@ interface NetworkModule {
             .addLast(KotlinJsonAdapterFactory())
             .build()
 
+        @Singleton
+        @Provides
+        fun providesGsonInstance(): Gson {
+            return GsonBuilder()
+                .setPrettyPrinting()
+                .create()
+        }
+
         @Provides
         fun provideHttpLoggingInterceptor() = HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) {
@@ -93,7 +103,7 @@ interface NetworkModule {
         fun providePagingRepository(
             unSplashApiService: UnSplashApiService,
             @IoDispatcher coroutineDispatcher: CoroutineDispatcher
-        ) : UnSplashPagingRepository {
+        ): UnSplashPagingRepository {
             return UnSplashPagingRepository(unSplashApiService, coroutineDispatcher)
         }
 
@@ -102,7 +112,7 @@ interface NetworkModule {
         fun providePhotoDetailsDataSource(
             apiService: UnSplashApiService,
             @IoDispatcher dispatcher: CoroutineDispatcher
-        ) : PhotoDetailsDataSource {
+        ): PhotoDetailsDataSource {
             return PhotoDetailsDataSource(apiService, dispatcher)
         }
 
@@ -111,7 +121,7 @@ interface NetworkModule {
         fun provideUserDetailsDataSource(
             apiService: UnSplashApiService,
             @IoDispatcher dispatcher: CoroutineDispatcher
-        ) : UserDetailsDataSource {
+        ): UserDetailsDataSource {
             return UserDetailsDataSource(apiService, dispatcher)
         }
     }
