@@ -12,6 +12,8 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.WorkManager
+import androidx.work.WorkQuery
 import com.bumptech.glide.Glide
 import com.google.gson.Gson
 import com.psd.learn.mysplash.R
@@ -109,7 +111,20 @@ class PhotoDetailsFragment :
             val downloadInfo = DownloadItem(photoItem.coverPhotoUrl, photoItem.photoName, photoItem.photoId)
             val requestInfo = RequestInfo(totalFiles = 10, listItem = (1..10).map { downloadInfo })
             //val requestInfo = RequestInfo(totalFiles = 1, listItem = listOf(downloadInfo))
-            DownloadWorker.enQueueDownload(requireContext(), Gson(), requestInfo)
+            val workId = DownloadWorker.enQueueDownload(requireContext(), Gson(), requestInfo)
+
+            lifecycleScope.launch {
+                val workQuery = WorkQuery.fromIds(workId)
+                WorkManager.getInstance(requireContext())
+                    .getWorkInfosFlow(workQuery)
+                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                    .distinctUntilChanged()
+                    .collectLatest { workList ->
+                        workList.getOrNull(0).let {
+                            Log.d("sangpd", "bindDownloadBtn_workStatus: ${it?.state}")
+                        }
+                    }
+            }
         }
     }
 

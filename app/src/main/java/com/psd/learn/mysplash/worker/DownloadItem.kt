@@ -3,6 +3,7 @@ package com.psd.learn.mysplash.worker
 import android.os.Parcelable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.parcelize.IgnoredOnParcel
@@ -16,7 +17,7 @@ data class DownloadItem(
     val url: String,
     val fileName: String,
     val photoId: String
-): Parcelable
+) : Parcelable
 
 @Parcelize
 data class RequestInfo(
@@ -26,8 +27,10 @@ data class RequestInfo(
 ) : Parcelable {
     @IgnoredOnParcel
     var currentProgress: Int = 0
+
     @IgnoredOnParcel
     var downloadedFile: Int = 0
+
     @IgnoredOnParcel
     var downloadStatus: DownloadStatus = DownloadStatus.QUEUED
 
@@ -62,6 +65,7 @@ fun InputStream.copyTo(out: OutputStream, streamSize: Long): Flow<ProgressInfo> 
 
         var lastTotalBytesRead = 0L
         var speed: Long = 0
+
         @Suppress("KotlinConstantConditions")
         val timer = fixedRateTimer("timer", true, 0L, 1000) {
             val totalBytesRead = bytesCopied
@@ -72,9 +76,11 @@ fun InputStream.copyTo(out: OutputStream, streamSize: Long): Flow<ProgressInfo> 
         while (bytes >= 0) {
             out.write(buffer, 0, bytes)
             bytesCopied += bytes
-            emit(ProgressInfo((bytesCopied * 100 / streamSize).toInt(), bytes.toLong(), speed))
+            emit(ProgressInfo((bytesCopied * 100 / streamSize).toInt(), bytesCopied, speed))
             bytes = read(buffer)
         }
         timer.cancel()
-    }.flowOn(Dispatchers.IO)
+    }
+        .flowOn(Dispatchers.IO)
+        .distinctUntilChangedBy { it.progress }
 }
