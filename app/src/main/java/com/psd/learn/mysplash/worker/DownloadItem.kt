@@ -3,7 +3,7 @@ package com.psd.learn.mysplash.worker
 import android.os.Parcelable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.parcelize.IgnoredOnParcel
@@ -76,11 +76,10 @@ fun InputStream.copyTo(out: OutputStream, streamSize: Long): Flow<ProgressInfo> 
         while (bytes >= 0) {
             out.write(buffer, 0, bytes)
             bytesCopied += bytes
-            emit(ProgressInfo((bytesCopied * 100 / streamSize).toInt(), bytesCopied, speed))
+            emit(ProgressInfo((bytesCopied * 100 / streamSize).toInt(), bytes.toLong(), speed))
             bytes = read(buffer)
         }
         timer.cancel()
     }
         .flowOn(Dispatchers.IO)
-        .distinctUntilChangedBy { it.progress }
 }
