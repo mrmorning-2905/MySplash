@@ -112,14 +112,16 @@ class DownloadWorker @AssistedInject constructor(
 
     private suspend fun onProgress(info: ProgressInfo) {
         if (!isStopped && !requestDownloadInfo.isFinish()) {
-            downloadedBytes += info.bytesCopied
-            val progress = (downloadedBytes * 100 / totalBytes).toInt()
+            val progress = ((downloadedBytes + info.bytesCopied) * 100 / totalBytes).toInt()
+            Log.d("sangpd", "onProgress_currentProgress: $progress - totalProgress: $totalProgress - info.bytesCopied: ${info.bytesCopied} - info.progress: ${info.progress}")
             if (progress > totalProgress) {
-                Log.d("sangpd", "onProgress_currentProgress: $progress - totalProgress: $totalProgress")
                 delay(100)
+                if (info.progress == 100) {
+                    downloadedBytes += info.bytesCopied
+                }
                 requestDownloadInfo.currentProgress = progress
-                totalProgress = progress
                 notifyStatus(DownloadStatus.DOWNLOADING, NOTIFICATION_ID)
+                totalProgress = progress
             }
         }
     }

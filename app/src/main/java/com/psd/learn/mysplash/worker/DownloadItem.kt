@@ -76,7 +76,7 @@ fun InputStream.copyTo(out: OutputStream, streamSize: Long): Flow<ProgressInfo> 
         while (bytes >= 0) {
             out.write(buffer, 0, bytes)
             bytesCopied += bytes
-            emit(ProgressInfo((bytesCopied * 100 / streamSize).toInt(), bytes.toLong(), speed))
+            emit(ProgressInfo((bytesCopied * 100 / streamSize).toInt(), bytesCopied, speed))
             bytes = read(buffer)
         }
         timer.cancel()
