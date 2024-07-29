@@ -2,6 +2,7 @@ package com.psd.learn.mysplash.ui.utils
 
 import android.os.SystemClock
 import android.util.Log
+import android.view.View
 
 private var lastClickTime: Long = 0
 private var prevId = Int.MIN_VALUE
@@ -22,4 +23,12 @@ fun isValidClick(id: Int, position: Int = -1, delay: Long = DOUBLE_CLICK_TIME): 
     prevId = id
     prevPosition = position
     return true
+}
+
+fun View.safeHandleClickListener(block: () -> Unit) {
+    setOnClickListener {
+        if (isValidClick(id)) {
+            block()
+        }
+    }
 }

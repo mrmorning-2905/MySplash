@@ -24,6 +24,7 @@ import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.utils.ResultState
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
+import com.psd.learn.mysplash.ui.utils.safeHandleClickListener
 import com.psd.learn.mysplash.ui.utils.setRealRatio
 import com.psd.learn.mysplash.worker.DownloadItem
 import com.psd.learn.mysplash.worker.DownloadWorker
@@ -99,7 +100,7 @@ class PhotoDetailsFragment :
                 .collectLatest { resultState ->
                     Log.d("sangpd", "bindFavoriteBtn_resultState: $resultState")
                     updateFavoriteBtn(resultState.data != null)
-                    binding.favoriteBtn.setOnClickListener {
+                    binding.favoriteBtn.safeHandleClickListener {
                         executeFavorite(photoItem.copy(isFavorite = resultState.data != null))
                     }
                 }
@@ -107,7 +108,7 @@ class PhotoDetailsFragment :
     }
 
     private fun bindDownloadBtn(photoItem: PhotoItem) {
-        binding.downloadBtn.setOnClickListener {
+        binding.downloadBtn.safeHandleClickListener {
             val downloadInfo = DownloadItem(photoItem.coverPhotoUrl, photoItem.photoName, photoItem.photoId)
             val requestInfo = RequestInfo(totalFiles = 2, listItem = (1..2).map { downloadInfo })
             //val requestInfo = RequestInfo(totalFiles = 1, listItem = listOf(downloadInfo))
@@ -206,7 +207,7 @@ class PhotoDetailsFragment :
                 setTextColor(resources.getColor(R.color.md_theme_onPrimaryContainer))
                 text = photoItem.userNameDisplay
             }
-            userOwnerContainer.setOnClickListener {
+            userOwnerContainer.safeHandleClickListener {
                 gotoUserDetailsFragment(
                     UserArgs(
                         photoItem.userId,

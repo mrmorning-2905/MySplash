@@ -13,4 +13,5 @@ const val USER_DETAILS_COLLECTIONS_TYPE = 101
 const val USER_DETAILS_LIKED_TYPE = 102
 
 const val MY_SPLASH_DIRECTORY = "MySplash"
-val MY_SPLASH_RELATIVE_PATH = "${Environment.DIRECTORY_PICTURES}${File.separator}$MY_SPLASH_DIRECTORY"
+val MY_SPLASH_RELATIVE_PATH: String =
+    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path/*${File.separator}$MY_SPLASH_DIRECTORY"*/

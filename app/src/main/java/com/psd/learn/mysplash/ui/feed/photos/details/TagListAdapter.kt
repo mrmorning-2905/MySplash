@@ -7,6 +7,7 @@ import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.databinding.TagCardViewItemBinding
 import com.psd.learn.mysplash.ui.core.BaseListAdapter
 import com.psd.learn.mysplash.ui.core.BaseListViewHolder
+import com.psd.learn.mysplash.ui.utils.safeHandleClickListener
 
 class TagListAdapter(
     private val itemClick: (String) -> Unit
@@ -30,7 +31,7 @@ class TagListAdapter(
         private lateinit var tagName: String
 
         init {
-            viewBinding.tagCardContainer.setOnClickListener {
+            viewBinding.tagCardContainer.safeHandleClickListener {
                 itemClick(tagName)
             }
         }

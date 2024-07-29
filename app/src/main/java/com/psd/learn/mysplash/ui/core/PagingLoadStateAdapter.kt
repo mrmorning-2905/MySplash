@@ -8,6 +8,7 @@ import androidx.paging.LoadStateAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.databinding.LoadStateFooterLayoutBinding
+import com.psd.learn.mysplash.ui.utils.safeHandleClickListener
 
 class PagingLoadStateAdapter(
     private val retry: () -> Unit
@@ -30,7 +31,7 @@ class PagingLoadStateAdapter(
 
         private val binding = LoadStateFooterLayoutBinding.bind(itemView)
         init {
-            binding.retryButton.setOnClickListener { retryClickListener() }
+            binding.retryButton.safeHandleClickListener { retryClickListener() }
         }
 
         fun bindView(loadState: LoadState) {

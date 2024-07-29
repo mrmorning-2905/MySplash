@@ -15,6 +15,7 @@ import com.psd.learn.mysplash.ui.core.OnItemClickListener
 import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
+import com.psd.learn.mysplash.ui.utils.safeHandleClickListener
 import com.psd.learn.mysplash.ui.utils.setRealRatio
 
 class CollectionPagingAdapter(
@@ -39,8 +40,8 @@ class CollectionPagingAdapter(
 
         init {
             viewBinding.run {
-                coverPhoto.setOnClickListener { itemClickListener.coverPhotoClicked(collectionItem) }
-                profileLayout.userOwnerContainer.setOnClickListener {
+                coverPhoto.safeHandleClickListener { itemClickListener.coverPhotoClicked(collectionItem) }
+                profileLayout.userOwnerContainer.safeHandleClickListener {
                     itemClickListener.profileClicked(
                         UserArgs(
                             collectionItem.userId,

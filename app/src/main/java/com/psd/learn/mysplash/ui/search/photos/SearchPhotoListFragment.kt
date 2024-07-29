@@ -7,6 +7,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.SEARCH_PHOTOS_TYPE
@@ -37,6 +38,8 @@ class SearchPhotoListFragment :
     override val retryBtn: Button
         get() = binding.photoCollectionLayout.loadingContainer.retryButton
 
+    override val swipeRefreshLayout: SwipeRefreshLayout
+        get() = binding.photoCollectionLayout.swipeRefresh
 
     override val pagingAdapter: BasePagingAdapter<PhotoItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
         PhotoPagingAdapter(

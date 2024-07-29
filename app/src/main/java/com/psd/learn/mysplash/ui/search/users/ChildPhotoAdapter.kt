@@ -10,6 +10,7 @@ import com.psd.learn.mysplash.databinding.ChildItemBinding
 import com.psd.learn.mysplash.ui.core.BaseListAdapter
 import com.psd.learn.mysplash.ui.core.BaseListViewHolder
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
+import com.psd.learn.mysplash.ui.utils.safeHandleClickListener
 
 class ChildPhotoAdapter(
     private val requestManager: RequestManager,
@@ -32,7 +33,7 @@ class ChildPhotoAdapter(
         private lateinit var photoItem: PhotoItem
 
         init {
-            viewBinding.childCoverPhotoContainer.setOnClickListener {
+            viewBinding.childCoverPhotoContainer.safeHandleClickListener {
                 onItemClicked(photoItem)
             }
         }

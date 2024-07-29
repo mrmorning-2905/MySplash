@@ -15,6 +15,7 @@ import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.OnItemClickListener
 import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
+import com.psd.learn.mysplash.ui.utils.safeHandleClickListener
 
 
 class SearchUserListAdapter(
@@ -39,7 +40,7 @@ class SearchUserListAdapter(
         private lateinit var userItem: UserItem
 
         init {
-            viewBinding.userInfoContainer.setOnClickListener {
+            viewBinding.userInfoContainer.safeHandleClickListener {
                 itemClickListener.profileClicked(
                     UserArgs(
                         userItem.userId,

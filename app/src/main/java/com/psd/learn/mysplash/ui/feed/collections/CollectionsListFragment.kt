@@ -7,6 +7,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
@@ -37,6 +38,9 @@ class CollectionsListFragment: BasePagingFragment<CollectionItem, PhotoCollectio
 
     override val progressBar: ProgressBar
         get() = binding.loadingContainer.progressBar
+
+    override val swipeRefreshLayout: SwipeRefreshLayout
+        get() = binding.swipeRefresh
 
     override val retryBtn: Button
         get() = binding.loadingContainer.retryButton

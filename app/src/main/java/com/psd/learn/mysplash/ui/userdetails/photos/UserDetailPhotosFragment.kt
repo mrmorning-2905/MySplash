@@ -7,6 +7,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
@@ -40,6 +41,9 @@ class UserDetailPhotosFragment : BasePagingFragment<PhotoItem, PhotoCollectionFr
 
     override val retryBtn: Button
         get() = binding.loadingContainer.retryButton
+
+    override val swipeRefreshLayout: SwipeRefreshLayout
+        get() = binding.swipeRefresh
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

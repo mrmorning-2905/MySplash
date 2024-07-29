@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
@@ -46,6 +47,9 @@ class CollectionDetailsFragment  :
 
     override val retryBtn: Button
         get() = binding.photoCollectionList.loadingContainer.retryButton
+
+    override val swipeRefreshLayout: SwipeRefreshLayout
+        get() = binding.photoCollectionList.swipeRefresh
 
     private val collectionInfoArgs by lazy(LazyThreadSafetyMode.NONE) { navArgs<CollectionDetailsFragmentArgs>().value.collectionInfo }
 

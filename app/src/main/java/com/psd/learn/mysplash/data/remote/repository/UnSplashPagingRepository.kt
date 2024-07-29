@@ -1,5 +1,6 @@
 package com.psd.learn.mysplash.data.remote.repository
 
+import androidx.paging.InvalidatingPagingSourceFactory
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -29,15 +30,17 @@ class UnSplashPagingRepository(
         searchType: Int,
         onTotalResult: (Int) -> Unit
     ): Flow<PagingData<T>> {
-        val dataSource = SearchDataSourceFactory.getSearchDataSource<T>(
-            unSplashApiService,
-            coroutineDispatcher,
-            searchType,
-            query
-        ) { total -> onTotalResult(total) }
+        val invalidPagingSource = InvalidatingPagingSourceFactory {
+            SearchDataSourceFactory.getSearchDataSource<T>(
+                unSplashApiService,
+                coroutineDispatcher,
+                searchType,
+                query
+            ) { total -> onTotalResult(total) }
+        }
         return Pager(
             config = pageConfig,
-            pagingSourceFactory = { dataSource }
+            pagingSourceFactory =  invalidPagingSource
         ).flow
     }
 
@@ -66,15 +69,17 @@ class UnSplashPagingRepository(
         userName: String,
         detailType: Int,
     ): Flow<PagingData<T>> {
-        val dataSource = UserDetailsPagingSourceFactory.getUserDetailsPagingDataSource<T>(
-            unSplashApiService,
-            coroutineDispatcher,
-            detailType,
-            userName
-        )
+        val invalidPagingSource = InvalidatingPagingSourceFactory {
+            UserDetailsPagingSourceFactory.getUserDetailsPagingDataSource<T>(
+                unSplashApiService,
+                coroutineDispatcher,
+                detailType,
+                userName
+            )
+        }
         return Pager(
             config = pageConfig,
-            pagingSourceFactory = { dataSource }
+            pagingSourceFactory = invalidPagingSource
         ).flow
     }
 }

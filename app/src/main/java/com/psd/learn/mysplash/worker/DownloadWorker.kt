@@ -6,6 +6,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.pm.ServiceInfo
 import android.net.Uri
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.hilt.work.HiltWorker
@@ -45,7 +46,6 @@ class DownloadWorker @AssistedInject constructor(
     private lateinit var requestDownloadInfo: RequestInfo
     private var downloading = false
     private var totalBytes by Delegates.notNull<Long>()
-    private var totalProgress = 0
     private var downloadedBytes = 0L
     private val notificationManager by lazy { context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager }
 
@@ -104,6 +104,7 @@ class DownloadWorker @AssistedInject constructor(
             val responseBody = unSplashApiService.openUrl(downloadInfo.url)
             val uri = responseBody.saveImage(context, downloadInfo.fileName)
             if (uri != null) {
+                requestDownloadInfo.uri = uri
                 return@withContext Result.success()
             }
             return@withContext Result.failure()
@@ -113,16 +114,16 @@ class DownloadWorker @AssistedInject constructor(
     private suspend fun onProgress(info: ProgressInfo) {
         if (!isStopped && !requestDownloadInfo.isFinish()) {
             val progress = ((downloadedBytes + info.bytesCopied) * 100 / totalBytes).toInt()
-            Log.d("sangpd", "onProgress_currentProgress: $progress - totalProgress: $totalProgress - info.bytesCopied: ${info.bytesCopied} - info.progress: ${info.progress}")
-            if (progress > totalProgress) {
-                delay(100)
-                if (info.progress == 100) {
-                    downloadedBytes += info.bytesCopied
-                }
-                requestDownloadInfo.currentProgress = progress
-                notifyStatus(DownloadStatus.DOWNLOADING, NOTIFICATION_ID)
-                totalProgress = progress
+            Log.d(
+                "sangpd",
+                "onProgress_currentProgress: $progress - info.bytesCopied: ${info.bytesCopied} - info.progress: ${info.progress} - totalBytes: $totalBytes"
+            )
+            if (info.progress == 100) {
+                downloadedBytes += info.bytesCopied
             }
+            requestDownloadInfo.currentProgress = progress
+            notifyStatus(DownloadStatus.DOWNLOADING, NOTIFICATION_ID)
+            delay(400)
         }
     }
 
@@ -147,6 +148,7 @@ class DownloadWorker @AssistedInject constructor(
                 DownloadStatus.COMPLETED -> {
                     currentProgress = 100
                 }
+
                 else -> {}
             }
         }
@@ -158,16 +160,16 @@ class DownloadWorker @AssistedInject constructor(
     private suspend fun ResponseBody.saveImage(context: Context, fileName: String): Uri? {
 
         val contentValues = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
-            put(MediaStore.Images.Media.TITLE, fileName)
-            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-            put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
-            put(MediaStore.Images.Media.SIZE, contentLength())
-            put(MediaStore.Images.Media.RELATIVE_PATH, MY_SPLASH_RELATIVE_PATH)
+            put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+            put(MediaStore.MediaColumns.TITLE, fileName)
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            put(MediaStore.MediaColumns.DATE_ADDED, System.currentTimeMillis() / 1000)
+            put(MediaStore.MediaColumns.SIZE, contentLength())
+            put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS)
         }
 
         val resolver = context.contentResolver
-        val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+        val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues)
 
         return if (uri != null) {
             resolver.openOutputStream(uri)?.use { outputStream ->

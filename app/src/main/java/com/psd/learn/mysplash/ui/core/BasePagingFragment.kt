@@ -20,6 +20,7 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewbinding.ViewBinding
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.SEARCH_COLLECTIONS_TYPE
@@ -34,6 +35,7 @@ import com.psd.learn.mysplash.ui.search.ResultSearchState
 import com.psd.learn.mysplash.ui.search.SearchAction
 import com.psd.learn.mysplash.ui.search.SearchFragmentDirections
 import com.psd.learn.mysplash.ui.userdetails.UserDetailsFragmentDirections
+import com.psd.learn.mysplash.ui.utils.safeHandleClickListener
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -59,6 +61,8 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
 
     abstract val progressBar: ProgressBar
 
+    abstract val swipeRefreshLayout: SwipeRefreshLayout
+
     abstract val retryBtn: Button
 
     override fun onCreateView(
@@ -79,6 +83,7 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
+        initSwipeToRefresh()
     }
 
     protected fun handleScroll(
@@ -120,9 +125,17 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
         }
     }
 
-//    private fun initSwipeToRefresh() {
-//        binding.swipeRefresh.setOnRefreshListener { adapter.refresh() }
-//    }
+    private fun initSwipeToRefresh() {
+        swipeRefreshLayout.setOnRefreshListener { pagingAdapter.refresh() }
+        lifecycleScope.launch {
+            pagingAdapter
+                .loadStateFlow
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collectLatest {  loadState ->
+                    swipeRefreshLayout.isRefreshing = loadState.refresh is LoadState.Loading
+                }
+        }
+    }
 
     private fun initAdapter() {
         recyclerView.run {
@@ -133,7 +146,6 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
                 footer = PagingLoadStateAdapter { pagingAdapter.retry() }
             )
         }
-
         handleLoadState()
     }
 
@@ -146,7 +158,7 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     private fun handleLoadState() {
         initLoadState()
 
-        retryBtn.setOnClickListener {
+        retryBtn.safeHandleClickListener {
             pagingAdapter.retry()
         }
 

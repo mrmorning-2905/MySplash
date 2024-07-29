@@ -1,9 +1,10 @@
 package com.psd.learn.mysplash.worker
 
+import android.net.Uri
 import android.os.Parcelable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.distinctUntilChangedBy
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.parcelize.IgnoredOnParcel
@@ -33,6 +34,9 @@ data class RequestInfo(
 
     @IgnoredOnParcel
     var downloadStatus: DownloadStatus = DownloadStatus.QUEUED
+
+    @IgnoredOnParcel
+    var uri: Uri? = null
 
     fun isFinish(): Boolean = downloadStatus in DownloadStatus.finished
     fun isRunning(): Boolean = downloadStatus in DownloadStatus.running
@@ -82,4 +86,5 @@ fun InputStream.copyTo(out: OutputStream, streamSize: Long): Flow<ProgressInfo> 
         timer.cancel()
     }
         .flowOn(Dispatchers.IO)
+        .distinctUntilChangedBy {it.progress}
 }
