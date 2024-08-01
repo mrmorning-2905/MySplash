@@ -102,7 +102,6 @@ object NotificationUtils {
                     setContentText("Download completed")
                     setAutoCancel(false)
                     setCategory(Notification.CATEGORY_STATUS)
-                    setOngoing(true)
                     setProgress(0, 0, false)
                     setContentIntent(getPendingIntent(context, requestInfo.uri, requestInfo.totalFiles))
                 }

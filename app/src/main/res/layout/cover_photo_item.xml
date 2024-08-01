@@ -22,6 +22,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:visibility="visible"
+                android:theme="@style/Theme.AppCompat"
+                android:button="@drawable/checkbox_custom"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
             <com.psd.learn.mysplash.ui.widget.RealRatioImageView
                 android:id="@+id/cover_photo"
                 android:layout_width="match_parent"
