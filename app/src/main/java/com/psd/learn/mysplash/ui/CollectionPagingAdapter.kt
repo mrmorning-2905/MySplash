@@ -78,6 +78,7 @@ class CollectionPagingAdapter(
                 coverTitle.text = item.coverDescription
                 coverDetail.text = "${item.numberImages} Images"
                 favoriteBtn.visibility = View.GONE
+                checkBox.visibility = View.GONE
             }
         }
     }

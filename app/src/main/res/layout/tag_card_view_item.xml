@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tag_card_container"
     android:layout_width="wrap_content"
     android:layout_height="40dp"
     app:cardCornerRadius="5dp"
+    app:cardElevation="4dp"
     app:cardPreventCornerOverlap="true"
     app:cardUseCompatPadding="true"
-    android:layout_margin="2dp">
+    android:layout_margin="2dp"
+    app:cardBackgroundColor="#8048494A">
 
     <TextView
         android:id="@+id/tag_name"
         style="@style/TitleStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:background="#8048494A"/>
+        android:background="@android:color/transparent"
+        android:layout_gravity="center"/>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

@@ -245,11 +245,16 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
         override fun addOrRemoveFavorite(photoItem: PhotoItem) {
             handleAddOrRemoveFavorite(photoItem)
         }
+
+        override fun coverPhotoLongClicked(photoItem: PhotoItem) {
+            handleCoverPhotoLongClicked(photoItem)
+        }
     }
 
     open fun handleProfileClicked(userInfo: UserArgs) {}
     open fun handleCoverPhotoClicked(item: T) {}
     open fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {}
+    open fun handleCoverPhotoLongClicked(photoItem: PhotoItem) {}
 
     protected fun openPhotoDetails(photoItem: PhotoItem) {
         val navHost = findNavController()

@@ -7,6 +7,8 @@ import kotlinx.parcelize.Parcelize
 interface OnItemClickListener<T> {
     fun coverPhotoClicked(item: T)
 
+    fun coverPhotoLongClicked(photoItem: PhotoItem)
+
     fun profileClicked(userInfo: UserArgs)
 
     fun addOrRemoveFavorite(photoItem: PhotoItem)

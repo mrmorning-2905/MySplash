@@ -15,6 +15,7 @@ import com.psd.learn.mysplash.ui.core.BaseListViewHolder
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.OnItemClickListener
 import com.psd.learn.mysplash.ui.core.UserArgs
+import com.psd.learn.mysplash.ui.list.SelectionModeManager
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 import com.psd.learn.mysplash.ui.utils.safeHandleClickListener
@@ -23,7 +24,8 @@ import com.psd.learn.mysplash.ui.utils.setRealRatio
 class PhotoPagingAdapter(
     private val requestManager: RequestManager,
     private val itemClickListener: OnItemClickListener<PhotoItem>,
-    private val needShowProfile: Boolean
+    private val needShowProfile: Boolean,
+    private val selectionManager: SelectionModeManager? = null
 ) : BasePagingAdapter<PhotoItem, CoverPhotoItemBinding>(
     R.layout.cover_photo_item,
     DIFF_PHOTO_ITEM_CALLBACK
@@ -59,6 +61,10 @@ class PhotoPagingAdapter(
         init {
             viewBinding.run {
                 coverPhoto.safeHandleClickListener { itemClickListener.coverPhotoClicked(photoItem) }
+                coverPhoto.setOnLongClickListener {
+                    itemClickListener.coverPhotoLongClicked(photoItem)
+                    true
+                }
                 profileLayout.userOwnerContainer.safeHandleClickListener {
                     itemClickListener.profileClicked(
                         UserArgs(
@@ -72,6 +78,7 @@ class PhotoPagingAdapter(
                     itemClickListener.addOrRemoveFavorite(photoItem)
                     notifyItemChanged(adapterPosition)
                 }
+                checkBox.safeHandleClickListener { itemClickListener.coverPhotoClicked(photoItem) }
             }
         }
 
@@ -79,6 +86,7 @@ class PhotoPagingAdapter(
         override fun onBindView(item: PhotoItem) {
             photoItem = item
             viewBinding.run {
+
                 if (needShowProfile) {
                     profileLayout.root.visibility = View.VISIBLE
                     profileLayout.userProfile.loadProfilePicture(
@@ -101,9 +109,9 @@ class PhotoPagingAdapter(
                         false
                     )
                 }
-
                 coverTitle.text = item.photoDescription
                 coverDetail.text = "${item.numberLikes} Likes"
+
                 favoriteBtn.visibility = View.VISIBLE
                 val favoriteIcon =
                     if (photoItem.isFavorite) R.drawable.favorite_selected_icon else R.drawable.favorite_icon
@@ -113,6 +121,9 @@ class PhotoPagingAdapter(
                         favoriteIcon
                     )
                 )
+
+                checkBox.visibility = if (selectionManager?.isSelectionMode() == true) View.VISIBLE else View.GONE
+                checkBox.isChecked = selectionManager?.isCheckedPhotoItem(photoItem) ?: false
             }
         }
     }

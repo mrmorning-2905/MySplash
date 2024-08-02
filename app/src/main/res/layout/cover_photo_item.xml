@@ -22,18 +22,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:focusable="false"
-                android:visibility="visible"
-                android:theme="@style/Theme.AppCompat"
-                android:button="@drawable/checkbox_custom"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-
             <com.psd.learn.mysplash.ui.widget.RealRatioImageView
                 android:id="@+id/cover_photo"
                 android:layout_width="match_parent"
@@ -45,13 +33,26 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/check_box"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:button="@drawable/checkbox_custom"
+                android:focusable="false"
+                android:theme="@style/Theme.AppCompat"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <LinearLayout
                 android:id="@+id/header_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:orientation="horizontal"
                 android:background="@drawable/highlight_background"
+                android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="@id/cover_photo"
                 app:layout_constraintStart_toStartOf="@id/cover_photo"
                 app:layout_constraintTop_toTopOf="@id/cover_photo">
