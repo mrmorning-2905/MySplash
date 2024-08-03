@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="?attr/actionBarSize"
+    android:layout_height="?attr/actionBarSize"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:paddingLeft="2dp"
+    android:paddingTop="5dp"
+    android:paddingRight="2dp"
+    android:paddingBottom="5dp">
+
+    <ImageView
+        android:id="@+id/bottom_menu_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center"
+        android:src="@drawable/search_menu_icon" />
+
+    <TextView
+        android:id="@+id/bottom_menu_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Search"
+        android:textSize="13sp" />
+
+</LinearLayout>
