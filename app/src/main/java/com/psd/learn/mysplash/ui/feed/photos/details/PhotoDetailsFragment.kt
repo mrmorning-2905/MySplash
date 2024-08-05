@@ -12,10 +12,7 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.work.WorkManager
-import androidx.work.WorkQuery
 import com.bumptech.glide.Glide
-import com.google.gson.Gson
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.PhotoDetailsFragmentLayoutBinding
@@ -26,9 +23,6 @@ import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
 import com.psd.learn.mysplash.ui.utils.safeHandleClickListener
 import com.psd.learn.mysplash.ui.utils.setRealRatio
-import com.psd.learn.mysplash.worker.DownloadItem
-import com.psd.learn.mysplash.worker.DownloadWorker
-import com.psd.learn.mysplash.worker.RequestInfo
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -109,22 +103,7 @@ class PhotoDetailsFragment :
 
     private fun bindDownloadBtn(photoItem: PhotoItem) {
         binding.downloadBtn.safeHandleClickListener {
-            val downloadInfo = DownloadItem(photoItem.coverPhotoUrl, photoItem.photoName, photoItem.photoId)
-            val requestInfo = RequestInfo(totalFiles = 1, listItem = listOf(downloadInfo))
-            val workId = DownloadWorker.enQueueDownload(requireContext(), Gson(), requestInfo)
-
-            lifecycleScope.launch {
-                val workQuery = WorkQuery.fromIds(workId)
-                WorkManager.getInstance(requireContext())
-                    .getWorkInfosFlow(workQuery)
-                    .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                    .distinctUntilChanged()
-                    .collectLatest { workList ->
-                        workList.getOrNull(0).let {
-                            Log.d("sangpd", "bindDownloadBtn_workStatus: ${it?.state}")
-                        }
-                    }
-            }
+            photoDetailsViewModel.downloadPhoto(requireContext(), photoItem, lifecycle)
         }
     }
 

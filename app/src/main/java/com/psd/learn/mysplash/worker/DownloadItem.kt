@@ -2,6 +2,7 @@ package com.psd.learn.mysplash.worker
 
 import android.net.Uri
 import android.os.Parcelable
+import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChangedBy
@@ -87,4 +88,12 @@ fun InputStream.copyTo(out: OutputStream, streamSize: Long): Flow<ProgressInfo> 
     }
         .flowOn(Dispatchers.IO)
         .distinctUntilChangedBy {it.progress}
+}
+
+fun PhotoItem.toDownloadInfoItem(): DownloadItem {
+    return DownloadItem(
+        url = coverPhotoUrl,
+        fileName = photoName,
+        photoId = photoId
+    )
 }

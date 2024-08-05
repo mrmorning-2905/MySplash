@@ -39,6 +39,8 @@ class SelectionModeManager @Inject constructor() : ViewModel() {
         return _listPhotoItemChecked.value?.contains(item) ?: false
     }
 
+    fun getListItemChecked(): List<PhotoItem> = _listPhotoItemChecked.value?.toList() ?: emptyList()
+
     fun addCheckedPhotoItem(item: PhotoItem) {
         _listPhotoItemChecked.value?.let { checkedList ->
             if (checkedList.contains(item)) {

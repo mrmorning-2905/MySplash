@@ -41,6 +41,27 @@ object FavoritePhotoHelper {
                 )
         }
     }
+
+    suspend fun addMultiPhotoToFavorite(
+        context: Context,
+        photoList: List<PhotoItem>,
+        doOnSuccess: suspend () -> Unit
+    ) {
+        val entryPoint: FavoriteEntryPoint =
+            EntryPointAccessors.fromApplication<FavoriteEntryPoint>(context)
+        val localRepo = entryPoint.localRepo
+        val convertList = photoList.map { it.copy(isFavorite = true) }
+        localRepo.addListFavorite(convertList)
+            .fold(
+                onSuccess = { doOnSuccess() },
+                onFailure = { error ->
+                    Log.d(
+                        "sangpd",
+                        "addMultiPhotoToFavorite failed_ error: $error"
+                    )
+                }
+            )
+    }
 }
 
 @EntryPoint

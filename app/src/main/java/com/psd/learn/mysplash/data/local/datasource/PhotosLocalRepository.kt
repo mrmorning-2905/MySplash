@@ -29,6 +29,11 @@ class PhotosLocalRepository(
             photosDao.insertPhoto(photoItem)
         }
 
+    suspend fun addListFavorite(photoList: List<PhotoItem>): Result<Unit> =
+        runSuspendCatching(dispatcher) {
+            photosDao.insertPhotos(photoList)
+        }
+
     suspend fun removeFavoritePhoto(photoItem: PhotoItem): Result<Unit> =
         runSuspendCatching(dispatcher) {
             photosDao.deletePhoto(photoItem)

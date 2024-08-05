@@ -9,6 +9,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewbinding.ViewBinding
@@ -24,8 +25,12 @@ import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
 import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
+import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import com.psd.learn.mysplash.ui.list.SelectionModeManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class PhotosListFragment :
@@ -98,7 +103,7 @@ class PhotosListFragment :
     @SuppressLint("NotifyDataSetChanged")
     private fun observerSelectionMode() {
         selectionManager.isChoiceMode.observe(viewLifecycleOwner) { isSelectionMode ->
-            if (isSelectionMode && selectionManager.listPhotoItemChecked.value?.isNotEmpty() == true) {
+            if (isSelectionMode && selectionManager.getListItemChecked().isNotEmpty()) {
                 mainViewModel.showBottomMenu(true)
             }
             pagingAdapter.notifyDataSetChanged()
@@ -123,10 +128,26 @@ class PhotosListFragment :
     }
 
     override fun onBottomMenuClicked(menuId: Int) {
+        val checkedList = selectionManager.getListItemChecked()
+        Log.d("sangpd", "onBottomMenuClicked: ${checkedList.size}")
         when (menuId) {
             R.id.menu_cancel -> selectionManager.disableSelectionMode()
-            R.id.menu_add_favorite -> Log.d("sangpd", "onBottomMenuClicked: add to favorite")
-            R.id.menu_download -> Log.d("sangpd", "onBottomMenuClicked: download checked files")
+            R.id.menu_add_favorite -> {
+                lifecycleScope.launch {
+                    withContext(Dispatchers.IO) {
+                        FavoritePhotoHelper.addMultiPhotoToFavorite(requireContext(), checkedList) {
+                            withContext(Dispatchers.Main) {
+                                selectionManager.disableSelectionMode()
+                            }
+                        }
+                    }
+                }
+            }
+            R.id.menu_download -> {
+                viewModel.downloadCheckedFiles(requireContext(), checkedList, lifecycle) {
+                    selectionManager.disableSelectionMode()
+                }
+            }
         }
     }
 }
