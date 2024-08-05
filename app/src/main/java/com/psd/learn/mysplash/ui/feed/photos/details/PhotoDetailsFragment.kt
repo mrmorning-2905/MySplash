@@ -110,8 +110,7 @@ class PhotoDetailsFragment :
     private fun bindDownloadBtn(photoItem: PhotoItem) {
         binding.downloadBtn.safeHandleClickListener {
             val downloadInfo = DownloadItem(photoItem.coverPhotoUrl, photoItem.photoName, photoItem.photoId)
-            val requestInfo = RequestInfo(totalFiles = 2, listItem = (1..2).map { downloadInfo })
-            //val requestInfo = RequestInfo(totalFiles = 1, listItem = listOf(downloadInfo))
+            val requestInfo = RequestInfo(totalFiles = 1, listItem = listOf(downloadInfo))
             val workId = DownloadWorker.enQueueDownload(requireContext(), Gson(), requestInfo)
 
             lifecycleScope.launch {

@@ -1,5 +1,6 @@
 package com.psd.learn.mysplash.ui.list
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -45,6 +46,7 @@ class SelectionModeManager @Inject constructor() : ViewModel() {
             } else {
                 checkedList.add(item)
             }
+            Log.d("sangpd", "addCheckedPhotoItem_checkedList: ${checkedList.size}")
             _listPhotoItemChecked.updateValue(checkedList)
         }
     }

@@ -60,11 +60,16 @@ class PhotoPagingAdapter(
 
         init {
             viewBinding.run {
-                coverPhoto.safeHandleClickListener { itemClickListener.coverPhotoClicked(photoItem) }
+                coverPhoto.safeHandleClickListener {
+                    itemClickListener.coverPhotoClicked(photoItem)
+                    notifyItemChanged(adapterPosition)
+                }
+
                 coverPhoto.setOnLongClickListener {
                     itemClickListener.coverPhotoLongClicked(photoItem)
                     true
                 }
+
                 profileLayout.userOwnerContainer.safeHandleClickListener {
                     itemClickListener.profileClicked(
                         UserArgs(
@@ -74,10 +79,13 @@ class PhotoPagingAdapter(
                         )
                     )
                 }
+
                 favoriteBtn.safeHandleClickListener {
+                    if (selectionManager?.isSelectionMode() == true) return@safeHandleClickListener
                     itemClickListener.addOrRemoveFavorite(photoItem)
                     notifyItemChanged(adapterPosition)
                 }
+
                 checkBox.safeHandleClickListener { itemClickListener.coverPhotoClicked(photoItem) }
             }
         }

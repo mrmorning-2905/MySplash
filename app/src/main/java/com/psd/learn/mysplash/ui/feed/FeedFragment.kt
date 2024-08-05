@@ -6,18 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.psd.learn.mysplash.MainViewModel
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.databinding.FeedFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.feed.collections.CollectionsListFragment
 import com.psd.learn.mysplash.ui.feed.photos.PhotosListFragment
 import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotosListFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class FeedFragment :
     BaseFragment<FeedFragmentLayoutBinding>(inflate = FeedFragmentLayoutBinding::inflate) {
+
+    private val mainViewModel by activityViewModels<MainViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,6 +45,16 @@ class FeedFragment :
             tabTitleArr = FEED_TAB_TITLES
         )
         setupMenuBottomBar()
+        observerBottomLayout()
+    }
+
+    private fun observerBottomLayout() {
+        mainViewModel.isShowBottomMenu.observe(viewLifecycleOwner) { isShow ->
+            binding.run {
+                bottomAppbar.visibility = if (isShow) View.GONE else View.VISIBLE
+                addFabBtn.visibility = if (isShow) View.GONE else View.VISIBLE
+            }
+        }
     }
 
     private fun setupMenuBottomBar() {
@@ -64,7 +80,8 @@ class FeedFragment :
         findNavController().navigate(action)
     }
 
-    private class FeedViewPagerAdapter(fragment: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragment, lifecycle) {
+    private class FeedViewPagerAdapter(fragment: FragmentManager, lifecycle: Lifecycle) :
+        FragmentStateAdapter(fragment, lifecycle) {
         override fun getItemCount(): Int = 3
 
         override fun createFragment(position: Int): Fragment {
