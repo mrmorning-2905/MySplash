@@ -11,8 +11,8 @@ In this project, I have used:
 
 Next task:
 [x] handle safe call api with catch exception
-[ ] implement download image function
+[x] implement download image function
 [ ] implement set wallpaper for one or many image
 [ ] implement login 
-[ ] implement selection mode(optional)
+[x] implement selection mode(optional)
 [ ] implement sort by menu
