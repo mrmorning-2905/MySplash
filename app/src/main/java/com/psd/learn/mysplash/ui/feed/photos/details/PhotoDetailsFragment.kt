@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.flowWithLifecycle
@@ -18,6 +19,7 @@ import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.PhotoDetailsFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.core.UserArgs
+import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
 import com.psd.learn.mysplash.ui.utils.ResultState
 import com.psd.learn.mysplash.ui.utils.loadCoverThumbnail
 import com.psd.learn.mysplash.ui.utils.loadProfilePicture
@@ -34,6 +36,8 @@ class PhotoDetailsFragment :
     BaseFragment<PhotoDetailsFragmentLayoutBinding>(inflate = PhotoDetailsFragmentLayoutBinding::inflate) {
 
     private val photoDetailsViewModel by viewModels<PhotoDetailsViewModel>()
+
+    private val pagingViewModel by activityViewModels<PagingFeedViewModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -95,7 +99,10 @@ class PhotoDetailsFragment :
                     Log.d("sangpd", "bindFavoriteBtn_resultState: $resultState")
                     updateFavoriteBtn(resultState.data != null)
                     binding.favoriteBtn.safeHandleClickListener {
-                        executeFavorite(photoItem.copy(isFavorite = resultState.data != null))
+                        pagingViewModel.addOrRemovePhotoItemToFavorite(
+                            requireContext(),
+                            photoItem.copy(isFavorite = resultState.data != null)
+                        )
                     }
                 }
         }

@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.flowWithLifecycle
@@ -20,6 +19,7 @@ import com.psd.learn.mysplash.data.local.datasource.PhotosLocalRepository
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashPagingRepository
+import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import com.psd.learn.mysplash.worker.DownloadWorker
 import com.psd.learn.mysplash.worker.RequestInfo
 import com.psd.learn.mysplash.worker.toDownloadInfoItem
@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -99,6 +100,28 @@ class PagingFeedViewModel @Inject constructor(
                         }
                     }
                 }
+        }
+    }
+
+    fun addOrRemovePhotoItemToFavorite(context: Context, photoItem: PhotoItem) {
+        viewModelScope.launch {
+            FavoritePhotoHelper.executeAddOrRemoveFavorite(context, photoItem)
+        }
+    }
+
+    fun addMultiPhotoItemsToFavorite(
+        context: Context,
+        checkedList: List<PhotoItem>,
+        doOnSuccess: () -> Unit
+    ) {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                FavoritePhotoHelper.addMultiPhotoToFavorite(context, checkedList) {
+                    withContext(Dispatchers.Main) {
+                        doOnSuccess()
+                    }
+                }
+            }
         }
     }
 }

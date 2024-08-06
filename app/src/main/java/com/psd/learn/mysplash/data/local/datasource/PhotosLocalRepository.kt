@@ -53,8 +53,4 @@ class PhotosLocalRepository(
         .getPhotoIdFlow(id)
         .flowOn(dispatcher)
         .mapToResult()
-
-//    fun observerPhotoId(id: String): Flow<String?> = photosDao
-//        .getPhotoIdFlow(id)
-//        .flowOn(dispatcher)
 }

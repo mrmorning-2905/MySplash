@@ -16,6 +16,7 @@ import com.google.gson.Gson
 import com.psd.learn.mysplash.data.local.datasource.PhotosLocalRepository
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.remote.datasource.PhotoDetailsDataSource
+import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import com.psd.learn.mysplash.ui.utils.ResultState
 import com.psd.learn.mysplash.worker.DownloadWorker
 import com.psd.learn.mysplash.worker.RequestInfo
@@ -62,13 +63,6 @@ class PhotoDetailsViewModel @Inject constructor(
                 started = SharingStarted.Lazily,
                 initialValue = ResultState.Loading
             )
-
-
-    //todo handle retry click listener
-//    private val _loadFlow = MutableSharedFlow<Boolean>(
-//        extraBufferCapacity = 1,
-//        onBufferOverflow = BufferOverflow.DROP_OLDEST
-//    )
 
     val observerLocalPhotoById: StateFlow<ResultState<String?>> =
         photoLocalRepo.observerPhotoId(photoId)

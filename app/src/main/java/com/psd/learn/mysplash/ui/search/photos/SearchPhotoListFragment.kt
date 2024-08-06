@@ -65,7 +65,7 @@ class SearchPhotoListFragment :
     }
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
-        executeFavorite(photoItem)
+        searchViewModel.addOrRemoveFavoritePhotoItem(requireContext(), photoItem)
     }
 
     companion object {

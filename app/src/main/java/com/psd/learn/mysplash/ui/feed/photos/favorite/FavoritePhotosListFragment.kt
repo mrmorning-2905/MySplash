@@ -21,7 +21,7 @@ import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
 class FavoritePhotosListFragment :
     BasePagingFragment<PhotoItem, PhotoCollectionFragmentLayoutBinding>(inflate = PhotoCollectionFragmentLayoutBinding::inflate){
 
-    private val viewModel by activityViewModels<PagingFeedViewModel>()
+    private val pagingViewModel by activityViewModels<PagingFeedViewModel>()
 
     override val pagingAdapter: BasePagingAdapter<PhotoItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
         PhotoPagingAdapter(
@@ -48,7 +48,7 @@ class FavoritePhotosListFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initPagingData(viewModel.favoritePhotoFlow)
+        initPagingData(pagingViewModel.favoritePhotoFlow)
     }
 
     override fun handleCoverPhotoClicked(item: PhotoItem) {
@@ -60,7 +60,7 @@ class FavoritePhotosListFragment :
     }
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
-        executeFavorite(photoItem)
+        pagingViewModel.addOrRemovePhotoItemToFavorite(requireContext(), photoItem)
     }
 
     companion object {

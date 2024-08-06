@@ -22,7 +22,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class UserDetailsCollectionsFragment :
     BasePagingFragment<CollectionItem, PhotoCollectionFragmentLayoutBinding>(inflate = PhotoCollectionFragmentLayoutBinding::inflate) {
 
-    private val viewModel by viewModels<UserDetailsViewModel>({requireParentFragment()})
+    private val userDetailsViewModel by viewModels<UserDetailsViewModel>({requireParentFragment()})
 
     override val pagingAdapter: BasePagingAdapter<CollectionItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
         CollectionPagingAdapter(
@@ -48,7 +48,7 @@ class UserDetailsCollectionsFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initPagingData(viewModel.userDetailsCollectionsPagingData)
+        initPagingData(userDetailsViewModel.userDetailsCollectionsPagingData)
     }
 
     override fun handleCoverPhotoClicked(item: CollectionItem) {

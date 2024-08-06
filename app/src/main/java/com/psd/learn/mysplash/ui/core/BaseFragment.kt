@@ -7,20 +7,14 @@ import android.view.ViewGroup
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.psd.learn.mysplash.R
-import com.psd.learn.mysplash.data.local.entity.PhotoItem
-import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import com.psd.learn.mysplash.ui.widget.CustomTabViewHolder
 import com.psd.learn.mysplash.ui.widget.TabItem
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 abstract class BaseFragment<VB : ViewBinding>(
     private val inflate: (LayoutInflater, ViewGroup?, Boolean) -> VB
@@ -62,14 +56,6 @@ abstract class BaseFragment<VB : ViewBinding>(
             setBackgroundDrawable(null)
             setHomeAsUpIndicator(R.drawable.navigation_back_icon)
 
-        }
-    }
-
-    protected fun executeFavorite(photoItem: PhotoItem) {
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                FavoritePhotoHelper.executeAddOrRemoveFavorite(requireContext(), photoItem)
-            }
         }
     }
 

@@ -20,7 +20,7 @@ import com.psd.learn.mysplash.ui.userdetails.UserDetailsViewModel
 
 class UserDetailsLikedPhotosFragment :
     BasePagingFragment<PhotoItem, PhotoCollectionFragmentLayoutBinding>(inflate = PhotoCollectionFragmentLayoutBinding::inflate) {
-    private val viewModel by viewModels<UserDetailsViewModel>({ requireParentFragment() })
+    private val userDetailViewModel by viewModels<UserDetailsViewModel>({ requireParentFragment() })
 
     override val pagingAdapter: BasePagingAdapter<PhotoItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
         PhotoPagingAdapter(
@@ -46,7 +46,7 @@ class UserDetailsLikedPhotosFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bindPagingListWithLiveData(viewModel.userDetailsLikedPagingData)
+        bindPagingListWithLiveData(userDetailViewModel.userDetailsLikedPagingData)
     }
 
     override fun handleCoverPhotoClicked(item: PhotoItem) {
@@ -58,7 +58,7 @@ class UserDetailsLikedPhotosFragment :
     }
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
-        executeFavorite(photoItem)
+        userDetailViewModel.addOrRemoveFavoritePhotoItem(requireContext(), photoItem)
     }
 
     companion object {

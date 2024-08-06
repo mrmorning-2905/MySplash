@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,7 @@ import com.psd.learn.mysplash.ui.PhotoPagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
 import com.psd.learn.mysplash.ui.core.UserArgs
+import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,6 +29,8 @@ class CollectionDetailsFragment  :
     BasePagingFragment<PhotoItem, CollectionDetailsFragmentBinding>(inflate = CollectionDetailsFragmentBinding::inflate) {
 
     private val collectionDetailsViewModel by viewModels<CollectionDetailsViewModel>()
+
+    private val pagingViewModel by activityViewModels<PagingFeedViewModel>()
 
     override val pagingAdapter: BasePagingAdapter<PhotoItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
         PhotoPagingAdapter(
@@ -81,6 +85,6 @@ class CollectionDetailsFragment  :
     }
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
-        executeFavorite(photoItem)
+        pagingViewModel.addOrRemovePhotoItemToFavorite(requireContext(), photoItem)
     }
 }

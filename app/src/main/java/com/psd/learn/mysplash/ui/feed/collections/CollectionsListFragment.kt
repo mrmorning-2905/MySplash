@@ -45,11 +45,11 @@ class CollectionsListFragment: BasePagingFragment<CollectionItem, PhotoCollectio
     override val retryBtn: Button
         get() = binding.loadingContainer.retryButton
 
-    private val viewModel by activityViewModels<PagingFeedViewModel>()
+    private val pagingViewModel by activityViewModels<PagingFeedViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initPagingData(viewModel.collectionPagingDataFlow)
+        initPagingData(pagingViewModel.collectionPagingDataFlow)
     }
 
     override fun handleCoverPhotoClicked(item: CollectionItem) {

@@ -1,5 +1,6 @@
 package com.psd.learn.mysplash.ui.search
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -15,6 +16,7 @@ import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashPagingRepository
+import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -133,6 +135,12 @@ open class PagingSearchViewModel @Inject constructor(
             val resultMap = result.resultMap.toMutableMap()
             resultMap[searchType] = totalResult
             result.copy(resultMap = resultMap)
+        }
+    }
+
+    fun addOrRemoveFavoritePhotoItem(context: Context, photoItem: PhotoItem) {
+        viewModelScope.launch {
+            FavoritePhotoHelper.executeAddOrRemoveFavorite(context, photoItem)
         }
     }
 }

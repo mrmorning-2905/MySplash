@@ -1,5 +1,6 @@
 package com.psd.learn.mysplash.ui.userdetails
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -16,6 +17,7 @@ import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.local.entity.UserItem
 import com.psd.learn.mysplash.data.remote.datasource.UserDetailsDataSource
 import com.psd.learn.mysplash.data.remote.repository.UnSplashPagingRepository
+import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import com.psd.learn.mysplash.ui.utils.ResultState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +27,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -104,4 +107,10 @@ class UserDetailsViewModel @Inject constructor(
         }
         .flowOn(Dispatchers.IO)
         .asLiveData(Dispatchers.Main)
+
+    fun addOrRemoveFavoritePhotoItem(context: Context, photoItem: PhotoItem) {
+        viewModelScope.launch {
+            FavoritePhotoHelper.executeAddOrRemoveFavorite(context, photoItem)
+        }
+    }
 }

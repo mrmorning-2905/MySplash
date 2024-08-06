@@ -36,7 +36,7 @@ import kotlinx.coroutines.withContext
 class PhotosListFragment :
     BasePagingFragment<PhotoItem, PhotoCollectionFragmentLayoutBinding>(inflate = PhotoCollectionFragmentLayoutBinding::inflate), BottomMenuClickListener {
 
-    private val viewModel by activityViewModels<PagingFeedViewModel>()
+    private val pagingViewModel by activityViewModels<PagingFeedViewModel>()
 
     private val mainViewModel by activityViewModels<MainViewModel>()
 
@@ -72,7 +72,7 @@ class PhotosListFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bindPagingListWithLiveData(viewModel.photoPagingFlow)
+        bindPagingListWithLiveData(pagingViewModel.photoPagingFlow)
         observerSelectionMode()
         bottomMenu.addBottomMenuListener(this)
     }
@@ -86,7 +86,7 @@ class PhotosListFragment :
     }
 
     override fun handleAddOrRemoveFavorite(photoItem: PhotoItem) {
-        executeFavorite(photoItem)
+        pagingViewModel.addOrRemovePhotoItemToFavorite(requireContext(), photoItem)
     }
 
     override fun handleProfileClicked(userInfo: UserArgs) {
@@ -123,31 +123,25 @@ class PhotosListFragment :
         super.onDestroyView()
     }
 
-    companion object {
-        fun newInstance() = PhotosListFragment()
-    }
-
     override fun onBottomMenuClicked(menuId: Int) {
         val checkedList = selectionManager.getListItemChecked()
         Log.d("sangpd", "onBottomMenuClicked: ${checkedList.size}")
         when (menuId) {
             R.id.menu_cancel -> selectionManager.disableSelectionMode()
             R.id.menu_add_favorite -> {
-                lifecycleScope.launch {
-                    withContext(Dispatchers.IO) {
-                        FavoritePhotoHelper.addMultiPhotoToFavorite(requireContext(), checkedList) {
-                            withContext(Dispatchers.Main) {
-                                selectionManager.disableSelectionMode()
-                            }
-                        }
-                    }
+                pagingViewModel.addMultiPhotoItemsToFavorite(requireContext(), checkedList) {
+                    selectionManager.disableSelectionMode()
                 }
             }
             R.id.menu_download -> {
-                viewModel.downloadCheckedFiles(requireContext(), checkedList, lifecycle) {
+                pagingViewModel.downloadCheckedFiles(requireContext(), checkedList, lifecycle) {
                     selectionManager.disableSelectionMode()
                 }
             }
         }
+    }
+
+    companion object {
+        fun newInstance() = PhotosListFragment()
     }
 }
