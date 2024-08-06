@@ -52,4 +52,17 @@ class SelectionModeManager @Inject constructor() : ViewModel() {
             _listPhotoItemChecked.updateValue(checkedList)
         }
     }
+
+    fun isAllPhotoChecked(): Boolean = _listPhotoItemChecked.value?.size == _listPhotoItem.value?.size
+
+    fun isEmptyCheckablePhoto(): Boolean = _listPhotoItem.value?.isEmpty() ?: true
+
+    fun checkAllPhotoItem(isCheckedAll: Boolean) {
+        val setPhoto = if (isCheckedAll) {
+            _listPhotoItem.value?.toHashSet() ?: HashSet()
+        } else {
+            HashSet()
+        }
+        _listPhotoItemChecked.updateValue(setPhoto)
+    }
 }

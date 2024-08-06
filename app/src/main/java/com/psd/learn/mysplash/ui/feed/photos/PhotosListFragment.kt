@@ -106,6 +106,7 @@ class PhotosListFragment :
             if (isSelectionMode && selectionManager.getListItemChecked().isNotEmpty()) {
                 mainViewModel.showBottomMenu(true)
             }
+            updateSelectAllCheckBox()
             pagingAdapter.notifyDataSetChanged()
         }
 
@@ -115,6 +116,7 @@ class PhotosListFragment :
             } else if (!bottomMenu.isBottomLayoutMenuShow() && checkedList.isNotEmpty()) {
                 mainViewModel.showBottomMenu(true)
             }
+            updateSelectAllCheckBox()
         }
     }
 
@@ -141,6 +143,34 @@ class PhotosListFragment :
         }
     }
 
+    private fun updateSelectAllCheckBox() {
+
+        val title: String
+        val checkBoxDrawable: Int
+
+        if (selectionManager.isSelectionMode()) {
+            binding.selectAllContainer.visibility = View.VISIBLE
+            val checkedList = selectionManager.getListItemChecked()
+            val numberChecked = checkedList.size
+            if (selectionManager.isAllPhotoChecked()) {
+                val isEmptyCheckable = selectionManager.isEmptyCheckablePhoto()
+                title = if (isEmptyCheckable) "Select items" else "$numberChecked items selected"
+                checkBoxDrawable = if (isEmptyCheckable) R.drawable.radio_unchecked else R.drawable.radio_checked
+            } else if (checkedList.isNotEmpty()) {
+                title = "$numberChecked items selected"
+                checkBoxDrawable = R.drawable.radio_unchecked
+            } else {
+                title = "Select items"
+                checkBoxDrawable = R.drawable.radio_unchecked
+            }
+            binding.selectAllTitle.text = title
+            binding.selectAllCheckbox.setImageResource(checkBoxDrawable)
+        } else {
+            binding.selectAllContainer.visibility = View.GONE
+        }
+
+
+    }
     companion object {
         fun newInstance() = PhotosListFragment()
     }
