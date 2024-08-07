@@ -30,6 +30,10 @@ class SelectionModeManager @Inject constructor() : ViewModel() {
         _isChoiceMode.updateValue(true)
     }
 
+    fun updateListPhoto(listItem: List<PhotoItem>) {
+        _listPhotoItem.updateValue(listItem)
+    }
+
     fun disableSelectionMode() {
         _isChoiceMode.updateValue(false)
         _listPhotoItemChecked.updateValue(HashSet())

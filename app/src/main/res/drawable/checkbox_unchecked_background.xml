@@ -17,7 +17,7 @@
             <size
                 android:width="50dp"
                 android:height="50dp" />
-            <solid android:color="@color/basic_divider_line_color" />
+            <solid android:color="#235F6368" />
         </shape>
     </item>
 </layer-list>

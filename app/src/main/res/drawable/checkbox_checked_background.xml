@@ -17,7 +17,7 @@
             <size
                 android:width="50dp"
                 android:height="50dp" />
-            <solid android:color="@color/md_theme_primary" />
+            <solid android:color="#0381FE" />
         </shape>
     </item>
     <item

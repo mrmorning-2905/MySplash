@@ -62,7 +62,7 @@ class PhotoPagingAdapter(
             viewBinding.run {
                 coverPhoto.safeHandleClickListener {
                     itemClickListener.coverPhotoClicked(photoItem)
-                    notifyItemChanged(adapterPosition)
+                    notifyItemChanged(bindingAdapterPosition)
                 }
 
                 coverPhoto.setOnLongClickListener {
@@ -83,7 +83,7 @@ class PhotoPagingAdapter(
                 favoriteBtn.safeHandleClickListener {
                     if (selectionManager?.isSelectionMode() == true) return@safeHandleClickListener
                     itemClickListener.addOrRemoveFavorite(photoItem)
-                    notifyItemChanged(adapterPosition)
+                    notifyItemChanged(bindingAdapterPosition)
                 }
 
                 checkBox.safeHandleClickListener { itemClickListener.coverPhotoClicked(photoItem) }

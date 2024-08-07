@@ -1,7 +1,6 @@
 package com.psd.learn.mysplash
 
 import android.os.Environment
-import java.io.File
 
 const val START_PAGE_INDEX = 1
 const val PAGING_SIZE = 30

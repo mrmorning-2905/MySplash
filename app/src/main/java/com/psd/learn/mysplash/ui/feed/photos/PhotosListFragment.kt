@@ -9,7 +9,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewbinding.ViewBinding
@@ -25,16 +24,13 @@ import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
 import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
-import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import com.psd.learn.mysplash.ui.list.SelectionModeManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class PhotosListFragment :
-    BasePagingFragment<PhotoItem, PhotoCollectionFragmentLayoutBinding>(inflate = PhotoCollectionFragmentLayoutBinding::inflate), BottomMenuClickListener {
+    BasePagingFragment<PhotoItem, PhotoCollectionFragmentLayoutBinding>(inflate = PhotoCollectionFragmentLayoutBinding::inflate),
+    BottomMenuClickListener {
 
     private val pagingViewModel by activityViewModels<PagingFeedViewModel>()
 
@@ -46,7 +42,9 @@ class PhotosListFragment :
         (requireActivity() as MainActivity).getBottomMenuLayout()
     }
 
-    override val pagingAdapter: BasePagingAdapter<PhotoItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
+    override val pagingAdapter: BasePagingAdapter<PhotoItem, out ViewBinding> by lazy(
+        LazyThreadSafetyMode.NONE
+    ) {
         PhotoPagingAdapter(
             requestManager = Glide.with(this@PhotosListFragment),
             itemClickListener = mItemClickListener,
@@ -75,6 +73,12 @@ class PhotosListFragment :
         bindPagingListWithLiveData(pagingViewModel.photoPagingFlow)
         observerSelectionMode()
         bottomMenu.addBottomMenuListener(this)
+        pagingAdapter.addOnPagesUpdatedListener {
+            val snapShotList = pagingAdapter.snapshot().items
+            Log.d("sangpd", "onViewCreated() - current items paging list: ${snapShotList.size}")
+            selectionManager.updateListPhoto(snapShotList)
+        }
+        observerSelectAllExecute()
     }
 
     override fun handleCoverPhotoClicked(item: PhotoItem) {
@@ -120,7 +124,20 @@ class PhotosListFragment :
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    private fun observerSelectAllExecute() {
+        binding.selectAllCheckbox.setOnClickListener {
+            val isAllPhotoChecked = selectionManager.isAllPhotoChecked()
+            selectionManager.checkAllPhotoItem(!isAllPhotoChecked)
+            pagingAdapter.notifyDataSetChanged()
+            updateSelectAllCheckBox()
+        }
+    }
+
     override fun onDestroyView() {
+        pagingAdapter.removeOnPagesUpdatedListener {
+            selectionManager.updateListPhoto(emptyList())
+        }
         bottomMenu.removeBottomMenuListener()
         super.onDestroyView()
     }
@@ -135,6 +152,7 @@ class PhotosListFragment :
                     selectionManager.disableSelectionMode()
                 }
             }
+
             R.id.menu_download -> {
                 pagingViewModel.downloadCheckedFiles(requireContext(), checkedList, lifecycle) {
                     selectionManager.disableSelectionMode()
@@ -154,13 +172,14 @@ class PhotosListFragment :
             val numberChecked = checkedList.size
             if (selectionManager.isAllPhotoChecked()) {
                 val isEmptyCheckable = selectionManager.isEmptyCheckablePhoto()
-                title = if (isEmptyCheckable) "Select items" else "$numberChecked items selected"
-                checkBoxDrawable = if (isEmptyCheckable) R.drawable.radio_unchecked else R.drawable.radio_checked
+                title = if (isEmptyCheckable) "Select All" else "$numberChecked items selected"
+                checkBoxDrawable =
+                    if (isEmptyCheckable) R.drawable.radio_unchecked else R.drawable.radio_checked
             } else if (checkedList.isNotEmpty()) {
                 title = "$numberChecked items selected"
                 checkBoxDrawable = R.drawable.radio_unchecked
             } else {
-                title = "Select items"
+                title = "Select All"
                 checkBoxDrawable = R.drawable.radio_unchecked
             }
             binding.selectAllTitle.text = title
@@ -171,6 +190,7 @@ class PhotosListFragment :
 
 
     }
+
     companion object {
         fun newInstance() = PhotosListFragment()
     }
