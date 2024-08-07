@@ -33,14 +33,13 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
-            <androidx.appcompat.widget.AppCompatCheckBox
+            <ImageView
                 android:id="@+id/check_box"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:button="@drawable/checkbox_custom"
+                android:src="@drawable/checkbox_checked_background"
                 android:focusable="false"
-                android:theme="@style/Theme.AppCompat"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

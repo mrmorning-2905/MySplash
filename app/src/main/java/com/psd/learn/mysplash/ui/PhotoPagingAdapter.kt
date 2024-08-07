@@ -86,7 +86,6 @@ class PhotoPagingAdapter(
                     notifyItemChanged(bindingAdapterPosition)
                 }
 
-                checkBox.safeHandleClickListener { itemClickListener.coverPhotoClicked(photoItem) }
             }
         }
 
@@ -130,8 +129,8 @@ class PhotoPagingAdapter(
                     )
                 )
 
-                checkBox.visibility = if (selectionManager?.isSelectionMode() == true) View.VISIBLE else View.GONE
-                checkBox.isChecked = selectionManager?.isCheckedPhotoItem(photoItem) ?: false
+                val isCheckedPhotoItem = selectionManager?.isSelectionMode() == true && selectionManager.isCheckedPhotoItem(photoItem)
+                checkBox.visibility = if (isCheckedPhotoItem) View.VISIBLE else View.GONE
             }
         }
     }

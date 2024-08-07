@@ -9,6 +9,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewbinding.ViewBinding
@@ -26,6 +27,9 @@ import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
 import com.psd.learn.mysplash.ui.list.SelectionModeManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @AndroidEntryPoint
 class PhotosListFragment :
@@ -76,7 +80,12 @@ class PhotosListFragment :
         pagingAdapter.addOnPagesUpdatedListener {
             val snapShotList = pagingAdapter.snapshot().items
             Log.d("sangpd", "onViewCreated() - current items paging list: ${snapShotList.size}")
-            selectionManager.updateListPhoto(snapShotList)
+            lifecycleScope.launch {
+                withContext(Dispatchers.IO) {
+                    selectionManager.updateListPhoto(snapShotList)
+                }
+                updateSelectAllCheckBox()
+            }
         }
         observerSelectAllExecute()
     }
@@ -152,20 +161,16 @@ class PhotosListFragment :
                     selectionManager.disableSelectionMode()
                 }
             }
-
             R.id.menu_download -> {
-                pagingViewModel.downloadCheckedFiles(requireContext(), checkedList, lifecycle) {
-                    selectionManager.disableSelectionMode()
-                }
+                pagingViewModel.downloadCheckedFiles(requireContext(), checkedList, lifecycle) {}
+                selectionManager.disableSelectionMode()
             }
         }
     }
 
     private fun updateSelectAllCheckBox() {
-
         val title: String
         val checkBoxDrawable: Int
-
         if (selectionManager.isSelectionMode()) {
             binding.selectAllContainer.visibility = View.VISIBLE
             val checkedList = selectionManager.getListItemChecked()
@@ -187,8 +192,6 @@ class PhotosListFragment :
         } else {
             binding.selectAllContainer.visibility = View.GONE
         }
-
-
     }
 
     companion object {
