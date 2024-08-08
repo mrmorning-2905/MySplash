@@ -14,3 +14,9 @@ const val USER_DETAILS_LIKED_TYPE = 102
 const val MY_SPLASH_DIRECTORY = "MySplash"
 val MY_SPLASH_RELATIVE_PATH: String =
     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path/*${File.separator}$MY_SPLASH_DIRECTORY"*/
+
+object SortByType {
+    const val LATEST_TYPE = 0
+    const val OLDEST_TYPE = 1
+    const val POPULAR_TYPE = 2
+}

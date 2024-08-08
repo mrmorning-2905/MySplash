@@ -11,9 +11,10 @@
         <item name="colorOnSecondaryContainer">@color/md_theme_onSecondaryContainer</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-<!--        <item name="android:windowTranslucentStatus">true</item>-->
         <item name="android:windowLightStatusBar">true</item>
         <item name="actionOverflowMenuStyle">@style/popupOverflowMenu</item>
+        <item name="android:selectableItemBackground">?android:listChoiceBackgroundIndicator</item>
+        <item name="android:checkboxStyle">@android:style/Widget.DeviceDefault.CompoundButton.CheckBox</item>
         <item name="fontFamily">@font/poppins</item>
     </style>
 

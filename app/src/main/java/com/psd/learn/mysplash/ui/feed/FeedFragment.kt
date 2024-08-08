@@ -2,6 +2,7 @@ package com.psd.learn.mysplash.ui.feed
 
 import android.os.Bundle
 import android.util.Log
+import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.psd.learn.mysplash.MainViewModel
 import com.psd.learn.mysplash.R
+import com.psd.learn.mysplash.SortByType
 import com.psd.learn.mysplash.databinding.FeedFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.feed.collections.CollectionsListFragment
@@ -71,7 +73,6 @@ class FeedFragment :
                 }
 
                 R.id.sort_by_menu -> {
-                    //TODO handle sort menu
                     createPopupMenu(requireActivity().findViewById(R.id.sort_by_menu))
                     true
                 }
@@ -86,15 +87,23 @@ class FeedFragment :
             Log.d("sangpd", "createPopupMenu() - anchorView is null")
             return
         }
-        popupMenu = PopupMenu(requireContext(), anchorView, Gravity.END).apply {
+        popupMenu = PopupMenu(requireContext(), anchorView, Gravity.END, 0, R.style.popupOverflowMenu).apply {
             inflate(R.menu.sort_by_menu)
             setOnDismissListener { popupMenu = null }
+            menu.findItem(R.id.sort_by_latest).isChecked = true
             setOnMenuItemClickListener { menuItem ->
                 menuItem.isChecked = true
                 true
             }
         }
         popupMenu?.show()
+    }
+
+    private fun getSortByTypeMenuItem(type: Int): Int = when (type) {
+        SortByType.LATEST_TYPE -> R.id.sort_by_latest
+        SortByType.OLDEST_TYPE -> R.id.sort_by_oldest
+        SortByType.POPULAR_TYPE -> R.id.sort_by_popular
+        else -> error("invalid type")
     }
 
     private fun gotoSearchFragment() {
