@@ -2,7 +2,6 @@ package com.psd.learn.mysplash.ui.feed
 
 import android.os.Bundle
 import android.util.Log
-import android.view.ContextThemeWrapper
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -16,12 +15,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.psd.learn.mysplash.MainViewModel
 import com.psd.learn.mysplash.R
+import com.psd.learn.mysplash.SORT_BY_TYPE_KEY
 import com.psd.learn.mysplash.SortByType
 import com.psd.learn.mysplash.databinding.FeedFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.feed.collections.CollectionsListFragment
 import com.psd.learn.mysplash.ui.feed.photos.PhotosListFragment
 import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotosListFragment
+import com.psd.learn.mysplash.ui.utils.PreferenceUtils
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -87,19 +88,27 @@ class FeedFragment :
             Log.d("sangpd", "createPopupMenu() - anchorView is null")
             return
         }
-        popupMenu = PopupMenu(requireContext(), anchorView, Gravity.END, 0, R.style.popupOverflowMenu).apply {
+        val context = requireContext()
+        popupMenu = PopupMenu(context, anchorView, Gravity.END, 0, R.style.popupOverflowMenu).apply {
             inflate(R.menu.sort_by_menu)
             setOnDismissListener { popupMenu = null }
-            menu.findItem(R.id.sort_by_latest).isChecked = true
+            val currentSortType = PreferenceUtils.getSortByType(context, SORT_BY_TYPE_KEY)
+            menu.findItem(getSortByTypeMenuItem(currentSortType!!)).isChecked = true
             setOnMenuItemClickListener { menuItem ->
+                val  sortType = when (menuItem.itemId) {
+                    R.id.sort_by_oldest -> SortByType.OLDEST_TYPE
+                    R.id.sort_by_popular -> SortByType.POPULAR_TYPE
+                    else -> SortByType.LATEST_TYPE
+                }
                 menuItem.isChecked = true
+                PreferenceUtils.setSortByType(context, SORT_BY_TYPE_KEY,  sortType)
                 true
             }
         }
         popupMenu?.show()
     }
 
-    private fun getSortByTypeMenuItem(type: Int): Int = when (type) {
+    private fun getSortByTypeMenuItem(type: String): Int = when (type) {
         SortByType.LATEST_TYPE -> R.id.sort_by_latest
         SortByType.OLDEST_TYPE -> R.id.sort_by_oldest
         SortByType.POPULAR_TYPE -> R.id.sort_by_popular
