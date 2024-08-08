@@ -1,9 +1,12 @@
 package com.psd.learn.mysplash.ui.feed
 
 import android.os.Bundle
+import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -24,6 +27,8 @@ class FeedFragment :
     BaseFragment<FeedFragmentLayoutBinding>(inflate = FeedFragmentLayoutBinding::inflate) {
 
     private val mainViewModel by activityViewModels<MainViewModel>()
+
+    private var popupMenu: PopupMenu? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -67,12 +72,29 @@ class FeedFragment :
 
                 R.id.sort_by_menu -> {
                     //TODO handle sort menu
-                    false
+                    createPopupMenu(requireActivity().findViewById(R.id.sort_by_menu))
+                    true
                 }
 
                 else -> false
             }
         }
+    }
+
+    private fun createPopupMenu(anchorView: View?) {
+        if (anchorView == null) {
+            Log.d("sangpd", "createPopupMenu() - anchorView is null")
+            return
+        }
+        popupMenu = PopupMenu(requireContext(), anchorView, Gravity.END).apply {
+            inflate(R.menu.sort_by_menu)
+            setOnDismissListener { popupMenu = null }
+            setOnMenuItemClickListener { menuItem ->
+                menuItem.isChecked = true
+                true
+            }
+        }
+        popupMenu?.show()
     }
 
     private fun gotoSearchFragment() {

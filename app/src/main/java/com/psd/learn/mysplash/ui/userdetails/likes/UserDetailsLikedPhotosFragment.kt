@@ -3,7 +3,6 @@ package com.psd.learn.mysplash.ui.userdetails.likes
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
@@ -34,9 +33,6 @@ class UserDetailsLikedPhotosFragment :
 
     override val emptyTv: TextView
         get() = binding.loadingContainer.emptyList
-
-    override val progressBar: ProgressBar
-        get() = binding.loadingContainer.progressBar
 
     override val retryBtn: Button
         get() = binding.loadingContainer.retryButton

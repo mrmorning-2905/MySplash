@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -45,9 +44,6 @@ class CollectionDetailsFragment  :
 
     override val emptyTv: TextView
         get() = binding.photoCollectionList.loadingContainer.emptyList
-
-    override val progressBar: ProgressBar
-        get() = binding.photoCollectionList.loadingContainer.progressBar
 
     override val retryBtn: Button
         get() = binding.photoCollectionList.loadingContainer.retryButton

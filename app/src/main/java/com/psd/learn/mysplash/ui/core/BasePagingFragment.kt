@@ -3,12 +3,10 @@ package com.psd.learn.mysplash.ui.core
 import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
@@ -58,8 +56,6 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     abstract val recyclerView: RecyclerView
 
     abstract val emptyTv: TextView
-
-    abstract val progressBar: ProgressBar
 
     abstract val swipeRefreshLayout: SwipeRefreshLayout
 
@@ -126,7 +122,9 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
     }
 
     private fun initSwipeToRefresh() {
-        swipeRefreshLayout.setOnRefreshListener { pagingAdapter.refresh() }
+        swipeRefreshLayout.setOnRefreshListener {
+            pagingAdapter.refresh()
+        }
         lifecycleScope.launch {
             pagingAdapter
                 .loadStateFlow
@@ -151,7 +149,6 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
 
     private fun initLoadState() {
         emptyTv.isVisible = true
-        progressBar.isVisible = false
         retryBtn.isVisible = false
     }
 
@@ -170,7 +167,6 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
                         loadState.refresh is LoadState.NotLoading && pagingAdapter.itemCount == 0
                     emptyTv.isVisible = isListEmpty
                     recyclerView.isVisible = !isListEmpty
-                    progressBar.isVisible = loadState.source.refresh is LoadState.Loading
                     retryBtn.isVisible = loadState.source.refresh is LoadState.Error
                 }
         }

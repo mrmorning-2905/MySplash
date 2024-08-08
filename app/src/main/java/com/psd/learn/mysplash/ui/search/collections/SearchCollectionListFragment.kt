@@ -3,7 +3,6 @@ package com.psd.learn.mysplash.ui.search.collections
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
@@ -31,9 +30,6 @@ class SearchCollectionListFragment :
 
     override val emptyTv: TextView
         get() = binding.photoCollectionLayout.loadingContainer.emptyList
-
-    override val progressBar: ProgressBar
-        get() = binding.photoCollectionLayout.loadingContainer.progressBar
 
     override val retryBtn: Button
         get() = binding.photoCollectionLayout.loadingContainer.retryButton
