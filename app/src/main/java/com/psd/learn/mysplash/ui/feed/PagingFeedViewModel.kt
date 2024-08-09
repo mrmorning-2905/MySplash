@@ -20,16 +20,20 @@ import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.remote.repository.UnSplashPagingRepository
 import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
+import com.psd.learn.mysplash.ui.utils.PreferenceUtils
 import com.psd.learn.mysplash.worker.DownloadWorker
 import com.psd.learn.mysplash.worker.RequestInfo
 import com.psd.learn.mysplash.worker.toDownloadInfoItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -41,6 +45,14 @@ class PagingFeedViewModel @Inject constructor(
     private val gson: Gson
 ) : ViewModel() {
 
+    private val sortTypeSharedFlow = MutableSharedFlow<String>(replay = 1)
+
+    fun updateSortByType(value: String) {
+        viewModelScope.launch {
+            sortTypeSharedFlow.emit(value)
+        }
+    }
+
     val collectionPagingDataFlow: Flow<PagingData<CollectionItem>> = pagingRepository
         .getFeedCollectionsStream()
         .cachedIn(viewModelScope)
@@ -49,8 +61,11 @@ class PagingFeedViewModel @Inject constructor(
         .getFavoritePhotosStream()
         .cachedIn(viewModelScope)
 
-    val photoPagingFlow = pagingRepository
-        .getFeedPhotosStream()
+    val photoPagingFlow = sortTypeSharedFlow
+        .flatMapLatest { sortType ->
+            Log.d("sangpd", "sortType is: $sortType")
+            pagingRepository.getFeedPhotosStream(sortType)
+        }
         .cachedIn(viewModelScope)
         .combine(photosLocalRepo.observerLocalPhotoIdsStream()) { pagingData, localIdList: Result<List<String>> ->
             pagingData.map { photoItem ->

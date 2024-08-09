@@ -44,10 +44,10 @@ class UnSplashPagingRepository(
         ).flow
     }
 
-    fun getFeedPhotosStream(): Flow<PagingData<PhotoItem>> {
+    fun getFeedPhotosStream(query: String?): Flow<PagingData<PhotoItem>> {
         return Pager(
             config = pageConfig,
-            pagingSourceFactory = { FeedPhotosDataSource(unSplashApiService, coroutineDispatcher) }
+            pagingSourceFactory = { FeedPhotosDataSource(unSplashApiService, coroutineDispatcher, query) }
         ).flow
     }
 

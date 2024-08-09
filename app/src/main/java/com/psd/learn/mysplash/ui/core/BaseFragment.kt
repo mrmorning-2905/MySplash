@@ -63,7 +63,8 @@ abstract class BaseFragment<VB : ViewBinding>(
         viewPager: ViewPager2,
         tabLayout: TabLayout,
         pagerAdapter: FragmentStateAdapter,
-        tabTitleArr: ArrayList<String>
+        tabTitleArr: ArrayList<String>,
+        doAction: () -> Unit
     ) {
         viewPager.run {
             adapter = pagerAdapter
@@ -73,6 +74,7 @@ abstract class BaseFragment<VB : ViewBinding>(
                     override fun onTabSelected(tab: TabLayout.Tab?) {
                         (tab?.customView as? CustomTabViewHolder)
                             ?.run { tabItemStatus = tabItemStatus.copy(isSelected = true) }
+                        doAction()
                     }
 
                     override fun onTabUnselected(tab: TabLayout.Tab?) {

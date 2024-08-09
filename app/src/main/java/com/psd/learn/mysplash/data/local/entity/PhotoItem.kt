@@ -42,7 +42,7 @@ data class PhotoItem (
     val numberLikes: Int,
 
     @ColumnInfo(name = "views")
-    val numberView: Int,
+    val numberView: Long,
 
     @ColumnInfo(name = "downloads")
     val numberDownload: Int,
@@ -91,7 +91,7 @@ fun PhotoResponseItem.toPhotoItem(): PhotoItem {
         coverPhotoUrl = urls.full,
         photoDescription = altDescription ?: "",
         numberLikes = likes ?: 0,
-        numberView = views ?: 0,
+        numberView = views ?: 0L,
         numberDownload = downloads ?: 0,
         userId = userResponse?.id ?: "",
         coverThumbnailUrl = urls.thumb,

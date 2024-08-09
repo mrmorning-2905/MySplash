@@ -40,7 +40,7 @@ data class PhotoResponseItem(
     @Json(name = "tags")
     val tags: List<Tag>?,
     @Json(name = "views")
-    val views: Int?, // 223
+    val views: Long?, // 223
     @Json(name = "downloads")
     val downloads: Int?, // 3
 ) {

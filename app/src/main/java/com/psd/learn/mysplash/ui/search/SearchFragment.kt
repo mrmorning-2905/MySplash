@@ -44,7 +44,7 @@ class SearchFragment : BaseFragment<SearchFragmentLayoutBinding>(SearchFragmentL
             tabLayout = binding.tabLayout,
             pagerAdapter = viewPagerAdapter,
             tabTitleArr = SEARCH_TAB_TITLES
-        )
+        ) {}
         setupSearchChange()
         setUpNavigation()
     }

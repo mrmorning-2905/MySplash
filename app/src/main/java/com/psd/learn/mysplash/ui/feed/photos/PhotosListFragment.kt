@@ -1,6 +1,7 @@
 package com.psd.learn.mysplash.ui.feed.photos
 
 import android.annotation.SuppressLint
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -16,6 +17,8 @@ import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.MainActivity
 import com.psd.learn.mysplash.MainViewModel
 import com.psd.learn.mysplash.R
+import com.psd.learn.mysplash.SORT_BY_TYPE_KEY
+import com.psd.learn.mysplash.SortByType
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.PhotoCollectionFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.PhotoPagingAdapter
@@ -25,6 +28,7 @@ import com.psd.learn.mysplash.ui.core.BasePagingFragment
 import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
 import com.psd.learn.mysplash.ui.list.SelectionModeManager
+import com.psd.learn.mysplash.ui.utils.PreferenceUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,7 +37,7 @@ import kotlinx.coroutines.withContext
 @AndroidEntryPoint
 class PhotosListFragment :
     BasePagingFragment<PhotoItem, PhotoCollectionFragmentLayoutBinding>(inflate = PhotoCollectionFragmentLayoutBinding::inflate),
-    BottomMenuClickListener {
+    BottomMenuClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val pagingViewModel by activityViewModels<PagingFeedViewModel>()
 
@@ -67,6 +71,14 @@ class PhotosListFragment :
 
     override val swipeRefreshLayout: SwipeRefreshLayout
         get() = binding.swipeRefresh
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val currentSortType = PreferenceUtils.getSortByType(requireContext(), SORT_BY_TYPE_KEY) ?: SortByType.LATEST_TYPE
+        Log.d("sangpd", "onCreate_currentSortType: $currentSortType")
+        pagingViewModel.updateSortByType(currentSortType)
+        PreferenceUtils.registerPreferenceChangedListener(requireContext(), this)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -143,6 +155,7 @@ class PhotosListFragment :
         pagingAdapter.removeOnPagesUpdatedListener {
             selectionManager.updateListPhoto(emptyList())
         }
+        PreferenceUtils.removePreferenceChangedListener(requireContext(), this)
         bottomMenu.removeBottomMenuListener()
         super.onDestroyView()
     }
@@ -192,5 +205,13 @@ class PhotosListFragment :
 
     companion object {
         fun newInstance() = PhotosListFragment()
+    }
+
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
+        if (key == SORT_BY_TYPE_KEY) {
+            val sortType = PreferenceUtils.getSortByType(requireContext(), key)
+            Log.d("sangpd", "onSharedPreferenceChanged_sortType: $sortType")
+            pagingViewModel.updateSortByType(sortType ?: SortByType.LATEST_TYPE)
+        }
     }
 }

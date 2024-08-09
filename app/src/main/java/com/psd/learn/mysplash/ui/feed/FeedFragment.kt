@@ -51,9 +51,15 @@ class FeedFragment :
             tabLayout = binding.tabLayout,
             pagerAdapter = viewPagerAdapter,
             tabTitleArr = FEED_TAB_TITLES
-        )
+        ) {
+            updateBottomActionBarMenu()
+        }
         setupMenuBottomBar()
         observerBottomLayout()
+    }
+
+    private fun updateBottomActionBarMenu() {
+        binding.bottomAppbar.menu.findItem(R.id.sort_by_menu).isVisible = binding.tabLayout.selectedTabPosition == 0
     }
 
     private fun observerBottomLayout() {
@@ -93,6 +99,7 @@ class FeedFragment :
             inflate(R.menu.sort_by_menu)
             setOnDismissListener { popupMenu = null }
             val currentSortType = PreferenceUtils.getSortByType(context, SORT_BY_TYPE_KEY)
+            Log.d("sangpd", "createPopupMenu_currentSortType: $currentSortType")
             menu.findItem(getSortByTypeMenuItem(currentSortType!!)).isChecked = true
             setOnMenuItemClickListener { menuItem ->
                 val  sortType = when (menuItem.itemId) {
@@ -101,6 +108,7 @@ class FeedFragment :
                     else -> SortByType.LATEST_TYPE
                 }
                 menuItem.isChecked = true
+                Log.d("sangpd", "createPopupMenu_clicked_sortType: $sortType")
                 PreferenceUtils.setSortByType(context, SORT_BY_TYPE_KEY,  sortType)
                 true
             }

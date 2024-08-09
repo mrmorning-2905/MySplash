@@ -104,7 +104,7 @@ class UserDetailsFragment : BaseFragment<UserDetailsLayoutBinding>(inflate = Use
             tabLayout = binding.tabLayout,
             pagerAdapter = viewPagerAdapter,
             tabTitleArr = getTabTileList(userDetails)
-        )
+        ) {}
     }
 
     inner class UserDetailsViewPagerAdapter(

@@ -5,6 +5,7 @@ import com.psd.learn.mysplash.data.remote.entity.PhotoResponseItem
 import com.psd.learn.mysplash.data.remote.entity.SearchCollectionResponseItem
 import com.psd.learn.mysplash.data.remote.entity.SearchPhotoResponseItem
 import com.psd.learn.mysplash.data.remote.entity.SearchUserResponseItem
+import com.psd.learn.mysplash.data.remote.entity.TopicResponseItem
 import com.psd.learn.mysplash.data.remote.entity.UserResponseItem
 import okhttp3.ResponseBody
 import retrofit2.Retrofit
@@ -20,7 +21,8 @@ interface UnSplashApiService {
     @GET("photos")
     suspend fun getPhotoListOnFeed(
         @Query("page") page: Int,
-        @Query("per_page") perPage: Int
+        @Query("per_page") perPage: Int,
+        @Query("order_by") orderBy: String
     ): List<PhotoResponseItem>
 
     @GET("collections")
@@ -89,6 +91,13 @@ interface UnSplashApiService {
         @Query("page") page: Int,
         @Query("per_page") perPage: Int
     ): List<PhotoResponseItem>
+
+    @GET("topics")
+    suspend fun getTopicList(
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int,
+        @Query("order_by") query: String
+    ): List<TopicResponseItem>
 
     @Streaming
     @GET
