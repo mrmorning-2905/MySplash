@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
@@ -46,9 +47,9 @@ class PagingFeedViewModel @Inject constructor(
     private val gson: Gson
 ) : ViewModel() {
 
-    private val sortTypeSharedFlow = MutableSharedFlow<String>(replay = 1)
+    private val sortTypeSharedFlow = MutableSharedFlow<SortByState>(replay = 1)
 
-    fun updateSortByType(value: String) {
+    fun updateSortByType(value: SortByState) {
         viewModelScope.launch {
             sortTypeSharedFlow.emit(value)
         }
@@ -58,15 +59,25 @@ class PagingFeedViewModel @Inject constructor(
         .getFeedCollectionsStream()
         .cachedIn(viewModelScope)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val topicPagingDataFlow: Flow<PagingData<CollectionItem>> = sortTypeSharedFlow
+        .filterIsInstance<SortByState.TopicSortByState>()
+        .flatMapLatest { topicSortState ->
+            Log.d("sangpd", "sortType is: ${topicSortState.sortType}")
+            pagingRepository.getFeedTopicsStream(topicSortState.sortType)
+        }
+        .cachedIn(viewModelScope)
+
     val favoritePhotoFlow: Flow<PagingData<PhotoItem>> = photosLocalRepo
         .getFavoritePhotosStream()
         .cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val photoPagingFlow = sortTypeSharedFlow
-        .flatMapLatest { sortType ->
-            Log.d("sangpd", "sortType is: $sortType")
-            pagingRepository.getFeedPhotosStream(sortType)
+        .filterIsInstance<SortByState.PhotoSortByState>()
+        .flatMapLatest { photoSortState ->
+            Log.d("sangpd", "sortType is: ${photoSortState.sortType}")
+            pagingRepository.getFeedPhotosStream(photoSortState.sortType)
         }
         .cachedIn(viewModelScope)
         .combine(photosLocalRepo.observerLocalPhotoIdsStream()) { pagingData, localIdList: Result<List<String>> ->
@@ -141,5 +152,10 @@ class PagingFeedViewModel @Inject constructor(
             }
         }
     }
+}
+
+sealed class SortByState {
+    data class PhotoSortByState(val sortType: String): SortByState()
+    data class TopicSortByState(val sortType: String): SortByState()
 }
 

@@ -27,6 +27,7 @@ import com.psd.learn.mysplash.ui.core.BasePagingAdapter
 import com.psd.learn.mysplash.ui.core.BasePagingFragment
 import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
+import com.psd.learn.mysplash.ui.feed.SortByState
 import com.psd.learn.mysplash.ui.list.SelectionModeManager
 import com.psd.learn.mysplash.ui.utils.PreferenceUtils
 import dagger.hilt.android.AndroidEntryPoint
@@ -76,7 +77,7 @@ class PhotosListFragment :
         super.onCreate(savedInstanceState)
         val currentSortType = PreferenceUtils.getSortByType(requireContext(), PHOTO_SORT_BY_TYPE_KEY) ?: SortByType.LATEST_TYPE
         Log.d("sangpd", "onCreate_currentSortType: $currentSortType")
-        pagingViewModel.updateSortByType(currentSortType)
+        pagingViewModel.updateSortByType(SortByState.PhotoSortByState(currentSortType))
         PreferenceUtils.registerPreferenceChangedListener(requireContext(), this)
     }
 
@@ -211,7 +212,7 @@ class PhotosListFragment :
         if (key == PHOTO_SORT_BY_TYPE_KEY) {
             val sortType = PreferenceUtils.getSortByType(requireContext(), key)
             Log.d("sangpd", "onSharedPreferenceChanged_sortType: $sortType")
-            pagingViewModel.updateSortByType(sortType ?: SortByType.LATEST_TYPE)
+            pagingViewModel.updateSortByType( SortByState.PhotoSortByState(sortType ?: SortByType.LATEST_TYPE))
         }
     }
 }
