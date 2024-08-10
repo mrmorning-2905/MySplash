@@ -10,6 +10,7 @@ import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.data.remote.datasource.CollectionDetailsDataSource
 import com.psd.learn.mysplash.data.remote.datasource.FeedCollectionsDataSource
 import com.psd.learn.mysplash.data.remote.datasource.FeedPhotosDataSource
+import com.psd.learn.mysplash.data.remote.datasource.FeedTopicDataSource
 import com.psd.learn.mysplash.data.remote.datasource.SearchDataSourceFactory
 import com.psd.learn.mysplash.data.remote.datasource.UserDetailsPagingSourceFactory
 import kotlinx.coroutines.CoroutineDispatcher
@@ -55,6 +56,13 @@ class UnSplashPagingRepository(
         return Pager(
             config = pageConfig,
             pagingSourceFactory = { FeedCollectionsDataSource(unSplashApiService, coroutineDispatcher) }
+        ).flow
+    }
+
+    fun getFeedTopicsStream(query: String?): Flow<PagingData<CollectionItem>> {
+        return Pager(
+            config = pageConfig,
+            pagingSourceFactory = { FeedTopicDataSource(unSplashApiService, coroutineDispatcher, query) }
         ).flow
     }
 

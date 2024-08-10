@@ -15,13 +15,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.psd.learn.mysplash.MainViewModel
 import com.psd.learn.mysplash.R
-import com.psd.learn.mysplash.SORT_BY_TYPE_KEY
+import com.psd.learn.mysplash.PHOTO_SORT_BY_TYPE_KEY
 import com.psd.learn.mysplash.SortByType
+import com.psd.learn.mysplash.TOPIC_SORT_BY_TYPE_KEY
 import com.psd.learn.mysplash.databinding.FeedFragmentLayoutBinding
 import com.psd.learn.mysplash.ui.core.BaseFragment
 import com.psd.learn.mysplash.ui.feed.collections.CollectionsListFragment
 import com.psd.learn.mysplash.ui.feed.photos.PhotosListFragment
 import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotosListFragment
+import com.psd.learn.mysplash.ui.feed.topic.TopicListFragment
 import com.psd.learn.mysplash.ui.utils.PreferenceUtils
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -45,7 +47,8 @@ class FeedFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val viewPagerAdapter = FeedViewPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
+        val viewPagerAdapter =
+            FeedViewPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
         setupViewPager(
             viewPager = binding.viewPager,
             tabLayout = binding.tabLayout,
@@ -59,7 +62,10 @@ class FeedFragment :
     }
 
     private fun updateBottomActionBarMenu() {
-        binding.bottomAppbar.menu.findItem(R.id.sort_by_menu).isVisible = binding.tabLayout.selectedTabPosition == 0
+        val tabPosition = binding.tabLayout.selectedTabPosition
+        binding.bottomAppbar.menu.findItem(R.id.sort_by_menu).isVisible =
+            tabPosition == 0 || tabPosition == 1
+        mainViewModel.updateTabPosition(tabPosition)
     }
 
     private fun observerBottomLayout() {
@@ -95,22 +101,39 @@ class FeedFragment :
             return
         }
         val context = requireContext()
-        popupMenu = PopupMenu(context, anchorView, Gravity.END, 0, R.style.popupOverflowMenu).apply {
-            inflate(R.menu.sort_by_menu)
-            setOnDismissListener { popupMenu = null }
-            val currentSortType = PreferenceUtils.getSortByType(context, SORT_BY_TYPE_KEY)
-            Log.d("sangpd", "createPopupMenu_currentSortType: $currentSortType")
-            menu.findItem(getSortByTypeMenuItem(currentSortType!!)).isChecked = true
-            setOnMenuItemClickListener { menuItem ->
-                val  sortType = when (menuItem.itemId) {
-                    R.id.sort_by_oldest -> SortByType.OLDEST_TYPE
-                    R.id.sort_by_popular -> SortByType.POPULAR_TYPE
-                    else -> SortByType.LATEST_TYPE
-                }
-                menuItem.isChecked = true
-                Log.d("sangpd", "createPopupMenu_clicked_sortType: $sortType")
-                PreferenceUtils.setSortByType(context, SORT_BY_TYPE_KEY,  sortType)
-                true
+        mainViewModel.tabPosition.observe(viewLifecycleOwner) { position ->
+            if (position == 0 || position == 1) {
+                val (menuType, preferenceKey) = if (position == 0)
+                    Pair(R.menu.photo_sort_by_menu, PHOTO_SORT_BY_TYPE_KEY)
+                else Pair(R.menu.topic_sort_by_menu, TOPIC_SORT_BY_TYPE_KEY)
+                popupMenu =
+                    PopupMenu(
+                        context,
+                        anchorView,
+                        Gravity.END,
+                        0,
+                        R.style.popupOverflowMenu
+                    ).apply {
+                        inflate(menuType)
+                        setOnDismissListener { popupMenu = null }
+                        val currentSortType = PreferenceUtils.getSortByType(context, preferenceKey)
+                        Log.d("sangpd", "createPopupMenu_currentSortType: $currentSortType")
+                        menu.findItem(getSortByTypeMenuItem(currentSortType!!)).isChecked = true
+                        setOnMenuItemClickListener { menuItem ->
+                            val sortType = when (menuItem.itemId) {
+                                R.id.sort_by_oldest -> SortByType.OLDEST_TYPE
+                                R.id.sort_by_popular -> SortByType.POPULAR_TYPE
+                                R.id.sort_by_latest -> SortByType.LATEST_TYPE
+                                R.id.sort_by_featured -> SortByType.FEATURED_TYPE
+                                R.id.sort_by_position -> SortByType.POSITION_TYPE
+                                else -> error("invalid menu")
+                            }
+                            menuItem.isChecked = true
+                            Log.d("sangpd", "createPopupMenu_clicked_sortType: $sortType")
+                            PreferenceUtils.setSortByType(context, preferenceKey, sortType)
+                            true
+                        }
+                    }
             }
         }
         popupMenu?.show()
@@ -120,6 +143,8 @@ class FeedFragment :
         SortByType.LATEST_TYPE -> R.id.sort_by_latest
         SortByType.OLDEST_TYPE -> R.id.sort_by_oldest
         SortByType.POPULAR_TYPE -> R.id.sort_by_popular
+        SortByType.POSITION_TYPE -> R.id.sort_by_position
+        SortByType.FEATURED_TYPE -> R.id.sort_by_featured
         else -> error("invalid type")
     }
 
@@ -130,19 +155,20 @@ class FeedFragment :
 
     private class FeedViewPagerAdapter(fragment: FragmentManager, lifecycle: Lifecycle) :
         FragmentStateAdapter(fragment, lifecycle) {
-        override fun getItemCount(): Int = 3
+        override fun getItemCount(): Int = 4
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> PhotosListFragment.newInstance()
-                1 -> CollectionsListFragment.newInstance()
-                2 -> FavoritePhotosListFragment.newInstance()
+                1 -> TopicListFragment.newInstance()
+                2 -> CollectionsListFragment.newInstance()
+                3 -> FavoritePhotosListFragment.newInstance()
                 else -> error("Invalid position: $position")
             }
         }
     }
 
     companion object {
-        private val FEED_TAB_TITLES = arrayListOf("Photos", "Collections", "Favorites")
+        private val FEED_TAB_TITLES = arrayListOf("Photos", "Topics", "Collections", "Favorites")
     }
 }

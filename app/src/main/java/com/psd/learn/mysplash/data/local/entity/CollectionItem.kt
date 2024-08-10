@@ -2,6 +2,7 @@ package com.psd.learn.mysplash.data.local.entity
 
 import android.os.Parcelable
 import com.psd.learn.mysplash.data.remote.entity.CollectionResponseItem
+import com.psd.learn.mysplash.data.remote.entity.TopicResponseItem
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -30,6 +31,23 @@ fun CollectionResponseItem.toCollectionItem(): CollectionItem {
         coverDescription = title,
         numberImages = totalPhotos,
         userId = user.id,
+        coverThumbnailUrl = coverPhoto.urls.thumb,
+        coverColor = coverPhoto.color ?: "",
+        coverWidth = coverPhoto.width,
+        coverHeight = coverPhoto.height
+    )
+}
+
+fun TopicResponseItem.toCollectionItem(): CollectionItem {
+     return CollectionItem(
+        collectionId = id,
+        userNameAccount = coverPhoto.userResponse?.username ?: "",
+        userNameDisplay = coverPhoto.userResponse?.name ?: "",
+        userProfileUrl = coverPhoto.userResponse?.profileImage?.medium ?: "",
+        coverPhotoUrl = coverPhoto.urls.full,
+        coverDescription = title,
+        numberImages = totalPhotos,
+        userId = coverPhoto.userResponse?.id ?: "",
         coverThumbnailUrl = coverPhoto.urls.thumb,
         coverColor = coverPhoto.color ?: "",
         coverWidth = coverPhoto.width,

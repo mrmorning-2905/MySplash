@@ -19,6 +19,9 @@ object SortByType {
     const val LATEST_TYPE = "latest"
     const val OLDEST_TYPE = "oldest"
     const val POPULAR_TYPE = "popular"
+    const val FEATURED_TYPE = "featured"
+    const val POSITION_TYPE = "position"
 }
 
-const val SORT_BY_TYPE_KEY = "sort_by_type_key"
+const val PHOTO_SORT_BY_TYPE_KEY = "photo_sort_by_type_key"
+const val TOPIC_SORT_BY_TYPE_KEY = "topic_sort_by_type_key"

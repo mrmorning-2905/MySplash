@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide
 import com.psd.learn.mysplash.MainActivity
 import com.psd.learn.mysplash.MainViewModel
 import com.psd.learn.mysplash.R
-import com.psd.learn.mysplash.SORT_BY_TYPE_KEY
+import com.psd.learn.mysplash.PHOTO_SORT_BY_TYPE_KEY
 import com.psd.learn.mysplash.SortByType
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.databinding.PhotoCollectionFragmentLayoutBinding
@@ -74,7 +74,7 @@ class PhotosListFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val currentSortType = PreferenceUtils.getSortByType(requireContext(), SORT_BY_TYPE_KEY) ?: SortByType.LATEST_TYPE
+        val currentSortType = PreferenceUtils.getSortByType(requireContext(), PHOTO_SORT_BY_TYPE_KEY) ?: SortByType.LATEST_TYPE
         Log.d("sangpd", "onCreate_currentSortType: $currentSortType")
         pagingViewModel.updateSortByType(currentSortType)
         PreferenceUtils.registerPreferenceChangedListener(requireContext(), this)
@@ -208,7 +208,7 @@ class PhotosListFragment :
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (key == SORT_BY_TYPE_KEY) {
+        if (key == PHOTO_SORT_BY_TYPE_KEY) {
             val sortType = PreferenceUtils.getSortByType(requireContext(), key)
             Log.d("sangpd", "onSharedPreferenceChanged_sortType: $sortType")
             pagingViewModel.updateSortByType(sortType ?: SortByType.LATEST_TYPE)

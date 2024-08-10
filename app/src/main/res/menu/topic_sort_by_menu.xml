@@ -2,15 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/sort_by_position"
+            android:checked="true"
+            android:title="Position" />
+        <item
+            android:id="@+id/sort_by_featured"
+            android:title="Featured" />
+
+        <item
             android:id="@+id/sort_by_latest"
             android:title="Latest" />
 
         <item
             android:id="@+id/sort_by_oldest"
             android:title="Oldest" />
-
-        <item
-            android:id="@+id/sort_by_popular"
-            android:title="Popular" />
     </group>
 </menu>

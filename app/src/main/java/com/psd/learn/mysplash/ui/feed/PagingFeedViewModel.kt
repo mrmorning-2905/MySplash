@@ -26,6 +26,7 @@ import com.psd.learn.mysplash.worker.RequestInfo
 import com.psd.learn.mysplash.worker.toDownloadInfoItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -61,6 +62,7 @@ class PagingFeedViewModel @Inject constructor(
         .getFavoritePhotosStream()
         .cachedIn(viewModelScope)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val photoPagingFlow = sortTypeSharedFlow
         .flatMapLatest { sortType ->
             Log.d("sangpd", "sortType is: $sortType")
