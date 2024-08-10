@@ -11,19 +11,10 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor() : ViewModel() {
     private val _isShowBottomMenu = MutableLiveData(false)
 
-    private val _tabPosition = MutableLiveData(0)
-
-    val tabPosition: LiveData<Int>
-        get() = _tabPosition
-
     val isShowBottomMenu: LiveData<Boolean>
         get() = _isShowBottomMenu
 
     fun showBottomMenu(value: Boolean) {
         _isShowBottomMenu.updateValue(value)
-    }
-
-    fun updateTabPosition(value: Int) {
-        _tabPosition.updateValue(value)
     }
 }

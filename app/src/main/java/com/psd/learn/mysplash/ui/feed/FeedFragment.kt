@@ -63,9 +63,12 @@ class FeedFragment :
 
     private fun updateBottomActionBarMenu() {
         val tabPosition = binding.tabLayout.selectedTabPosition
-        binding.bottomAppbar.menu.findItem(R.id.sort_by_menu).isVisible =
-            tabPosition == 0 || tabPosition == 1
-        mainViewModel.updateTabPosition(tabPosition)
+        val isVisible = tabPosition == 0 || tabPosition == 1
+        val anchorView = requireActivity().findViewById<View>(R.id.sort_by_menu)
+        binding.bottomAppbar.menu.findItem(R.id.sort_by_menu).isVisible = isVisible
+        if (isVisible) {
+            createPopupMenu(anchorView, tabPosition)
+        }
     }
 
     private fun observerBottomLayout() {
@@ -86,7 +89,12 @@ class FeedFragment :
                 }
 
                 R.id.sort_by_menu -> {
-                    createPopupMenu(requireActivity().findViewById(R.id.sort_by_menu))
+                    if (popupMenu == null) {
+                        val tabPosition = binding.tabLayout.selectedTabPosition
+                        val anchorView = requireActivity().findViewById<View>(R.id.sort_by_menu)
+                        createPopupMenu(anchorView, tabPosition)
+                    }
+                    popupMenu?.show()
                     true
                 }
 
@@ -95,48 +103,43 @@ class FeedFragment :
         }
     }
 
-    private fun createPopupMenu(anchorView: View?) {
+    private fun createPopupMenu(anchorView: View?, position: Int) {
         if (anchorView == null) {
             Log.d("sangpd", "createPopupMenu() - anchorView is null")
             return
         }
         val context = requireContext()
-        mainViewModel.tabPosition.observe(viewLifecycleOwner) { position ->
-            if (position == 0 || position == 1) {
-                val (menuType, preferenceKey) = if (position == 0)
-                    Pair(R.menu.photo_sort_by_menu, PHOTO_SORT_BY_TYPE_KEY)
-                else Pair(R.menu.topic_sort_by_menu, TOPIC_SORT_BY_TYPE_KEY)
-                popupMenu =
-                    PopupMenu(
-                        context,
-                        anchorView,
-                        Gravity.END,
-                        0,
-                        R.style.popupOverflowMenu
-                    ).apply {
-                        inflate(menuType)
-                        setOnDismissListener { popupMenu = null }
-                        val currentSortType = PreferenceUtils.getSortByType(context, preferenceKey)
-                        Log.d("sangpd", "createPopupMenu_currentSortType: $currentSortType")
-                        menu.findItem(getSortByTypeMenuItem(currentSortType!!)).isChecked = true
-                        setOnMenuItemClickListener { menuItem ->
-                            val sortType = when (menuItem.itemId) {
-                                R.id.sort_by_oldest -> SortByType.OLDEST_TYPE
-                                R.id.sort_by_popular -> SortByType.POPULAR_TYPE
-                                R.id.sort_by_latest -> SortByType.LATEST_TYPE
-                                R.id.sort_by_featured -> SortByType.FEATURED_TYPE
-                                R.id.sort_by_position -> SortByType.POSITION_TYPE
-                                else -> error("invalid menu")
-                            }
-                            menuItem.isChecked = true
-                            Log.d("sangpd", "createPopupMenu_clicked_sortType: $sortType")
-                            PreferenceUtils.setSortByType(context, preferenceKey, sortType)
-                            true
-                        }
+        val (menuType, preferenceKey) = if (position == 0)
+            Pair(R.menu.photo_sort_by_menu, PHOTO_SORT_BY_TYPE_KEY)
+        else Pair(R.menu.topic_sort_by_menu, TOPIC_SORT_BY_TYPE_KEY)
+        popupMenu =
+            PopupMenu(
+                context,
+                anchorView,
+                Gravity.END,
+                0,
+                R.style.popupOverflowMenu
+            ).apply {
+                inflate(menuType)
+                setOnDismissListener { popupMenu = null }
+                val currentSortType = PreferenceUtils.getSortByType(context, preferenceKey)
+                Log.d("sangpd", "createPopupMenu_currentSortType: $currentSortType")
+                menu.findItem(getSortByTypeMenuItem(currentSortType!!)).isChecked = true
+                setOnMenuItemClickListener { menuItem ->
+                    val sortType = when (menuItem.itemId) {
+                        R.id.sort_by_oldest -> SortByType.OLDEST_TYPE
+                        R.id.sort_by_popular -> SortByType.POPULAR_TYPE
+                        R.id.sort_by_latest -> SortByType.LATEST_TYPE
+                        R.id.sort_by_featured -> SortByType.FEATURED_TYPE
+                        R.id.sort_by_position -> SortByType.POSITION_TYPE
+                        else -> error("invalid menu")
                     }
+                    menuItem.isChecked = true
+                    Log.d("sangpd", "createPopupMenu_clicked_sortType: $sortType")
+                    PreferenceUtils.setSortByType(context, preferenceKey, sortType)
+                    true
+                }
             }
-        }
-        popupMenu?.show()
     }
 
     private fun getSortByTypeMenuItem(type: String): Int = when (type) {
