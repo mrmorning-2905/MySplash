@@ -28,6 +28,7 @@ import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.ui.feed.FeedFragmentDirections
 import com.psd.learn.mysplash.ui.feed.collections.details.CollectionDetailsFragmentDirections
+import com.psd.learn.mysplash.ui.feed.topic.details.TopicDetailsFragmentDirections
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import com.psd.learn.mysplash.ui.search.ResultSearchState
 import com.psd.learn.mysplash.ui.search.SearchAction
@@ -271,6 +272,10 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
                 photoId = photoItem.photoId
             )
 
+            R.id.topic_details_fragment_dest -> TopicDetailsFragmentDirections.actionTopicDetailsToDetailsPhotoFragment(
+                photoId = photoItem.photoId
+            )
+
             else -> error("openPhotoDetails() - doesn't support action at this fragment_currentDestId: $currentDestId")
         }
         navHost.navigate(action)
@@ -295,17 +300,25 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
                 userInfoArgs = userInfo
             )
 
+            R.id.topic_details_fragment_dest -> TopicDetailsFragmentDirections.actionTopicDetailsFragmentToUserDetailsFragment(
+                userInfoArgs = userInfo
+            )
+
             else -> error("openUserDetails() - doesn't support action at this fragment_currentDestId: $currentDestId")
         }
         navHost.navigate(action)
     }
 
-    protected fun openCollectionDetails(collectionItem: CollectionItem) {
+    protected fun openCollectionDetails(collectionItem: CollectionItem, isTopicFragment: Boolean = false) {
         val navHost = findNavController()
         val action = when (val currentDestId = navHost.currentDestination?.id) {
-            R.id.feed_fragment_dest -> FeedFragmentDirections.actionFeedFragmentToCollectionDetailsFragment(
-                collectionItem
-            )
+            R.id.feed_fragment_dest -> {
+                if (isTopicFragment) {
+                    FeedFragmentDirections.actionFeedFragmentToTopicDetailsFragment(collectionItem)
+                } else {
+                    FeedFragmentDirections.actionFeedFragmentToCollectionDetailsFragment(collectionItem)
+                }
+            }
 
             R.id.search_fragment_dest -> SearchFragmentDirections.actionSearchFragmentToCollectionDetailsFragment(
                 collectionItem

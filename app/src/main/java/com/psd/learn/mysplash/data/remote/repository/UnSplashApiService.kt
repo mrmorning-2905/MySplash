@@ -99,6 +99,14 @@ interface UnSplashApiService {
         @Query("order_by") query: String
     ): List<TopicResponseItem>
 
+    @GET("topics/{id}/photos")
+    suspend fun getPhotoListOfTopic(
+        @Path("id") id: String,
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int,
+/*        @Query("order_by") query: String*/
+    ): List<PhotoResponseItem>
+
     @Streaming
     @GET
     suspend fun openUrl(@Url imageUrl: String): ResponseBody

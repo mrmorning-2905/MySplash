@@ -18,7 +18,8 @@ data class CollectionItem(
     val numberImages: Int,
     val userId: String,
     val coverWidth: Int?,
-    val coverHeight: Int?
+    val coverHeight: Int?,
+    val collectionDescription: String
 ) : Parcelable
 
 fun CollectionResponseItem.toCollectionItem(): CollectionItem {
@@ -34,12 +35,13 @@ fun CollectionResponseItem.toCollectionItem(): CollectionItem {
         coverThumbnailUrl = coverPhoto.urls.thumb,
         coverColor = coverPhoto.color ?: "",
         coverWidth = coverPhoto.width,
-        coverHeight = coverPhoto.height
+        coverHeight = coverPhoto.height,
+        collectionDescription = ""
     )
 }
 
 fun TopicResponseItem.toCollectionItem(): CollectionItem {
-     return CollectionItem(
+    return CollectionItem(
         collectionId = id,
         userNameAccount = coverPhoto.userResponse?.username ?: "",
         userNameDisplay = coverPhoto.userResponse?.name ?: "",
@@ -51,6 +53,7 @@ fun TopicResponseItem.toCollectionItem(): CollectionItem {
         coverThumbnailUrl = coverPhoto.urls.thumb,
         coverColor = coverPhoto.color ?: "",
         coverWidth = coverPhoto.width,
-        coverHeight = coverPhoto.height
+        coverHeight = coverPhoto.height,
+        collectionDescription = description
     )
 }

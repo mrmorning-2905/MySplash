@@ -1,4 +1,4 @@
-package com.psd.learn.mysplash.ui.feed.collections.details
+package com.psd.learn.mysplash.ui.feed.topic.details
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -24,16 +24,16 @@ import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CollectionDetailsFragment  :
+class TopicDetailsFragment  :
     BasePagingFragment<PhotoItem, CollectionDetailsFragmentBinding>(inflate = CollectionDetailsFragmentBinding::inflate) {
 
-    private val collectionDetailsViewModel by viewModels<CollectionDetailsViewModel>()
+    private val topicDetailsViewModel by viewModels<TopicDetailsViewModel>()
 
     private val pagingViewModel by activityViewModels<PagingFeedViewModel>()
 
     override val pagingAdapter: BasePagingAdapter<PhotoItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
         PhotoPagingAdapter(
-            requestManager = Glide.with(this@CollectionDetailsFragment),
+            requestManager = Glide.with(this@TopicDetailsFragment),
             itemClickListener = mItemClickListener,
             needShowProfile = true
         )
@@ -51,7 +51,7 @@ class CollectionDetailsFragment  :
     override val swipeRefreshLayout: SwipeRefreshLayout
         get() = binding.photoCollectionList.swipeRefresh
 
-    private val collectionInfoArgs by lazy(LazyThreadSafetyMode.NONE) { navArgs<CollectionDetailsFragmentArgs>().value.collectionInfo }
+    private val collectionInfoArgs by lazy(LazyThreadSafetyMode.NONE) { navArgs<TopicDetailsFragmentArgs>().value.collectionInfo }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val rootView = super.onCreateView(inflater, container, savedInstanceState)
@@ -62,14 +62,14 @@ class CollectionDetailsFragment  :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindHeader()
-        bindPagingListWithLiveData(collectionDetailsViewModel.collectionPhotos)
+        bindPagingListWithLiveData(topicDetailsViewModel.topicPhotos)
     }
 
     @SuppressLint("SetTextI18n")
     private fun bindHeader() {
         binding.run {
             totalImage.text = "Total: ${collectionInfoArgs.numberImages} Images"
-            description.text = "Created by: ${collectionInfoArgs.userNameAccount}"
+            description.text = collectionInfoArgs.collectionDescription
         }
     }
     override fun handleCoverPhotoClicked(item: PhotoItem) {

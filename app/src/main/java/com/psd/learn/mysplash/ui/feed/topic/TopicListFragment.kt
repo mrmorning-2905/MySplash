@@ -68,11 +68,7 @@ class TopicListFragment :
     }
 
     override fun handleCoverPhotoClicked(item: CollectionItem) {
-        openCollectionDetails(item)
-    }
-
-    override fun handleProfileClicked(userInfo: UserArgs) {
-        openUserDetails(userInfo)
+        openCollectionDetails(item, true)
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {

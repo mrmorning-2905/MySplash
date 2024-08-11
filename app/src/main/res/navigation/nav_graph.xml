@@ -24,6 +24,10 @@
         <action
             android:id="@+id/action_feedFragment_to_userDetailsFragment"
             app:destination="@id/user_details_fragment_dest" />
+
+        <action
+            android:id="@+id/action_feedFragment_to_topicDetailsFragment"
+            app:destination="@id/topic_details_fragment_dest" />
     </fragment>
 
     <fragment
@@ -112,6 +116,25 @@
         <action
             android:id="@+id/action_userDetails_to_userDetails"
             app:destination="@id/user_details_fragment_dest"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/topic_details_fragment_dest"
+        android:name="com.psd.learn.mysplash.ui.feed.topic.details.TopicDetailsFragment"
+        android:label="Topic Details" >
+
+        <argument
+            android:name="collectionInfo"
+            app:argType="com.psd.learn.mysplash.data.local.entity.CollectionItem" />
+
+        <action
+            android:id="@+id/action_topicDetails_to_detailsPhotoFragment"
+            app:destination="@id/photo_details_fragment_dest" />
+
+        <action
+            android:id="@+id/action_topicDetailsFragment_to_userDetailsFragment"
+            app:destination="@id/user_details_fragment_dest" />
+
     </fragment>
 
 </navigation>
