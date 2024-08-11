@@ -15,4 +15,4 @@ Next task:
 [ ] implement set wallpaper for one or many image
 [ ] implement login 
 [x] implement selection mode(optional)
-[ ] implement sort by menu
+[x] implement sort by menu
