@@ -1,4 +1,4 @@
-package com.psd.learn.mysplash.ui.feed.photos.favorite
+package com.psd.learn.mysplash.ui.feed.photos.wallpaper
 
 import android.os.Bundle
 import android.view.View
@@ -17,34 +17,34 @@ import com.psd.learn.mysplash.ui.core.BasePagingFragment
 import com.psd.learn.mysplash.ui.core.UserArgs
 import com.psd.learn.mysplash.ui.feed.PagingFeedViewModel
 
-class FavoritePhotosListFragment :
+class WallpaperHistoryListFragment :
     BasePagingFragment<PhotoItem, PhotoCollectionFragmentLayoutBinding>(inflate = PhotoCollectionFragmentLayoutBinding::inflate){
 
     private val pagingViewModel by activityViewModels<PagingFeedViewModel>()
 
     override val pagingAdapter: BasePagingAdapter<PhotoItem, out ViewBinding> by lazy(LazyThreadSafetyMode.NONE) {
         PhotoPagingAdapter(
-            requestManager = Glide.with(this@FavoritePhotosListFragment),
+            requestManager = Glide.with(this@WallpaperHistoryListFragment),
             itemClickListener = mItemClickListener,
             needShowProfile = true
         )
     }
 
     override val recyclerView: RecyclerView
-    get() = binding.recyclerView
+        get() = binding.recyclerView
 
     override val emptyTv: TextView
-    get() = binding.loadingContainer.emptyList
+        get() = binding.loadingContainer.emptyList
 
     override val swipeRefreshLayout: SwipeRefreshLayout
         get() = binding.swipeRefresh
 
     override val retryBtn: Button
-    get() = binding.loadingContainer.retryButton
+        get() = binding.loadingContainer.retryButton
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initPagingData(pagingViewModel.favoritePhotoFlow)
+        initPagingData(pagingViewModel.wallpaperHistoryPhotosFlow)
     }
 
     override fun handleCoverPhotoClicked(item: PhotoItem) {
@@ -60,10 +60,6 @@ class FavoritePhotosListFragment :
     }
 
     companion object {
-        fun newInstance() = FavoritePhotosListFragment()
-    }
-
-    private fun setupOptionMenu() {
-
+        fun newInstance() = WallpaperHistoryListFragment()
     }
 }

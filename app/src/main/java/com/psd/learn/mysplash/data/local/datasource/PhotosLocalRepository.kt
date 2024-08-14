@@ -20,11 +20,23 @@ class PhotosLocalRepository(
     fun getFavoritePhotosStream(): Flow<PagingData<PhotoItem>> {
         return Pager(
             config = PagingConfig(pageSize = PAGING_SIZE, enablePlaceholders = false),
-            pagingSourceFactory = { photosDao.getAllPhotosPagingSource() }
+            pagingSourceFactory = { photosDao.getAllFavoritePhotosPagingSource() }
+        ).flow
+    }
+
+    fun getWallpaperHistoryPhotosStream(): Flow<PagingData<PhotoItem>> {
+        return Pager(
+            config = PagingConfig(pageSize = PAGING_SIZE, enablePlaceholders = false),
+            pagingSourceFactory = { photosDao.getAllWallpaperPhotosPagingSource() }
         ).flow
     }
 
     suspend fun addFavoritePhoto(photoItem: PhotoItem): Result<Unit> =
+        runSuspendCatching(dispatcher) {
+            photosDao.insertPhoto(photoItem)
+        }
+
+    suspend fun addWallpaperPhotoToHistory(photoItem: PhotoItem): Result<Unit> =
         runSuspendCatching(dispatcher) {
             photosDao.insertPhoto(photoItem)
         }
@@ -39,18 +51,13 @@ class PhotosLocalRepository(
             photosDao.deletePhoto(photoItem)
         }
 
-    suspend fun checkFavoritePhotoById(photoId: String): Result<Boolean> =
-        runSuspendCatching(dispatcher) {
-            photosDao.getPhotoById(photoId) != null
-        }
-
     fun observerLocalPhotoIdsStream(): Flow<Result<List<String>>> = photosDao
-        .getAllPhotoIds()
+        .getAllFavoritePhotoIds()
         .flowOn(dispatcher)
         .mapToResult()
 
     fun observerPhotoId(id: String): Flow<Result<String?>> = photosDao
-        .getPhotoIdFlow(id)
+        .observerFavoritePhotoIdFlow(id)
         .flowOn(dispatcher)
         .mapToResult()
 }

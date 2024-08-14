@@ -55,7 +55,7 @@ data class TopicResponseItem(
         @Json(name = "asset_type")
         val assetType: String, // photo
         @Json(name = "blur_hash")
-        val blurHash: String, // LD8gytbu9trYn6V@R*kC02nj-CXR
+        val blurHash: String?, // LD8gytbu9trYn6V@R*kC02nj-CXR
         @Json(name = "created_at")
         val createdAt: String, // 2019-06-27T00:16:44Z
         @Json(name = "id")

@@ -25,3 +25,4 @@ object SortByType {
 
 const val PHOTO_SORT_BY_TYPE_KEY = "photo_sort_by_type_key"
 const val TOPIC_SORT_BY_TYPE_KEY = "topic_sort_by_type_key"
+const val AUTO_SET_WALLPAPER_KEY = "auto_set_wallpaper_key"

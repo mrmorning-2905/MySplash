@@ -17,6 +17,17 @@ object PreferenceUtils {
         }
     }
 
+    fun getAutoWallpaperStatus(context: Context, key: String): Int {
+        return getDefaultSharedPreferences(context).getInt(key, 0)
+    }
+
+    fun setAutoWallpaperStatus(context: Context, key: String, value: Int) {
+        getDefaultSharedPreferences(context).edit().apply {
+            putInt(key, value)
+            apply()
+        }
+    }
+
     fun registerPreferenceChangedListener(context: Context, listener: OnSharedPreferenceChangeListener) {
         getDefaultSharedPreferences(context).registerOnSharedPreferenceChangeListener(listener)
     }

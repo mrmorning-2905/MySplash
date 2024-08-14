@@ -29,12 +29,21 @@ interface PhotosDao {
     @Query("SELECT * FROM PHOTO_TABLE WHERE photo_id =:photoId")
     suspend fun getPhotoById(photoId: String): PhotoItem?
 
-    @Query("SELECT photo_id FROM PHOTO_TABLE")
-    fun getAllPhotoIds(): Flow<List<String>>
+    @Query("SELECT photo_id FROM PHOTO_TABLE WHERE is_favorite = TRUE")
+    fun getAllFavoritePhotoIds(): Flow<List<String>>
 
-    @Query("SELECT photo_id FROM PHOTO_TABLE WHERE photo_id = :id")
-    fun getPhotoIdFlow(id: String): Flow<String?>
+    @Query("SELECT photo_id FROM PHOTO_TABLE WHERE photo_id = :id AND is_favorite = TRUE")
+    fun observerFavoritePhotoIdFlow(id: String): Flow<String?>
 
-    @Query("SELECT * FROM PHOTO_TABLE")
-    fun getAllPhotosPagingSource(): PagingSource<Int, PhotoItem>
+    @Query("SELECT * FROM PHOTO_TABLE WHERE is_favorite = TRUE")
+    fun getAllFavoritePhotosPagingSource(): PagingSource<Int, PhotoItem>
+
+    @Query("SELECT * FROM PHOTO_TABLE WHERE is_wallpaper = TRUE")
+    fun getAllWallpaperPhotosPagingSource(): PagingSource<Int, PhotoItem>
+
+    @Query("DELETE FROM PHOTO_TABLE WHERE is_favorite = TRUE")
+    suspend fun deleteAllFavoritePhotos()
+
+    @Query("DELETE FROM PHOTO_TABLE WHERE is_wallpaper = TRUE")
+    suspend fun deleteAllWallpaperPhotos()
 }

@@ -1,5 +1,6 @@
 package com.psd.learn.mysplash.data.remote.repository
 
+import android.util.Log
 import androidx.paging.InvalidatingPagingSourceFactory
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -7,6 +8,7 @@ import androidx.paging.PagingData
 import com.psd.learn.mysplash.PAGING_SIZE
 import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
+import com.psd.learn.mysplash.data.local.entity.toPhotoItem
 import com.psd.learn.mysplash.data.remote.datasource.CollectionDetailsDataSource
 import com.psd.learn.mysplash.data.remote.datasource.FeedCollectionsDataSource
 import com.psd.learn.mysplash.data.remote.datasource.FeedPhotosDataSource
@@ -14,6 +16,7 @@ import com.psd.learn.mysplash.data.remote.datasource.FeedTopicDataSource
 import com.psd.learn.mysplash.data.remote.datasource.SearchDataSourceFactory
 import com.psd.learn.mysplash.data.remote.datasource.TopicDetailsDataSource
 import com.psd.learn.mysplash.data.remote.datasource.UserDetailsPagingSourceFactory
+import com.psd.learn.mysplash.runSuspendCatching
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 
@@ -42,7 +45,7 @@ class UnSplashPagingRepository(
         }
         return Pager(
             config = pageConfig,
-            pagingSourceFactory =  invalidPagingSource
+            pagingSourceFactory = invalidPagingSource
         ).flow
     }
 
@@ -97,5 +100,16 @@ class UnSplashPagingRepository(
             config = pageConfig,
             pagingSourceFactory = invalidPagingSource
         ).flow
+    }
+
+    suspend fun getRandomPhoto(
+        collectionId: String? = null,
+        topicId: String? = null,
+        orientation: String = "portrait",
+        contentFilter: String = "high"
+    ): Result<PhotoItem> = runSuspendCatching(coroutineDispatcher) {
+        val result = unSplashApiService.getRandomPhoto(collectionId, topicId, orientation, contentFilter)
+        Log.d("sangpd", "getRandomPhoto() - result: ${result.id}")
+        result.toPhotoItem()
     }
 }

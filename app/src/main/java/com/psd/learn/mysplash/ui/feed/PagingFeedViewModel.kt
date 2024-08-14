@@ -72,6 +72,10 @@ class PagingFeedViewModel @Inject constructor(
         .getFavoritePhotosStream()
         .cachedIn(viewModelScope)
 
+    val wallpaperHistoryPhotosFlow: Flow<PagingData<PhotoItem>> = photosLocalRepo
+        .getWallpaperHistoryPhotosStream()
+        .cachedIn(viewModelScope)
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val photoPagingFlow = sortTypeSharedFlow
         .filterIsInstance<SortByState.PhotoSortByState>()

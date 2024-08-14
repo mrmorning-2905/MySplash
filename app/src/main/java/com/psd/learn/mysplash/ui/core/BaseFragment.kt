@@ -55,7 +55,6 @@ abstract class BaseFragment<VB : ViewBinding>(
             customView = null
             setBackgroundDrawable(null)
             setHomeAsUpIndicator(R.drawable.navigation_back_icon)
-
         }
     }
 

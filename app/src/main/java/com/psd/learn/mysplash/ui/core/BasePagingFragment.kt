@@ -4,10 +4,15 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
@@ -20,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewbinding.ViewBinding
+import com.psd.learn.mysplash.AUTO_SET_WALLPAPER_KEY
 import com.psd.learn.mysplash.R
 import com.psd.learn.mysplash.SEARCH_COLLECTIONS_TYPE
 import com.psd.learn.mysplash.SEARCH_PHOTOS_TYPE
@@ -28,13 +34,16 @@ import com.psd.learn.mysplash.data.local.entity.CollectionItem
 import com.psd.learn.mysplash.data.local.entity.PhotoItem
 import com.psd.learn.mysplash.ui.feed.FeedFragmentDirections
 import com.psd.learn.mysplash.ui.feed.collections.details.CollectionDetailsFragmentDirections
+import com.psd.learn.mysplash.ui.feed.photos.wallpaper.WallpaperHistoryListFragmentDirections
 import com.psd.learn.mysplash.ui.feed.topic.details.TopicDetailsFragmentDirections
 import com.psd.learn.mysplash.ui.search.PagingSearchViewModel
 import com.psd.learn.mysplash.ui.search.ResultSearchState
 import com.psd.learn.mysplash.ui.search.SearchAction
 import com.psd.learn.mysplash.ui.search.SearchFragmentDirections
 import com.psd.learn.mysplash.ui.userdetails.UserDetailsFragmentDirections
+import com.psd.learn.mysplash.ui.utils.PreferenceUtils
 import com.psd.learn.mysplash.ui.utils.safeHandleClickListener
+import com.psd.learn.mysplash.worker.AutoSetWallpaperWorker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -130,7 +139,7 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
             pagingAdapter
                 .loadStateFlow
                 .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
-                .collectLatest {  loadState ->
+                .collectLatest { loadState ->
                     swipeRefreshLayout.isRefreshing = loadState.refresh is LoadState.Loading
                 }
         }
@@ -276,6 +285,10 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
                 photoId = photoItem.photoId
             )
 
+            R.id.wallpaper_history_fragment_dest -> WallpaperHistoryListFragmentDirections.actionWallpaperHistoryToDetailsPhotoFragment(
+                photoId = photoItem.photoId
+            )
+
             else -> error("openPhotoDetails() - doesn't support action at this fragment_currentDestId: $currentDestId")
         }
         navHost.navigate(action)
@@ -301,6 +314,10 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
             )
 
             R.id.topic_details_fragment_dest -> TopicDetailsFragmentDirections.actionTopicDetailsFragmentToUserDetailsFragment(
+                userInfoArgs = userInfo
+            )
+
+            R.id.wallpaper_history_fragment_dest -> WallpaperHistoryListFragmentDirections.actionWallpaperHistoryToUserDetailsFragment(
                 userInfoArgs = userInfo
             )
 
@@ -332,6 +349,67 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
         }
         navHost.navigate(action)
 
+    }
+
+    protected fun setupMenuProvider(topicId: String? = null, collectionId: String? = null) {
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.auto_wall_paper_menu, menu)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                    return when (menuItem.itemId) {
+                        R.id.auto_wallpaper_menu -> {
+                            PreferenceUtils.setAutoWallpaperStatus(requireContext(), AUTO_SET_WALLPAPER_KEY, 1)
+                            AutoSetWallpaperWorker.enqueueSetAutoWallpaper(
+                                requireContext(),
+                                collectionId = collectionId,
+                                topicId = topicId
+                            )
+                            true
+                        }
+
+                        R.id.cancel_set_wallpaper_menu -> {
+                            PreferenceUtils.setAutoWallpaperStatus(requireContext(), AUTO_SET_WALLPAPER_KEY, 0)
+                            AutoSetWallpaperWorker.cancelAutoWallpaperWorker(requireContext())
+                            true
+                        }
+
+                        R.id.wallpaper_history -> {
+                            openWallpaperHistoryFragment()
+                            true
+                        }
+
+                        else -> false
+                    }
+                }
+
+                override fun onPrepareMenu(menu: Menu) {
+                    super.onPrepareMenu(menu)
+                    val currentStatus = PreferenceUtils.getAutoWallpaperStatus(requireContext(), AUTO_SET_WALLPAPER_KEY)
+                    menu.findItem(getAutoWallpaperMenuItem(currentStatus)).isChecked = true
+                }
+            },
+            viewLifecycleOwner, Lifecycle.State.STARTED
+        )
+    }
+
+    private fun openWallpaperHistoryFragment() {
+        val navHost = findNavController()
+        val action = when (val currentDestId = navHost.currentDestination?.id) {
+            R.id.collection_details_fragment_dest -> CollectionDetailsFragmentDirections.actionCollectionDetailsFragmentToHistoryWallpaperFragment()
+            R.id.topic_details_fragment_dest -> TopicDetailsFragmentDirections.actionTopicDetailsFragmentToHistoryWallpaperFragment()
+            else -> error("openWallpaperHistoryFragment() - doesn't support action at this fragment_currentDestId: $currentDestId")
+        }
+        navHost.navigate(action)
+    }
+
+    private fun getAutoWallpaperMenuItem(status: Int): Int = when (status) {
+        0 -> R.id.cancel_set_wallpaper_menu
+        1 -> R.id.auto_wallpaper_menu
+        else -> error("invalid type")
     }
 
     override fun onDestroyView() {

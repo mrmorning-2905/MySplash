@@ -107,6 +107,14 @@ interface UnSplashApiService {
 /*        @Query("order_by") query: String*/
     ): List<PhotoResponseItem>
 
+    @GET("photos/random")
+    suspend fun getRandomPhoto(
+        @Query("collections") collectionsId: String?,
+        @Query("topics") topicId: String?,
+        @Query("orientation") orientation: String?,
+        @Query("content_filter") contentFilter: String?
+    ): PhotoResponseItem
+
     @Streaming
     @GET
     suspend fun openUrl(@Url imageUrl: String): ResponseBody

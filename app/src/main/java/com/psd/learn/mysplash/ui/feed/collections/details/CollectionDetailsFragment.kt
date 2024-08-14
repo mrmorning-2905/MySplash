@@ -56,6 +56,7 @@ class CollectionDetailsFragment  :
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val rootView = super.onCreateView(inflater, container, savedInstanceState)
         setupToolbar(true, collectionInfoArgs.coverDescription, true)
+        setupMenuProvider(collectionId = collectionInfoArgs.collectionId)
         return rootView
     }
 

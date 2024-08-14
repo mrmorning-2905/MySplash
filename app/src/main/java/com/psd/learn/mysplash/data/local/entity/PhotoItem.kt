@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import com.psd.learn.mysplash.data.remote.entity.PhotoResponseItem
 
 @Entity(tableName = "PHOTO_TABLE")
-data class PhotoItem (
+data class PhotoItem(
     @PrimaryKey
     @ColumnInfo(name = "photo_id")
     val photoId: String,
@@ -77,7 +77,10 @@ data class PhotoItem (
     val exposureTime: String,
 
     @ColumnInfo(name = "is_favorite")
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
+
+    @ColumnInfo(name = "is_wallpaper")
+    val isWallpaper: Boolean = false
 )
 
 
