@@ -12,7 +12,7 @@ In this project, I have used:
 Next task:
 [x] handle safe call api with catch exception
 [x] implement download image function
-[ ] implement set wallpaper for one or many image
+[x] implement set wallpaper for one or many image
 [ ] implement login 
 [x] implement selection mode(optional)
 [x] implement sort by menu

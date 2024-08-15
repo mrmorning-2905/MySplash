@@ -1,10 +1,13 @@
 package com.psd.learn.mysplash.data.local.entity
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.psd.learn.mysplash.data.remote.entity.PhotoResponseItem
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity(tableName = "PHOTO_TABLE")
 data class PhotoItem(
     @PrimaryKey
@@ -81,7 +84,7 @@ data class PhotoItem(
 
     @ColumnInfo(name = "is_wallpaper")
     val isWallpaper: Boolean = false
-)
+): Parcelable
 
 
 fun PhotoResponseItem.toPhotoItem(): PhotoItem {

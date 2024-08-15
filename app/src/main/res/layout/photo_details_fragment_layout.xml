@@ -92,7 +92,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginStart="10dp"
-                        android:background="@android:color/transparent"
                         android:src="@drawable/download_icon" />
 
                     <ImageButton
@@ -101,7 +100,6 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginStart="10dp"
-                        android:background="@android:color/transparent"
                         android:src="@drawable/favorite_icon" />
 
                     <ImageButton
@@ -110,8 +108,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginStart="10dp"
-                        android:background="@android:color/transparent"
-                        android:src="@drawable/bookmark_icon" />
+                        android:src="@drawable/wallpaper_icon" />
                 </LinearLayout>
 
             </LinearLayout>

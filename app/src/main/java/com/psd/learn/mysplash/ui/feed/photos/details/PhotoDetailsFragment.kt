@@ -77,6 +77,7 @@ class PhotoDetailsFragment :
                 bindTagList(photoItem)
                 bindFavoriteBtn(photoItem)
                 bindDownloadBtn(photoItem)
+                bindSetWallpaperBtn(photoItem)
             }
 
             else -> {
@@ -111,6 +112,12 @@ class PhotoDetailsFragment :
     private fun bindDownloadBtn(photoItem: PhotoItem) {
         binding.downloadBtn.safeHandleClickListener {
             photoDetailsViewModel.downloadPhoto(requireContext(), photoItem, lifecycle)
+        }
+    }
+
+    private fun bindSetWallpaperBtn(photoItem: PhotoItem) {
+        binding.bookmarkBtn.safeHandleClickListener {
+            photoDetailsViewModel.setWallpaper(requireContext(), photoItem, lifecycle)
         }
     }
 

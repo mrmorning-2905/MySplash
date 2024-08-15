@@ -6,12 +6,16 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.hilt.work.HiltWorker
+import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.psd.learn.mysplash.data.local.datasource.PhotosLocalRepository
@@ -60,7 +64,6 @@ class AutoSetWallpaperWorker @AssistedInject constructor(
         } else {
             return@withContext Result.retry()
         }
-
         return@withContext Result.success()
     }
 
@@ -90,7 +93,7 @@ class AutoSetWallpaperWorker @AssistedInject constructor(
         const val AUTO_REQUEST_INTERVAL = 15L
         private const val AUTO_WALLPAPER_WORKER_ID = "auto_set_wallpaper_worker_id"
 
-        fun enqueueSetAutoWallpaper(
+        fun enqueueScheduleSetAutoWallpaper(
             context: Context,
             collectionId: String?,
             topicId: String?

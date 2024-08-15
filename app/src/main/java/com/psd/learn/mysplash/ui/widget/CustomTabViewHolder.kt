@@ -29,8 +29,8 @@ class CustomTabViewHolder @JvmOverloads constructor(
                 text = field.text
                 setTextSize(
                     TypedValue.COMPLEX_UNIT_SP, when (field.isSelected) {
-                        true -> 20f
-                        false -> 18f
+                        true -> 16f
+                        false -> 13f
                     }
                 )
                 setTextColor(

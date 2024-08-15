@@ -363,7 +363,7 @@ abstract class BasePagingFragment<T : Any, VB : ViewBinding>(
                     return when (menuItem.itemId) {
                         R.id.auto_wallpaper_menu -> {
                             PreferenceUtils.setAutoWallpaperStatus(requireContext(), AUTO_SET_WALLPAPER_KEY, 1)
-                            AutoSetWallpaperWorker.enqueueSetAutoWallpaper(
+                            AutoSetWallpaperWorker.enqueueScheduleSetAutoWallpaper(
                                 requireContext(),
                                 collectionId = collectionId,
                                 topicId = topicId

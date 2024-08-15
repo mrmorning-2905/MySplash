@@ -20,6 +20,8 @@ import com.psd.learn.mysplash.ui.feed.photos.favorite.FavoritePhotoHelper
 import com.psd.learn.mysplash.ui.utils.ResultState
 import com.psd.learn.mysplash.worker.DownloadWorker
 import com.psd.learn.mysplash.worker.RequestInfo
+import com.psd.learn.mysplash.worker.SingleSetWallpaperWorker
+import com.psd.learn.mysplash.worker.SingleSetWallpaperWorker.Companion.SINGLE_WALLPAPER_WORKER_ID
 import com.psd.learn.mysplash.worker.toDownloadInfoItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -99,6 +101,32 @@ class PhotoDetailsViewModel @Inject constructor(
                             Toast.makeText(
                                 context,
                                 "Download file completed",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+        }
+    }
+
+    fun setWallpaper(
+        context: Context,
+        photoItem: PhotoItem,
+        lifecycle: Lifecycle
+    ) {
+        SingleSetWallpaperWorker.enqueueSingleSetWallPaperWork(context, gson, photoItem)
+        viewModelScope.launch {
+            val workQuery = WorkQuery.fromUniqueWorkNames(SINGLE_WALLPAPER_WORKER_ID)
+            WorkManager.getInstance(context)
+                .getWorkInfosFlow(workQuery)
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .distinctUntilChanged()
+                .collectLatest { workList ->
+                    workList.getOrNull(0).let {
+                        if (it?.state == WorkInfo.State.SUCCEEDED) {
+                            Toast.makeText(
+                                context,
+                                "Wallpaper was setup",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
